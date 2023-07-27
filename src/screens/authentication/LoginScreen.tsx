@@ -1,8 +1,15 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
+import { useLogin } from '~/services/authentication';
 
 const LoginScreen = () => {
-  return <Text>Hello</Text>;
+  // const { loginUser } = useLogin();
+
+  return (
+    <View>
+      <Text>hi</Text>
+    </View>
+  );
 };
 
 export default LoginScreen;

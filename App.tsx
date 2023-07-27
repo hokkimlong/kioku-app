@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import AuthenticationNavigator from './src/screens/authentication/Navigator';
 import HomeNavigator from './src/screens/home/Navigator';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useUser } from './src/services/authentication';
 
 const queryClient = new QueryClient();
 
@@ -18,9 +19,8 @@ function Main() {
   );
 }
 
-let user = null;
 function App() {
-  // const { user } = useAuth();
+  const { user } = useUser();
   return (
     <NavigationContainer>
       {user ? <HomeNavigator /> : <AuthenticationNavigator />}
