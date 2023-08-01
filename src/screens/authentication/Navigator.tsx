@@ -20,7 +20,7 @@ const DefaultAppBar = props => {
   // const { colors } = useTheme();
 
   return (
-    <Appbar.Header style={{ backgroundColor: 'transparent', elevation: 0 }}>
+    <Appbar.Header style={{ backgroundColor: 'white', elevation: 0 }}>
       {props.back ? (
         <Appbar.BackAction onPress={props.navigation.goBack} size={20} />
       ) : null}
