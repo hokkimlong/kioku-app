@@ -1,13 +1,12 @@
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { View } from 'react-native';
 import { z } from 'zod';
 import { Input } from '~/components/form/Input';
-import { PasswordInput } from '~/components/form/PasswordInput';
 import { FormContainer } from '~/components/ui/FormContainer';
 import { Button } from '~/components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import LinkButton from '~/components/ui/LinkButton';
+import { View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthenticationStackList } from './Navigator';
 
@@ -15,13 +14,12 @@ import { AuthenticationStackList } from './Navigator';
 
 const schema = z.object({
   email: z.string().email().nonempty(),
-  password: z.string().nonempty(),
 });
 
 type FormSchema = z.infer<typeof schema>;
 
-type Props = NativeStackScreenProps<AuthenticationStackList, 'Login'>;
-const LoginScreen = ({ navigation }: Props) => {
+type Props = NativeStackScreenProps<AuthenticationStackList, 'Verification'>;
+const VerificationScreen = ({ navigation }: Props) => {
   // const { loginUser } = useLogin();
 
   const methods = useForm<FormSchema>({
@@ -34,29 +32,29 @@ const LoginScreen = ({ navigation }: Props) => {
 
   return (
     <FormProvider {...methods}>
-      <FormContainer title="Login" description="Connect, bond, and enjoy!">
+      <FormContainer
+        title="Verfication"
+        description="Connect, bond, and enjoy!">
         <Input
           keyboardType="email-address"
-          name="email"
-          label="Email"
-          placeholder="Enter your email"
+          name="otp"
+          label="OTP"
+          placeholder="Enter 4 digit code"
         />
-        <PasswordInput
-          name="password"
-          label="Password"
-          placeholder="Enter your password"
-        />
-        <Button onPress={methods.handleSubmit(onSubmit)}>Login</Button>
-        <LinkButton onPress={() => navigation.push('ForgotPassword')}>
-          Forgot password?
-        </LinkButton>
-        <View style={{ flex: 1 }} />
-        <Button outlined onPress={() => navigation.push('Register')}>
-          Register
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'flex-end',
+          }}>
+          <LinkButton>Resend Code</LinkButton>
+        </View>
+        <Button onPress={() => navigation.push('NewPasswordScreen')}>
+          Next
         </Button>
       </FormContainer>
     </FormProvider>
   );
 };
 
-export default LoginScreen;
+export default VerificationScreen;

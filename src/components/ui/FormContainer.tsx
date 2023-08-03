@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Keyboard } from 'react-native';
 import { Title } from './Title';
 import { Description } from './Description';
 import { Container } from './Container';
@@ -15,7 +15,7 @@ export const FormContainer = ({
   children,
 }: FormContainerProps) => {
   return (
-    <Container>
+    <Container onPress={Keyboard.dismiss}>
       <Title>{title}</Title>
       <Description>{description}</Description>
       <View style={formStyle.content}>{children}</View>
