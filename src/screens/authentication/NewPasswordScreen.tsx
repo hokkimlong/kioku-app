@@ -1,12 +1,9 @@
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Input } from '~/components/form/Input';
 import { FormContainer } from '~/components/ui/FormContainer';
 import { Button } from '~/components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import LinkButton from '~/components/ui/LinkButton';
-import { View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthenticationStackList } from './Navigator';
 import { PasswordInput } from '~/components/form/PasswordInput';
