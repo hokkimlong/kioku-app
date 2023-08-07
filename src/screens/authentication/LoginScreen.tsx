@@ -52,7 +52,7 @@ const LoginScreen = ({ navigation }: Props) => {
         </LinkButton>
         <View style={{ flex: 1 }} />
         <Button outlined onPress={() => navigation.push('Register')}>
-          Register
+          Create new account
         </Button>
       </FormContainer>
     </FormProvider>
