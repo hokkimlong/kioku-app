@@ -1,4 +1,9 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  MutateOptions,
+  UseMutationOptions,
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
 import { get, post } from './fetcher';
 import { RegisterFormSchema } from '~/screens/authentication/RegisterScreen';
 
@@ -26,7 +31,7 @@ export const useLogin = () => {
 export const useRegister = () => {
   const mutation = useMutation({
     mutationFn: (formData: Omit<RegisterFormSchema, 'confirmPassword'>) => {
-      return post('/user', formData);
+      return post('/auth/register', formData);
     },
   });
   return { ...mutation, registerUser: mutation.mutateAsync };

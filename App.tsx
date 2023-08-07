@@ -7,6 +7,7 @@ import HomeNavigator from './src/screens/home/Navigator';
 import { useColorScheme } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useUser } from './src/services/authentication';
+import SpinnerProvider from '~/components/ui/Spinner';
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,9 @@ function Main() {
   return (
     <QueryClientProvider client={queryClient}>
       <PaperProvider theme={paperTheme}>
-        <App />
+        <SpinnerProvider>
+          <App />
+        </SpinnerProvider>
       </PaperProvider>
     </QueryClientProvider>
   );

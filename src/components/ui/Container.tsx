@@ -1,10 +1,11 @@
 import React, { PropsWithChildren } from 'react';
 import {
-  View,
+  ScrollView,
   StyleSheet,
   TouchableWithoutFeedback,
   TouchableWithoutFeedbackProps,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export const Container = ({
   children,
@@ -12,7 +13,9 @@ export const Container = ({
 }: PropsWithChildren<TouchableWithoutFeedbackProps>) => {
   return (
     <TouchableWithoutFeedback onPress={onPress}>
-      <View style={containerStyle.root}>{children}</View>
+      <KeyboardAwareScrollView enableOnAndroid>
+        <ScrollView style={containerStyle.root}>{children}</ScrollView>
+      </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
 };
