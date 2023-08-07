@@ -6,26 +6,34 @@ import { PasswordInput } from '~/components/form/PasswordInput';
 import { FormContainer } from '~/components/ui/FormContainer';
 import { Button } from '~/components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { emailRequired, stringRequired } from '~/components/form/utils';
+import { useRegister } from '~/services/authentication';
 
-// import { useLogin } from '~/services/authentication';
+const schema = z
+  .object({
+    username: stringRequired,
+    email: emailRequired,
+    password: stringRequired,
+    confirmPassword: stringRequired,
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
-const schema = z.object({
-  email: z.string().email().nonempty(),
-  password: z.string().nonempty(),
-});
-
-type FormSchema = z.infer<typeof schema>;
+export type RegisterFormSchema = z.infer<typeof schema>;
 
 const RegisterScreen = () => {
-  // const { loginUser } = useLogin();
+  const { registerUser } = useRegister();
 
-  const methods = useForm<FormSchema>({
+  const methods = useForm<RegisterFormSchema>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (formData: FormSchema) => {
-    console.log(formData);
-  };
+  const onSubmit = (formData: RegisterFormSchema) =>
+    registerUser(formData)
+      .then(() => {})
+      .catch(() => {});
 
   return (
     <FormProvider {...methods}>

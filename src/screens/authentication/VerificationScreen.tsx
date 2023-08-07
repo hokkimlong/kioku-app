@@ -9,11 +9,12 @@ import LinkButton from '~/components/ui/LinkButton';
 import { View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthenticationStackList } from './Navigator';
+import { emailRequired } from '~/components/form/utils';
 
 // import { useLogin } from '~/services/authentication';
 
 const schema = z.object({
-  email: z.string().email().nonempty(),
+  email: emailRequired,
 });
 
 type FormSchema = z.infer<typeof schema>;
