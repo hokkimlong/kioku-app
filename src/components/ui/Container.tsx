@@ -4,8 +4,10 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   TouchableWithoutFeedbackProps,
+  View,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Text } from 'react-native-paper';
 
 export const Container = ({
   children,
@@ -13,8 +15,10 @@ export const Container = ({
 }: PropsWithChildren<TouchableWithoutFeedbackProps>) => {
   return (
     <TouchableWithoutFeedback onPress={onPress}>
-      <KeyboardAwareScrollView enableOnAndroid>
-        <ScrollView style={containerStyle.root}>{children}</ScrollView>
+      <KeyboardAwareScrollView
+        enableOnAndroid
+        contentContainerStyle={containerStyle.root}>
+        {children}
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
@@ -23,6 +27,6 @@ export const Container = ({
 const containerStyle = StyleSheet.create({
   root: {
     marginHorizontal: 28,
-    flex: 1,
+    flexGrow: 1,
   },
 });

@@ -33,4 +33,10 @@ export const alert = {
       },
     );
   },
+  successResponse(title: string, response: any) {
+    this.success(title, response?.message || 'Success');
+  },
+  errorResponse(title: string, response: any) {
+    this.error(title, response?.message || 'Failed');
+  },
 };

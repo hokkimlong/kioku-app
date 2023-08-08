@@ -10,6 +10,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import LinkButton from '~/components/ui/LinkButton';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthenticationStackList } from './Navigator';
+import { useLogin } from '~/services/authentication';
+import { alert } from '~/utils/alert';
 
 // import { useLogin } from '~/services/authentication';
 
@@ -22,14 +24,21 @@ type FormSchema = z.infer<typeof schema>;
 
 type Props = NativeStackScreenProps<AuthenticationStackList, 'Login'>;
 const LoginScreen = ({ navigation }: Props) => {
-  // const { loginUser } = useLogin();
+  const { loginUser } = useLogin();
 
   const methods = useForm<FormSchema>({
     resolver: zodResolver(schema),
   });
 
   const onSubmit = (formData: FormSchema) => {
-    console.log(formData);
+    loginUser(formData)
+      .then(response => {
+        console.log(response);
+        alert.success('Success', 'login success');
+      })
+      .catch(error => {
+        alert.error('fail', error.response.data.message);
+      });
   };
 
   return (

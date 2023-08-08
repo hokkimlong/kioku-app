@@ -54,7 +54,7 @@ const RegisterScreen = ({ navigation }: Props) => {
         );
       })
       .catch(error => {
-        alert.error('Register Failed', error.response.data.message);
+        alert.errorResponse('Register Failed', error);
       })
       .finally(() => {
         closeSpinner();

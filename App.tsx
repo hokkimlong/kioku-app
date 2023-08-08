@@ -36,8 +36,8 @@ const theme = {
 };
 
 function App() {
-  // const { user } = useUser();
-  const user = false;
+  const { user } = useUser();
+  console.log(user);
   return (
     <NavigationContainer theme={theme}>
       {user ? <HomeNavigator /> : <AuthenticationNavigator />}
