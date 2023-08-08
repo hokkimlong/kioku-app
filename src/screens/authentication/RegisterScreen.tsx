@@ -6,25 +6,59 @@ import { PasswordInput } from '~/components/form/PasswordInput';
 import { FormContainer } from '~/components/ui/FormContainer';
 import { Button } from '~/components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { emailRequired, stringRequired } from '~/components/form/utils';
+import { useRegister } from '~/services/authentication';
+import { PartialBy } from '~/utils/type';
+import { alert } from '~/utils/alert';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AuthenticationStackList } from './Navigator';
+import { useSpinner } from '~/components/ui/Spinner';
+// import { alert } from '~/utils/alert';
 
-// import { useLogin } from '~/services/authentication';
+const schema = z
+  .object({
+    username: stringRequired,
+    email: emailRequired,
+    password: stringRequired,
+    confirmPassword: stringRequired,
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
-const schema = z.object({
-  email: z.string().email().nonempty(),
-  password: z.string().nonempty(),
-});
+export type RegisterFormSchema = PartialBy<
+  z.infer<typeof schema>,
+  'confirmPassword'
+>;
 
-type FormSchema = z.infer<typeof schema>;
+type Props = NativeStackScreenProps<AuthenticationStackList, 'Register'>;
+const RegisterScreen = ({ navigation }: Props) => {
+  const { registerUser } = useRegister();
+  const { openSpinner, closeSpinner } = useSpinner();
 
-const RegisterScreen = () => {
-  // const { loginUser } = useLogin();
-
-  const methods = useForm<FormSchema>({
+  const methods = useForm<RegisterFormSchema>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (formData: FormSchema) => {
-    console.log(formData);
+  const onSubmit = (formData: RegisterFormSchema) => {
+    openSpinner();
+    registerUser(formData)
+      .then(() => {
+        alert.success(
+          'Register Success',
+          'You have register successfully!',
+          () => {
+            navigation.pop();
+          },
+        );
+      })
+      .catch(error => {
+        alert.errorResponse('Register Failed', error);
+      })
+      .finally(() => {
+        closeSpinner();
+      });
   };
 
   return (

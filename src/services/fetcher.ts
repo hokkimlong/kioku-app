@@ -1,8 +1,21 @@
 import axios from 'axios';
+import { accessToken } from './authentication';
 
-const baseURL = '';
+const baseURL = 'http://192.168.18.10:3000';
 
 const axiosInstance = axios.create({ baseURL });
+
+axiosInstance.interceptors.request.use(
+  async config => {
+    const token = await accessToken.get();
+    config.headers.Authorization = `Bearer ${token}`;
+    console.log(token);
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  },
+);
 
 export const get = <T>(url: string, params?: any) => {
   return axiosInstance<T>({
@@ -17,5 +30,7 @@ export const post = <T>(url: string, payload: any) => {
     url,
     data: payload,
     method: 'post',
-  }).then(response => response.data);
+  })
+    .then(response => response.data)
+    .catch(error => error.response.data);
 };
