@@ -2,7 +2,7 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Input } from '~/components/form/Input';
-import { FormContainer } from '~/components/ui/FormContainer';
+import { TitleContainer } from '~/components/ui/TitleContainer';
 import { Button } from '~/components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import LinkButton from '~/components/ui/LinkButton';
@@ -33,7 +33,7 @@ const VerificationScreen = ({ navigation }: Props) => {
 
   return (
     <FormProvider {...methods}>
-      <FormContainer
+      <TitleContainer
         title="Verfication"
         description="Connect, bond, and enjoy!">
         <Input
@@ -53,7 +53,7 @@ const VerificationScreen = ({ navigation }: Props) => {
         <Button onPress={() => navigation.push('NewPasswordScreen')}>
           Next
         </Button>
-      </FormContainer>
+      </TitleContainer>
     </FormProvider>
   );
 };

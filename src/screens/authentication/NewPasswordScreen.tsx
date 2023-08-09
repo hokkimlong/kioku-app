@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { FormContainer } from '~/components/ui/FormContainer';
+import { TitleContainer } from '~/components/ui/TitleContainer';
 import { Button } from '~/components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -33,7 +33,7 @@ const NewPasswordScreen = ({ navigation }: Props) => {
 
   return (
     <FormProvider {...methods}>
-      <FormContainer
+      <TitleContainer
         title="Enter new Password"
         description="Connect, bond, and enjoy!">
         <PasswordInput
@@ -52,7 +52,7 @@ const NewPasswordScreen = ({ navigation }: Props) => {
           }}>
           Submit
         </Button>
-      </FormContainer>
+      </TitleContainer>
     </FormProvider>
   );
 };

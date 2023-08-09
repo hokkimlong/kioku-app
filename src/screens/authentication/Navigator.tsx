@@ -7,6 +7,7 @@ import ForgotPasswordScreen from './ForgotPasswordScreen';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import VerificationScreen from './VerificationScreen';
 import NewPasswordScreen from './NewPasswordScreen';
+import { StyleSheet } from 'react-native';
 
 export type AuthenticationStackList = {
   Login: undefined;
@@ -33,28 +34,41 @@ const AuthenticationNavigator = () => {
   );
 };
 
-const DefaultAppBar = props => {
+const DefaultAppBar = (props: any) => {
   return (
-    <Appbar.Header
-      style={{ backgroundColor: 'white', elevation: 0, height: 70 }}>
+    <Appbar.Header style={style.header}>
       {props.back ? (
         <Appbar.Action
-          style={{ marginLeft: 15 }}
+          style={style.action}
           icon={backIcon}
           onPress={props.navigation.goBack}
           size={28}
         />
       ) : null}
       <Appbar.Content
-        title={props.options.headerTitle}
+        title={props.options?.headerTitle}
         color={props.options.headerTintColor}
-        titleStyle={{ fontSize: 18 }}
+        titleStyle={style.titleStyle}
       />
     </Appbar.Header>
   );
 };
 
-const backIcon = props => (
+const style = StyleSheet.create({
+  header: {
+    backgroundColor: 'white',
+    elevation: 0,
+    height: 70,
+  },
+  action: {
+    marginLeft: 15,
+  },
+  titleStyle: {
+    fontSize: 18,
+  },
+});
+
+const backIcon = () => (
   <MaterialIcon color={'black'} size={28} name="arrow-back-ios" />
 );
 

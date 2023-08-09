@@ -12,10 +12,8 @@ type User = {
 };
 
 export const useUser = () => {
-  const { data, ...other } = useQuery<User>(
-    ['user'],
-    () => get<User>('/auth/profile'),
-    { enabled: false },
+  const { data, ...other } = useQuery<User>(['user'], () =>
+    get<User>('/auth/profile'),
   );
   return { user: data, ...other };
 };

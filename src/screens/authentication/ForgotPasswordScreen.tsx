@@ -2,7 +2,7 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Input } from '~/components/form/Input';
-import { FormContainer } from '~/components/ui/FormContainer';
+import { TitleContainer } from '~/components/ui/TitleContainer';
 import { Button } from '~/components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -30,7 +30,7 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
 
   return (
     <FormProvider {...methods}>
-      <FormContainer
+      <TitleContainer
         title="Forgot Password"
         description="Connect, bond, and enjoy!">
         <Input
@@ -42,7 +42,7 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
         <Button onPress={() => navigation.push('Verification')}>
           Reset Password
         </Button>
-      </FormContainer>
+      </TitleContainer>
     </FormProvider>
   );
 };
