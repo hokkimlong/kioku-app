@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { z } from 'zod';
 import { Input } from '~/components/form/Input';
 import { PasswordInput } from '~/components/form/PasswordInput';
-import { FormContainer } from '~/components/ui/FormContainer';
+import { TitleContainer } from '~/components/ui/TitleContainer';
 import { Button } from '~/components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import LinkButton from '~/components/ui/LinkButton';
@@ -43,7 +43,7 @@ const LoginScreen = ({ navigation }: Props) => {
 
   return (
     <FormProvider {...methods}>
-      <FormContainer title="Login" description="Connect, bond, and enjoy!">
+      <TitleContainer title="Login" description="Connect, bond, and enjoy!">
         <Input
           keyboardType="email-address"
           name="email"
@@ -63,7 +63,7 @@ const LoginScreen = ({ navigation }: Props) => {
         <Button outlined onPress={() => navigation.push('Register')}>
           Create new account
         </Button>
-      </FormContainer>
+      </TitleContainer>
     </FormProvider>
   );
 };

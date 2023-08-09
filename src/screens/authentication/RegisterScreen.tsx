@@ -3,7 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Input } from '~/components/form/Input';
 import { PasswordInput } from '~/components/form/PasswordInput';
-import { FormContainer } from '~/components/ui/FormContainer';
+import { TitleContainer } from '~/components/ui/TitleContainer';
 import { Button } from '~/components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { emailRequired, stringRequired } from '~/components/form/utils';
@@ -63,7 +63,7 @@ const RegisterScreen = ({ navigation }: Props) => {
 
   return (
     <FormProvider {...methods}>
-      <FormContainer title="Register" description="Connect, bond, and enjoy!">
+      <TitleContainer title="Register" description="Connect, bond, and enjoy!">
         <Input
           name="username"
           label="Username"
@@ -86,7 +86,7 @@ const RegisterScreen = ({ navigation }: Props) => {
           placeholder="Confirm your password"
         />
         <Button onPress={methods.handleSubmit(onSubmit)}>Register</Button>
-      </FormContainer>
+      </TitleContainer>
     </FormProvider>
   );
 };

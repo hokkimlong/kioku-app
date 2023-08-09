@@ -1,15 +1,22 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
-import { useLogout } from '~/services/authentication';
+import { TitleContainer } from '~/components/ui/TitleContainer';
+import { AddIconButton } from '../../components/ui/AddIconButton';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { HomeStackList } from './Navigator';
+import { Button } from '~/components/ui/Button';
 
-const HomeScreen = () => {
-  const { logout } = useLogout();
+type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
+const HomeScreen = ({ navigation }: Props) => {
   return (
-    <View>
-      <Text>HomeScreen</Text>
-      <Button onPress={logout}>Logout</Button>
-    </View>
+    <TitleContainer
+      title="Activity"
+      right={<AddIconButton onPress={() => navigation.push('NewActivity')} />}>
+      {Array.from({ length: 10 }).map(item => (
+        <Button outlined onPress={() => navigation.push('ActivityDetail')}>
+          View Activity Demo
+        </Button>
+      ))}
+    </TitleContainer>
   );
 };
 

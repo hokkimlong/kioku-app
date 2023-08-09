@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, ReactNode } from 'react';
 import { View, StyleSheet, Keyboard } from 'react-native';
 import { Title } from './Title';
 import { Description } from './Description';
@@ -6,18 +6,23 @@ import { Container } from './Container';
 
 type FormContainerProps = PropsWithChildren<{
   title: string;
-  description: string;
+  description?: string;
+  right?: ReactNode;
 }>;
 
-export const FormContainer = ({
+export const TitleContainer = ({
   title,
   description,
   children,
+  right,
 }: FormContainerProps) => {
   return (
     <Container onPress={Keyboard.dismiss}>
-      <Title>{title}</Title>
-      <Description>{description}</Description>
+      <View style={formStyle.title}>
+        <Title>{title}</Title>
+        {right && right}
+      </View>
+      {description && <Description>{description}</Description>}
       <View style={formStyle.content}>{children}</View>
     </Container>
   );
@@ -25,7 +30,14 @@ export const FormContainer = ({
 
 const formStyle = StyleSheet.create({
   content: {
-    paddingVertical: 12,
+    paddingTop: 12,
     flex: 1,
+  },
+  title: {
+    // minHeight: 62,
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });

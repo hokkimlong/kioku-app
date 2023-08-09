@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { useController } from 'react-hook-form';
 import { View, StyleSheet } from 'react-native';
 import { Text, TextInput, TextInputProps } from 'react-native-paper';
@@ -13,10 +13,7 @@ export const Input = ({ label, name, keyboardType, ...props }: InputProps) => {
     fieldState: { error },
   } = useController({ name });
   return (
-    <View style={inputStyle.root}>
-      <Text variant="labelLarge" style={inputStyle.label}>
-        {label}
-      </Text>
+    <Label label={label}>
       <TextInput
         keyboardType={keyboardType}
         error={!!error}
@@ -28,7 +25,7 @@ export const Input = ({ label, name, keyboardType, ...props }: InputProps) => {
         {...field}
         {...props}
       />
-    </View>
+    </Label>
   );
 };
 
@@ -48,3 +45,17 @@ const inputStyle = StyleSheet.create({
     marginBottom: 3,
   },
 });
+
+export const Label = ({
+  label,
+  children,
+}: PropsWithChildren<{ label: string }>) => {
+  return (
+    <View style={inputStyle.root}>
+      <Text variant="labelLarge" style={inputStyle.label}>
+        {label}
+      </Text>
+      {children}
+    </View>
+  );
+};
