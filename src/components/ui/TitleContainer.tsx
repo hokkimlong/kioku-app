@@ -8,6 +8,7 @@ type FormContainerProps = PropsWithChildren<{
   title: string;
   description?: string;
   right?: ReactNode;
+  scroll?: boolean;
 }>;
 
 export const TitleContainer = ({
@@ -15,9 +16,10 @@ export const TitleContainer = ({
   description,
   children,
   right,
+  scroll,
 }: FormContainerProps) => {
   return (
-    <Container onPress={Keyboard.dismiss}>
+    <Container scroll={scroll} onPress={Keyboard.dismiss}>
       <View style={formStyle.title}>
         <Title>{title}</Title>
         {right && right}

@@ -14,18 +14,26 @@ export const Input = ({ label, name, keyboardType, ...props }: InputProps) => {
   } = useController({ name });
   return (
     <Label label={label}>
-      <TextInput
+      <BaseInput
         keyboardType={keyboardType}
         error={!!error}
-        mode="outlined"
-        outlineStyle={inputStyle.outlined}
-        outlineColor="#ECECEC"
-        placeholderTextColor="#7E7E7E"
         onChangeText={onChange}
         {...field}
         {...props}
       />
     </Label>
+  );
+};
+
+export const BaseInput = (props: TextInputProps) => {
+  return (
+    <TextInput
+      mode="outlined"
+      outlineStyle={inputStyle.outlined}
+      outlineColor="#ECECEC"
+      placeholderTextColor="#7E7E7E"
+      {...props}
+    />
   );
 };
 
