@@ -30,7 +30,5 @@ export const post = <T>(url: string, payload: any) => {
     url,
     data: payload,
     method: 'post',
-  })
-    .then(response => response.data)
-    .catch(error => error.response.data);
+  }).then(response => response.data);
 };

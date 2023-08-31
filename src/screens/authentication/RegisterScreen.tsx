@@ -12,7 +12,7 @@ import { PartialBy } from '~/utils/type';
 import { alert } from '~/utils/alert';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthenticationStackList } from './Navigator';
-import { useSpinner } from '~/components/ui/Spinner';
+// import { useSpinner } from '~/components/ui/Spinner';
 // import { alert } from '~/utils/alert';
 
 const schema = z
@@ -35,14 +35,14 @@ export type RegisterFormSchema = PartialBy<
 type Props = NativeStackScreenProps<AuthenticationStackList, 'Register'>;
 const RegisterScreen = ({ navigation }: Props) => {
   const { registerUser } = useRegister();
-  const { openSpinner, closeSpinner } = useSpinner();
+  // const { openSpinner, closeSpinner } = useSpinner();
 
   const methods = useForm<RegisterFormSchema>({
     resolver: zodResolver(schema),
   });
 
   const onSubmit = (formData: RegisterFormSchema) => {
-    openSpinner();
+    // openSpinner();
     registerUser(formData)
       .then(() => {
         alert.success(
@@ -57,7 +57,7 @@ const RegisterScreen = ({ navigation }: Props) => {
         alert.errorResponse('Register Failed', error);
       })
       .finally(() => {
-        closeSpinner();
+        // closeSpinner();
       });
   };
 

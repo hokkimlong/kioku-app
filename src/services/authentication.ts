@@ -1,15 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { get, post } from './fetcher';
 import { RegisterFormSchema } from '~/screens/authentication/RegisterScreen';
-import { useSpinner } from '~/components/ui/Spinner';
+// import { useSpinner } from '~/components/ui/Spinner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { alert } from '~/utils/alert';
-
-type User = {
-  id: string;
-  username: string;
-  email: string;
-};
+import { User } from './member';
 
 export const useUser = () => {
   const { data, ...other } = useQuery<User>(['user'], () =>
@@ -54,7 +49,7 @@ export const useLogout = () => {
 };
 
 export const useLogin = () => {
-  const { openSpinner, closeSpinner } = useSpinner();
+  // const { openSpinner, closeSpinner } = useSpinner();
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) => {
@@ -67,10 +62,10 @@ export const useLogin = () => {
       }
     },
     onMutate() {
-      openSpinner();
+      // openSpinner();
     },
     onSettled() {
-      closeSpinner();
+      // closeSpinner();
     },
   });
 
@@ -78,16 +73,16 @@ export const useLogin = () => {
 };
 
 export const useRegister = () => {
-  const { openSpinner, closeSpinner } = useSpinner();
+  // const { openSpinner, closeSpinner } = useSpinner();
   const mutation = useMutation({
     mutationFn: (formData: Omit<RegisterFormSchema, 'confirmPassword'>) => {
       return post('/auth/register', formData);
     },
     onMutate() {
-      openSpinner();
+      // openSpinner();
     },
     onSettled() {
-      closeSpinner();
+      // closeSpinner();
     },
   });
   return { ...mutation, registerUser: mutation.mutateAsync };
