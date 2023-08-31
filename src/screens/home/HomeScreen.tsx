@@ -11,8 +11,11 @@ const HomeScreen = ({ navigation }: Props) => {
     <TitleContainer
       title="Activity"
       right={<AddIconButton onPress={() => navigation.push('NewActivity')} />}>
-      {Array.from({ length: 10 }).map(item => (
-        <Button outlined onPress={() => navigation.push('ActivityDetail')}>
+      {Array.from({ length: 5 }).map((item, index) => (
+        <Button
+          outlined
+          onPress={() => navigation.push('ActivityDetail')}
+          key={index}>
           View Activity Demo
         </Button>
       ))}
