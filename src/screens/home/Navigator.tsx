@@ -12,6 +12,7 @@ import ProfileScreen from './ProfileScreen';
 import NewActivityScreen from './NewActivityScreen';
 import NotificationScreen from './NotificationScreen';
 import ActivityTabs from '../activity/Navigator';
+import NewActivityNavigator from './NewActivityScreen';
 
 export type HomeStackList = {
   Home: undefined;
@@ -31,14 +32,18 @@ const HomeNavigator = () => {
       }}>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="NewActivity" component={NewActivityScreen} />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="NewActivity"
+        component={NewActivityNavigator}
+      />
       <Stack.Screen name="Notification" component={NotificationScreen} />
       <Stack.Screen name="ActivityDetail" component={ActivityTabs} />
     </Stack.Navigator>
   );
 };
 
-const DefaultAppBar = (props: NativeStackHeaderProps) => {
+export const DefaultAppBar = (props: NativeStackHeaderProps) => {
   return (
     <Appbar.Header style={style.header}>
       {props.back ? (
