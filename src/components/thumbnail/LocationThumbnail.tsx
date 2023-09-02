@@ -8,7 +8,9 @@ import {
 } from 'react-native';
 import { Text } from 'react-native-paper';
 
-const image = { uri: 'https://legacy.reactjs.org/logo-og.png' };
+const image = {
+  uri: 'https://jade-decisive-mouse-858.mypinata.cloud/ipfs/Qma4Gqhvo5cMyoryAMCzztdNFx2R3Ub9ePqpdKk8tn3Coa',
+};
 
 const LocationThumbnail = ({
   onPress,
@@ -21,6 +23,7 @@ const LocationThumbnail = ({
         </View>
         <View style={style.titleContainer}>
           <Text style={style.title}>Carl Jr Phnom Penh</Text>
+          <Text style={style.title}>&#9733; 4.6 (1456)</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -44,6 +47,9 @@ const style = StyleSheet.create({
   titleContainer: {
     height: '25%',
     padding: 5,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   title: {
     color: 'black',

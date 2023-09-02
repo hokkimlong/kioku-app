@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { accessToken } from './authentication';
 
-const baseURL = 'http://192.168.18.10:3000';
+const baseURL = 'http://10.0.2.2:3000';
 
 const axiosInstance = axios.create({ baseURL });
 
