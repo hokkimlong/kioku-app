@@ -20,7 +20,7 @@ import {
   NativeStackScreenProps,
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
-import { DefaultAppBar } from './Navigator';
+import { DefaultAppBar } from './HomeNavigator';
 import {
   Card,
   IconButton,

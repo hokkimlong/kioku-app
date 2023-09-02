@@ -38,17 +38,21 @@ const HomeNavigator = () => {
         component={NewActivityNavigator}
       />
       <Stack.Screen name="Notification" component={NotificationScreen} />
-      <Stack.Screen name="ActivityDetail" component={ActivityTabs} />
+      <Stack.Screen
+        name="ActivityDetail"
+        options={{ headerShown: false }}
+        component={ActivityTabs}
+      />
     </Stack.Navigator>
   );
 };
 
 export const DefaultAppBar = (props: NativeStackHeaderProps) => {
   return (
-    <Appbar.Header style={style.header}>
+    <Appbar.Header style={defaultAppbarStyle.header}>
       {props.back ? (
         <Appbar.Action
-          style={style.action}
+          style={defaultAppbarStyle.action}
           icon={backIcon}
           onPress={props.navigation.goBack}
           size={28}
@@ -56,13 +60,13 @@ export const DefaultAppBar = (props: NativeStackHeaderProps) => {
       ) : (
         <>
           <Appbar.Action
-            style={style.action}
+            style={defaultAppbarStyle.action}
             icon={notificationIcon}
             onPress={() => props.navigation.push('Notification')}
             size={28}
           />
           <Appbar.Action
-            style={style.actionRight}
+            style={defaultAppbarStyle.actionRight}
             icon={profileIcon}
             onPress={() => props.navigation.push('Profile')}
             size={30}
@@ -73,7 +77,7 @@ export const DefaultAppBar = (props: NativeStackHeaderProps) => {
   );
 };
 
-const style = StyleSheet.create({
+export const defaultAppbarStyle = StyleSheet.create({
   header: {
     backgroundColor: 'white',
     elevation: 1,
@@ -92,7 +96,7 @@ const notificationIcon = () => (
   <Fontisto color={'black'} size={27} name="bell" />
 );
 
-const backIcon = () => (
+export const backIcon = () => (
   <MaterialIcon color={'black'} size={28} name="arrow-back-ios" />
 );
 

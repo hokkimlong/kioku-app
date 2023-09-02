@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TitleContainer } from '~/components/ui/TitleContainer';
 import { Text } from 'react-native-paper';
 import { Button } from '~/components/ui/Button';

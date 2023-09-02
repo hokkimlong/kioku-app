@@ -11,4 +11,4 @@ export const AddIconButton = (props: Omit<IconButtonProps, 'icon'>) => (
     icon={AddIcon}
   />
 );
-const AddIcon = (props: any) => <Ionicons {...props} name="add" />;
+export const AddIcon = (props: any) => <Ionicons {...props} name="add" />;
