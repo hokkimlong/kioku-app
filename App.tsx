@@ -42,8 +42,7 @@ function App() {
   console.log(user);
   return (
     <NavigationContainer theme={theme}>
-      {/* {user ? <HomeNavigator /> : <AuthenticationNavigator />} */}
-      <MapNavigator />
+      {user ? <HomeNavigator /> : <AuthenticationNavigator />}
     </NavigationContainer>
   );
 }
