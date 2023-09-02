@@ -12,6 +12,7 @@ import {
   differenceInMinutes,
   format,
 } from 'date-fns';
+import { Button } from '~/components/ui/Button';
 
 type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
 const HomeScreen = ({ navigation }: Props) => {
