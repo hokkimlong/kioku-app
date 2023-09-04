@@ -9,10 +9,9 @@ import HomeScreen from './HomeScreen';
 import { Appbar } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import ProfileScreen from './ProfileScreen';
-import NewActivityScreen from './NewActivityScreen';
 import NotificationScreen from './NotificationScreen';
-import ActivityTabs from '../activity/Navigator';
 import NewActivityNavigator from './NewActivityScreen';
+import DetailActivityNavigator from '../activity/DetailStackNavigator';
 
 export type HomeStackList = {
   Home: undefined;
@@ -41,7 +40,7 @@ const HomeNavigator = () => {
       <Stack.Screen
         name="ActivityDetail"
         options={{ headerShown: false }}
-        component={ActivityTabs}
+        component={DetailActivityNavigator}
       />
     </Stack.Navigator>
   );

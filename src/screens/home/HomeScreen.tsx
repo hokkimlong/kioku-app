@@ -36,7 +36,10 @@ const HomeScreen = ({ navigation }: Props) => {
             ? `${differenceHours} hours remaining`
             : `${differenceMinutes} minutes remaining`;
         return (
-          <TouchableOpacity onPress={() => navigation.push('ActivityDetail')}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.push('ActivityDetail', { activity: item } as any)
+            }>
             <View
               style={{
                 borderColor: 'black',

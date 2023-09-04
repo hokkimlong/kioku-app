@@ -44,7 +44,7 @@ const inputStyle = StyleSheet.create({
   outlined: {
     borderRadius: 16,
     backgroundColor: '#FAFAFA',
-    height: 55,
+    minHeight: 55,
     display: 'flex',
     justifyContent: 'center',
   },
