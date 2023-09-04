@@ -39,7 +39,7 @@ const theme = {
 
 function App() {
   const { user } = useUser();
-  console.log(user);
+  // console.log(user);
   return (
     <NavigationContainer theme={theme}>
       {user ? <HomeNavigator /> : <AuthenticationNavigator />}

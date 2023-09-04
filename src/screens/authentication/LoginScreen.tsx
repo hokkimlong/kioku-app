@@ -33,7 +33,7 @@ const LoginScreen = ({ navigation }: Props) => {
   const onSubmit = (formData: FormSchema) => {
     loginUser(formData)
       .then(response => {
-        console.log(response);
+        // console.log(response);
         alert.success('Success', 'login success');
       })
       .catch(error => {

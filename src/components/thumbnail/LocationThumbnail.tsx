@@ -16,36 +16,30 @@ const LocationThumbnail = ({
   onPress,
 }: PropsWithChildren<TouchableOpacityProps>) => {
   return (
-    <View style={style.thumbnailContainer}>
-      <TouchableOpacity onPress={onPress}>
-        <View style={style.thumbnail}>
-          <ImageBackground source={image} style={style.backgroundaImage} />
-        </View>
-        <View style={style.titleContainer}>
-          <Text style={style.title}>Carl Jr Phnom Penh</Text>
-          <Text style={style.title}>&#9733; 4.6 (1456)</Text>
-        </View>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity onPress={onPress} style={{ marginBottom: 10 }}>
+      <View style={style.thumbnail}>
+        <ImageBackground
+          source={image}
+          resizeMode="cover"
+          style={style.backgroundImage}
+        />
+      </View>
+      <View style={style.titleContainer}>
+        <Text style={style.title}>Carl Jr Phnom Penh</Text>
+        <Text style={style.title}>&#9733; 4.6 (1456)</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 const style = StyleSheet.create({
-  thumbnailContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    height: '30%',
-  },
   thumbnail: {
-    height: '75%',
-    borderColor: 'black',
     borderWidth: 0.5,
     borderRadius: 15,
     overflow: 'hidden',
+    borderColor: 'rgba(0,0,0,0.1)',
   },
   titleContainer: {
-    height: '25%',
     padding: 5,
     display: 'flex',
     flexDirection: 'row',
@@ -54,9 +48,10 @@ const style = StyleSheet.create({
   title: {
     color: 'black',
   },
-  backgroundaImage: {
+  backgroundImage: {
+    flex: 1,
     width: '100%',
-    height: '100%',
+    height: 120,
   },
 });
 

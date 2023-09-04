@@ -9,7 +9,7 @@ axiosInstance.interceptors.request.use(
   async config => {
     const token = await accessToken.get();
     config.headers.Authorization = `Bearer ${token}`;
-    console.log(token);
+    // console.log(token);
     return config;
   },
   error => {
