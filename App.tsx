@@ -7,6 +7,7 @@ import HomeNavigator from './src/screens/home/HomeNavigator';
 import { useColorScheme } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useUser } from './src/services/authentication';
+import MapNavigator from '~/screens/map/Navigator';
 // import SpinnerProvider from '~/components/ui/Spinner';
 
 const queryClient = new QueryClient();
@@ -16,6 +17,7 @@ function Main() {
 
   const paperTheme =
     colorScheme !== 'dark' ? { ...MD3DarkTheme } : { ...MD3LightTheme };
+
   return (
     <QueryClientProvider client={queryClient}>
       <PaperProvider theme={paperTheme}>
@@ -37,7 +39,7 @@ const theme = {
 
 function App() {
   const { user } = useUser();
-  console.log(user);
+  // console.log(user);
   return (
     <NavigationContainer theme={theme}>
       {user ? <HomeNavigator /> : <AuthenticationNavigator />}

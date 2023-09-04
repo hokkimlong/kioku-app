@@ -20,7 +20,7 @@ const ActivityContext = createContext<Activity | null>(null);
 
 export const useActivityContext = () => useContext(ActivityContext);
 
-const DetailActivityNavigator = props => {
+const DetailActivityNavigator = (props: any) => {
   return (
     <ActivityContext.Provider value={props.route.params.activity}>
       <Stack.Navigator
@@ -33,6 +33,7 @@ const DetailActivityNavigator = props => {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="NewPost" component={NewPostScreen} />
+        {/* <Stack.Screen name="Comment" component={NewPostScreen} /> */}
       </Stack.Navigator>
     </ActivityContext.Provider>
   );

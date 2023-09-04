@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { post, get } from './fetcher';
-import { Post, createPostDto } from './post';
+import { Post } from './post';
 
 export type createActivityDto = {
   name: string;
@@ -20,14 +20,18 @@ export type Activity = {
   startDate: Date;
   endDate: Date;
   image: string;
+  _count: {
+    informations: number;
+    posts: number;
+    users: number;
+  };
 };
 
 export const activityQueryKey = 'activity';
 
 export const useActivities = () => {
-  const { data, ...other } = useQuery<createActivityDto[]>(
-    [activityQueryKey],
-    () => get<createActivityDto[]>('/activity'),
+  const { data, ...other } = useQuery<Activity[]>([activityQueryKey], () =>
+    get<Activity[]>('/activity'),
   );
   return { activities: data, ...other };
 };

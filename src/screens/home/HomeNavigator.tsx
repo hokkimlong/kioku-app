@@ -12,13 +12,14 @@ import ProfileScreen from './ProfileScreen';
 import NotificationScreen from './NotificationScreen';
 import NewActivityNavigator from './NewActivityScreen';
 import DetailActivityNavigator from '../activity/DetailStackNavigator';
+import { Activity } from '~/services/activity';
 
 export type HomeStackList = {
   Home: undefined;
   Profile: undefined;
   NewActivity: undefined;
   Notification: undefined;
-  ActivityDetail: undefined;
+  ActivityDetail: { activity: Activity };
 };
 
 const Stack = createNativeStackNavigator<HomeStackList>();

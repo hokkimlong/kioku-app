@@ -1,12 +1,13 @@
 import React from 'react';
 import { TitleContainer } from '~/components/ui/TitleContainer';
-import { Appbar, Text } from 'react-native-paper';
+import { Appbar } from 'react-native-paper';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { backIcon, defaultAppbarStyle } from '../home/HomeNavigator';
 import { AddIcon } from '~/components/ui/AddIconButton';
 import { useActivityPosts } from '~/services/activity';
 import { useActivityContext } from './DetailStackNavigator';
-import { View } from 'react-native';
+
+import PostThumbnail from '~/components/thumbnail/postThumbnail';
 
 const PostScreen = () => {
   const activity = useActivityContext();
@@ -16,12 +17,10 @@ const PostScreen = () => {
     <TitleContainer title={activity?.name}>
       {posts?.map(post => {
         return (
-          <View
-            style={{ borderWidth: 1, borderColor: 'black', marginBottom: 10 }}>
-            <Text key={post.id}>@{post.user.username}</Text>
-            {post.postImages?.length > 0 && <View style={{ height: 100 }} />}
-            {post.description && <Text>{post.description}</Text>}
-          </View>
+          <PostThumbnail
+            caption={post.description}
+            publisher={post.user.username}
+          />
         );
       })}
     </TitleContainer>

@@ -28,7 +28,7 @@ const VerificationScreen = ({ navigation }: Props) => {
   });
 
   const onSubmit = (formData: FormSchema) => {
-    console.log(formData);
+    // console.log(formData);
   };
 
   return (
