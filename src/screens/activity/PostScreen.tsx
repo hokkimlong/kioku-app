@@ -8,16 +8,23 @@ import { useActivityPosts } from '~/services/activity';
 import { useActivityContext } from './DetailStackNavigator';
 
 import PostThumbnail from '~/components/thumbnail/postThumbnail';
+import { useMutation } from '@tanstack/react-query';
+import { likePost } from '~/services/post';
 
 const PostScreen = () => {
   const activity = useActivityContext();
   const { posts } = useActivityPosts(activity?.id);
+
+  const mutation = useMutation(likePost);
 
   return (
     <TitleContainer title={activity?.name}>
       {posts?.map(post => {
         return (
           <PostThumbnail
+            onLike={() => {
+              mutation.mutate(post.id);
+            }}
             caption={post.description}
             publisher={post.user.username}
           />

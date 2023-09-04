@@ -25,3 +25,7 @@ export type Post = {
 export const createPost = (payload: createPostDto) => {
   return post('/post', payload);
 };
+
+export const likePost = (postId: number) => {
+  return post(`/post/${postId}`, null);
+};
