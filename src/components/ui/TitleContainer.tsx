@@ -5,7 +5,7 @@ import { Description } from './Description';
 import { Container } from './Container';
 
 type FormContainerProps = PropsWithChildren<{
-  title: string;
+  title: string | undefined;
   description?: string;
   right?: ReactNode;
   scroll?: boolean;

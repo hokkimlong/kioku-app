@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Image, Dimensions } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Dimensions,
+  Image as NativeImage,
+} from 'react-native';
 import { BaseInput, Input, Label } from '~/components/form/Input';
 import { TitleContainer } from '~/components/ui/TitleContainer';
 import {
@@ -22,7 +27,6 @@ import {
 } from '@react-navigation/native-stack';
 import { DefaultAppBar } from './HomeNavigator';
 import {
-  Card,
   IconButton,
   List,
   Modal,
@@ -40,6 +44,7 @@ import { pluralize } from '~/utils/pluralize';
 import { DateInput } from '~/components/form/Date';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { activityQueryKey, createActivity } from '~/services/activity';
+import { Image } from '~/services/post';
 
 type NewActivityStackList = {
   NewInfo: undefined;
@@ -66,11 +71,6 @@ const schema = z.object({
     )
     .min(1),
 });
-
-type Image = {
-  key: string;
-  uri: string;
-};
 
 type FormSchema = {
   name: string;
@@ -237,7 +237,7 @@ const MemberListItem = ({
 
 const deviceWidth = Dimensions.get('window').width;
 
-const ImagePicker = ({
+export const ImagePicker = ({
   name,
   label,
   selectionLimit = 0,
@@ -350,7 +350,7 @@ const ImagePicker = ({
               }}
               icon={props => <Feathericon {...props} name="x" />}
             />
-            <Image
+            <NativeImage
               style={{ width: 160, height: 130, objectFit: 'cover' }}
               source={{
                 uri: item.uri,

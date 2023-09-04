@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { accessToken } from './authentication';
+import appConfig from '../config/app-config.json';
 
-const baseURL = 'http://192.168.18.10:3000';
+const baseURL = appConfig.baseURL;
 
 const axiosInstance = axios.create({ baseURL });
 
@@ -9,7 +10,7 @@ axiosInstance.interceptors.request.use(
   async config => {
     const token = await accessToken.get();
     config.headers.Authorization = `Bearer ${token}`;
-    console.log(token);
+    // console.log(token);
     return config;
   },
   error => {

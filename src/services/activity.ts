@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { post, get } from './fetcher';
+import { Post } from './post';
 
-export type Activity = {
+export type createActivityDto = {
   name: string;
   startDate: Date;
   endDate: Date;
@@ -9,8 +10,21 @@ export type Activity = {
   members: { id: string }[];
 };
 
-export const createActivity = (activity: Activity) => {
+export const createActivity = (activity: createActivityDto) => {
   return post('/activity', activity);
+};
+
+export type Activity = {
+  id: number;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  image: string;
+  _count: {
+    informations: number;
+    posts: number;
+    users: number;
+  };
 };
 
 export const activityQueryKey = 'activity';
@@ -20,4 +34,13 @@ export const useActivities = () => {
     get<Activity[]>('/activity'),
   );
   return { activities: data, ...other };
+};
+
+export const postQueryKey = 'activity-post';
+
+export const useActivityPosts = (activityId: number | undefined) => {
+  const { data, ...other } = useQuery<Post[]>([postQueryKey, activityId], () =>
+    get<Post[]>(`/activity/${activityId}/post`),
+  );
+  return { posts: data, ...other };
 };
