@@ -1,6 +1,11 @@
 import React, { PropsWithChildren } from 'react';
-import { View, ImageBackground, StyleSheet } from 'react-native';
-import { Text } from 'react-native-paper';
+import {
+  View,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import { IconButton, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 type PostProps = PropsWithChildren<{
@@ -9,6 +14,7 @@ type PostProps = PropsWithChildren<{
   caption: string;
   reactionAmount: number;
   commentAmount: number;
+  onLike: () => void;
 }>;
 
 const PostThumbnail = ({
@@ -17,6 +23,7 @@ const PostThumbnail = ({
   caption,
   reactionAmount,
   commentAmount,
+  onLike,
 }: PostProps) => {
   return (
     <View style={styles.wrapper}>
@@ -34,10 +41,12 @@ const PostThumbnail = ({
         <Text>{caption}</Text>
       </View>
       <View style={styles.actionContainer}>
-        <View style={styles.actionContainer}>
-          <Icon name="heart" size={18} color="#FF470D" solid />
-          <Text style={styles.actionText}>{reactionAmount}</Text>
-        </View>
+        <TouchableOpacity onPress={onLike}>
+          <View style={styles.actionContainer}>
+            <Icon name="heart" size={18} color="#FF470D" solid />
+            <Text style={styles.actionText}>{reactionAmount}</Text>
+          </View>
+        </TouchableOpacity>
         <View style={styles.actionContainer}>
           <Icon name="comment" size={18} color="#E0D1FF" solid />
           <Text style={styles.actionText}>{commentAmount}</Text>
