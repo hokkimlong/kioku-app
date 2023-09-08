@@ -15,6 +15,7 @@ type PostProps = PropsWithChildren<{
   reactionAmount: number;
   commentAmount: number;
   onLike: () => void;
+  onPress: () => void;
 }>;
 
 const PostThumbnail = ({
@@ -24,6 +25,7 @@ const PostThumbnail = ({
   reactionAmount,
   commentAmount,
   onLike,
+  onPress,
 }: PostProps) => {
   return (
     <View style={styles.wrapper}>
@@ -47,10 +49,12 @@ const PostThumbnail = ({
             <Text style={styles.actionText}>{reactionAmount}</Text>
           </View>
         </TouchableOpacity>
-        <View style={styles.actionContainer}>
-          <Icon name="comment" size={18} color="#E0D1FF" solid />
-          <Text style={styles.actionText}>{commentAmount}</Text>
-        </View>
+        <TouchableOpacity onPress={onPress}>
+          <View style={styles.actionContainer}>
+            <Icon name="comment" size={18} color="#E0D1FF" solid />
+            <Text style={styles.actionText}>{commentAmount}</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

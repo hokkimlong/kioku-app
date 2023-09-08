@@ -5,14 +5,20 @@ import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { backIcon, defaultAppbarStyle } from '../home/HomeNavigator';
 import { AddIcon } from '~/components/ui/AddIconButton';
 import { useActivityPosts } from '~/services/activity';
-import { useActivityContext } from './DetailStackNavigator';
+import {
+  DetailActivityStackList,
+  useActivityContext,
+} from './DetailStackNavigator';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import PostThumbnail from '~/components/thumbnail/postThumbnail';
 import { useMutation } from '@tanstack/react-query';
 import { likePost } from '~/services/post';
 import { getS3Image } from '~/utils/s3';
 
-const PostScreen = () => {
+type Props = NativeStackScreenProps<DetailActivityStackList, 'Post'>;
+
+const PostScreen = ({ navigation }: Props) => {
   const activity = useActivityContext();
   const { posts } = useActivityPosts(activity?.id);
 
@@ -28,6 +34,7 @@ const PostScreen = () => {
               mutation.mutate(post.id);
             }}
             imageUrl={getS3Image(post.postImages[0].uri)}
+            onPress={() => navigation.push('CommentScreen')}
             caption={post.description}
             publisher={post.user.username}
           />

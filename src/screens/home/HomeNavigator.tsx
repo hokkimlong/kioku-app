@@ -17,6 +17,7 @@ import { Activity } from '~/services/activity';
 export type HomeStackList = {
   Home: undefined;
   Profile: undefined;
+  ChatScreen: undefined;
   NewActivity: undefined;
   Notification: undefined;
   ActivityDetail: { activity: Activity };

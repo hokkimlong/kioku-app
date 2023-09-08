@@ -8,10 +8,12 @@ import { backIcon, defaultAppbarStyle } from '../home/HomeNavigator';
 import NewPostScreen from './NewPostScreen';
 import ActivityTabs from './Navigator';
 import { Activity } from '~/services/activity';
+import CommentScreen from './commentScreen';
 
 export type DetailActivityStackList = {
   Post: undefined;
   NewPost: undefined;
+  CommentScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<DetailActivityStackList>();
@@ -33,6 +35,7 @@ const DetailActivityNavigator = (props: any) => {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="NewPost" component={NewPostScreen} />
+        <Stack.Screen name="CommentScreen" component={CommentScreen} />
         {/* <Stack.Screen name="Comment" component={NewPostScreen} /> */}
       </Stack.Navigator>
     </ActivityContext.Provider>

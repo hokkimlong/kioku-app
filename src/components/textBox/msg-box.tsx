@@ -2,10 +2,26 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 
-const MsgBox = () => {
+type MsgBoxProps = {
+  isUser: boolean;
+  message: string;
+};
+
+const MsgBox = ({ isUser, message }: MsgBoxProps) => {
   return (
-    <View style={styles.msgContainer}>
-      <Text style={styles.msg}>Sent a Message</Text>
+    <View
+      style={[
+        styles.msgContainer,
+        isUser ? styles.userText : styles.notUserText,
+      ]}>
+      <Text
+        style={{
+          color: isUser ? 'white' : 'black',
+          fontWeight: 'bold',
+          fontSize: 15,
+        }}>
+        {message}
+      </Text>
     </View>
   );
 };
@@ -14,17 +30,18 @@ const styles = StyleSheet.create({
   msgContainer: {
     width: '100%',
     borderWidth: 0.3,
-    borderColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 15,
+    borderColor: 'rgba(0,0,0,0.1)',
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderBottomLeftRadius: 15,
-    borderTopRightRadius: 15,
-    borderBottomRightRadius: 15,
+    paddingVertical: 15,
     backgroundColor: 'rgba(0,0,0,0.05)',
   },
-  msg: {
-    fontWeight: 'bold',
-    fontSize: 15,
+  userText: {
+    borderTopRightRadius: 0,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+  },
+  notUserText: {
+    borderTopLeftRadius: 0,
   },
 });
 
