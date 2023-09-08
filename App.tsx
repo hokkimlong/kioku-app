@@ -8,6 +8,8 @@ import { useColorScheme } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useUser } from './src/services/authentication';
 import MapNavigator from '~/screens/map/Navigator';
+import './src/utils/s3';
+
 // import SpinnerProvider from '~/components/ui/Spinner';
 
 const queryClient = new QueryClient();

@@ -14,15 +14,12 @@ import {
   differenceInMinutes,
   format,
 } from 'date-fns';
+import { getS3Image } from '~/utils/s3';
 
 type ActivityProps = PropsWithChildren<{
   item: Activity;
   onPress: () => void;
 }>;
-
-const image = {
-  uri: 'https://phnompenh.com/wp-content/uploads/2021/02/sihanoukville-blue-bay-wyndham.jpg',
-};
 
 const ActivityThumbnail = ({ item, onPress }: ActivityProps) => {
   const startDate = new Date(item.startDate);
@@ -30,7 +27,7 @@ const ActivityThumbnail = ({ item, onPress }: ActivityProps) => {
   const differentDays = differenceInDays(startDate, endDate);
   const differenceHours = differenceInHours(startDate, endDate);
   const differenceMinutes = differenceInMinutes(startDate, endDate);
-
+  console.log({ uri: item.image ? getS3Image(item.image) : '' });
   const remaining =
     differentDays > 1
       ? `${differentDays} days remaining`
@@ -40,7 +37,8 @@ const ActivityThumbnail = ({ item, onPress }: ActivityProps) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.wrapper}>
-        <ImageBackground source={image}>
+        <ImageBackground
+          source={{ uri: item.image ? getS3Image(item.image) : '' }}>
           <View style={styles.innerContainer}>
             <View>
               <Text

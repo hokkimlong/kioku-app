@@ -65,4 +65,4 @@ yarn-error.log
 # testing
 /coverage
 
-/config/app-config.json
+src/config/app-config.json

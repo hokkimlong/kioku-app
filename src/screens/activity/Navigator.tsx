@@ -13,6 +13,7 @@ import {
 // import { AddIcon } from '~/components/ui/AddIconButton';
 // import LiveMap from '../map/LiveMap';
 import MapNavigator from '../map/Navigator';
+import ChatScreen from './chatScreen';
 
 export type ActivityHomeTabList = {
   Home: { addScreen: string };
@@ -42,8 +43,8 @@ const ActivityTabs = () => {
       /> */}
       {/* <Tab.Screen name="" component={HomeScreen} /> */}
       {/* <Tab.Screen name="Nearby" component={NotificationScreen} /> */}
-      {/* <Tab.Screen name="Chat" component={NotificationScreen} /> */}
-      {/* <Tab.Screen name="Map" component={MapNavigator} /> */}
+      <Tab.Screen name="Chat" component={ChatScreen} />
+      <Tab.Screen name="Map" component={MapNavigator} />
     </Tab.Navigator>
   );
 };

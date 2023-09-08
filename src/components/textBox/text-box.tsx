@@ -1,18 +1,47 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MsgBox from './msg-box';
 
-const TextBox = () => {
+type TextBoxProps = PropsWithChildren<{
+  isComment: boolean;
+  isNotification: boolean;
+  isUser: boolean;
+  item: any;
+}>;
+
+const TextBox = ({
+  isComment = false,
+  isNotification = false,
+  isUser = false,
+  item,
+}: TextBoxProps) => {
+  console.log(item);
+
   return (
     <View style={styles.wrapper}>
-      <View style={styles.iconBox}>
-        <Icon name="heart" size={30} color="#FF470D" solid />
-      </View>
-      <View style={{ width: '70%' }}>
-        <Text style={styles.subtitle}>Let's have some fun</Text>
-        <MsgBox />
+      {isNotification && (
+        <View style={styles.iconBox}>
+          <Icon name="heart" size={30} color="#FF470D" solid />
+        </View>
+      )}
+      <View style={{ width: isNotification ? '85%' : '100%' }}>
+        {isNotification && (
+          <Text style={styles.subtitle}>Let's have some fun</Text>
+        )}
+        {isNotification && <MsgBox isUser={isUser} message="message" />}
+
+        {isComment && (
+          <View style={styles.commentTitle}>
+            <Text style={styles.subtitle}>@LeBlud</Text>
+            <Text style={styles.subtitle}>8 Mar 23</Text>
+          </View>
+        )}
+        {isComment &&
+          item.message?.map(item => (
+            <MsgBox isUser={isUser} message={item.msg} />
+          ))}
       </View>
     </View>
   );
@@ -28,20 +57,14 @@ const styles = StyleSheet.create({
   iconBox: {
     marginRight: 10,
   },
-  msgContainer: {
-    width: '100%',
-    borderWidth: 0.5,
-    borderColor: 'rgba(0,0,0,0.5)',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderBottomLeftRadius: 15,
-    borderTopRightRadius: 15,
-    borderBottomRightRadius: 15,
-    backgroundColor: 'rgba(0,0,0,0.05)',
-  },
   subtitle: {
     fontWeight: 'bold',
     color: 'rgba(0,0,0,0.5)',
+  },
+  commentTitle: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

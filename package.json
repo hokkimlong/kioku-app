@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.405.0",
     "@hookform/resolvers": "^3.1.1",
     "@react-native-async-storage/async-storage": "^1.19.1",
     "@react-native-community/datetimepicker": "^7.4.1",
@@ -18,6 +19,7 @@
     "@react-navigation/native-stack": "^6.9.13",
     "@tanstack/react-query": "^4.32.0",
     "@types/jest": "^29.5.3",
+    "aws-sdk": "^2.1452.0",
     "axios": "^1.4.0",
     "date-fns": "^2.30.0",
     "react": "18.2.0",

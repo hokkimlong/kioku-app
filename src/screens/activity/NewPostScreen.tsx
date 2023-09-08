@@ -16,6 +16,7 @@ import { stringRequired } from '~/components/form/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { postQueryKey } from '~/services/activity';
+import { uploadImage } from '~/utils/s3';
 
 const schema = z
   .object({
@@ -61,6 +62,14 @@ const NewPostScreen = ({ navigation }: Props) => {
   const queryClient = useQueryClient();
   const mutation = useMutation(createPost, {
     onSuccess: () => {
+      const values = methods.getValues('images');
+
+      if (values.length > 0) {
+        values.forEach(item => {
+          uploadImage(item);
+        });
+      }
+
       navigation.goBack();
       queryClient.invalidateQueries([postQueryKey]);
     },
@@ -87,7 +96,7 @@ const NewPostScreen = ({ navigation }: Props) => {
               mutation.mutate({
                 activityId: activity.id,
                 description: data.description,
-                images: data.images.map(image => ({ uri: image.uri })),
+                images: data.images.map(image => ({ uri: image.key })),
               });
             }
           })}>
