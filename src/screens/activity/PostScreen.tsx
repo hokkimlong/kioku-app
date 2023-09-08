@@ -10,6 +10,7 @@ import { useActivityContext } from './DetailStackNavigator';
 import PostThumbnail from '~/components/thumbnail/postThumbnail';
 import { useMutation } from '@tanstack/react-query';
 import { likePost } from '~/services/post';
+import { getS3Image } from '~/utils/s3';
 
 const PostScreen = () => {
   const activity = useActivityContext();
@@ -20,11 +21,13 @@ const PostScreen = () => {
   return (
     <TitleContainer title={activity?.name}>
       {posts?.map(post => {
+        console.log(post.postImages);
         return (
           <PostThumbnail
             onLike={() => {
               mutation.mutate(post.id);
             }}
+            imageUrl={getS3Image(post.postImages[0].uri)}
             caption={post.description}
             publisher={post.user.username}
           />

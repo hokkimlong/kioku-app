@@ -45,6 +45,7 @@ import { DateInput } from '~/components/form/Date';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { activityQueryKey, createActivity } from '~/services/activity';
 import { Image } from '~/services/post';
+import { uploadImage } from '~/utils/s3';
 
 type NewActivityStackList = {
   NewInfo: undefined;
@@ -137,7 +138,8 @@ type MemberSelectProps = NativeStackScreenProps<
   'MemberSelect'
 >;
 const MemberSelector = ({ navigation }: MemberSelectProps) => {
-  const { handleSubmit, control, formState } = useFormContext<FormSchema>();
+  const { handleSubmit, control, formState, getValues } =
+    useFormContext<FormSchema>();
   const { fields, append, remove } = useFieldArray({
     name: 'members',
     control,
@@ -148,6 +150,12 @@ const MemberSelector = ({ navigation }: MemberSelectProps) => {
   const queryClient = useQueryClient();
   const createActivityMutation = useMutation(createActivity, {
     onSuccess: () => {
+      const [image] = getValues('image');
+
+      if (image) {
+        uploadImage(image);
+      }
+
       navigation.getParent()?.goBack();
       queryClient.invalidateQueries([activityQueryKey]);
     },
@@ -188,7 +196,6 @@ const MemberSelector = ({ navigation }: MemberSelectProps) => {
       </ScrollView>
       <Button
         onPress={handleSubmit(data => {
-          // console.log(data);
           const payload = {
             name: data.name,
             ...data.date,
@@ -196,7 +203,6 @@ const MemberSelector = ({ navigation }: MemberSelectProps) => {
             members: data.members,
           };
 
-          console.log('submit', JSON.stringify(payload, null, 2));
           createActivityMutation.mutate(payload);
         })}>
         Create
