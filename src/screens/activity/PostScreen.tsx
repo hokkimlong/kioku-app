@@ -6,12 +6,16 @@ import { backIcon, defaultAppbarStyle } from '../home/HomeNavigator';
 import { AddIcon } from '~/components/ui/AddIconButton';
 import { useActivityPosts } from '~/services/activity';
 import { useActivityContext } from './DetailStackNavigator';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { HomeStackList } from '../home/HomeNavigator';
 
 import PostThumbnail from '~/components/thumbnail/postThumbnail';
 import { useMutation } from '@tanstack/react-query';
 import { likePost } from '~/services/post';
 
-const PostScreen = () => {
+type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
+
+const PostScreen = ({ navigation }: Props) => {
   const activity = useActivityContext();
   const { posts } = useActivityPosts(activity?.id);
 
@@ -25,6 +29,7 @@ const PostScreen = () => {
             onLike={() => {
               mutation.mutate(post.id);
             }}
+            onPress={() => navigation.push('CommentScreen')}
             caption={post.description}
             publisher={post.user.username}
           />

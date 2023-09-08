@@ -13,10 +13,13 @@ import NotificationScreen from './NotificationScreen';
 import NewActivityNavigator from './NewActivityScreen';
 import DetailActivityNavigator from '../activity/DetailStackNavigator';
 import { Activity } from '~/services/activity';
+import ChatScreen from '../activity/chatScreen';
+import CommentScreen from '../activity/commentScreen';
 
 export type HomeStackList = {
   Home: undefined;
   Profile: undefined;
+  ChatScreen: undefined;
   NewActivity: undefined;
   Notification: undefined;
   ActivityDetail: { activity: Activity };
@@ -43,6 +46,7 @@ const HomeNavigator = () => {
         options={{ headerShown: false }}
         component={DetailActivityNavigator}
       />
+      <Stack.Screen name="CommentScreen" component={CommentScreen} />
     </Stack.Navigator>
   );
 };
