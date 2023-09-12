@@ -17,7 +17,7 @@ const TextBox = ({
   isUser = false,
   item,
 }: TextBoxProps) => {
-  console.log(item);
+  // console.log(item);
 
   return (
     <View style={styles.wrapper}>

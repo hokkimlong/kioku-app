@@ -27,7 +27,7 @@ const PostScreen = ({ navigation }: Props) => {
   return (
     <TitleContainer title={activity?.name}>
       {posts?.map(post => {
-        console.log(post.postImages);
+        // console.log(post.postImages);
         return (
           <PostThumbnail
             onLike={() => {

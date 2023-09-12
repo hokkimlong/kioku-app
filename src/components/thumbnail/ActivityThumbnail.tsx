@@ -27,7 +27,7 @@ const ActivityThumbnail = ({ item, onPress }: ActivityProps) => {
   const differentDays = differenceInDays(startDate, endDate);
   const differenceHours = differenceInHours(startDate, endDate);
   const differenceMinutes = differenceInMinutes(startDate, endDate);
-  console.log({ uri: item.image ? getS3Image(item.image) : '' });
+  // console.log({ uri: item.image ? getS3Image(item.image) : '' });
   const remaining =
     differentDays > 1
       ? `${differentDays} days remaining`
