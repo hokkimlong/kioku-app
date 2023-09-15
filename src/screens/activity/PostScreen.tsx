@@ -14,7 +14,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import PostThumbnail from '~/components/thumbnail/postThumbnail';
 import { useMutation } from '@tanstack/react-query';
 import { likePost } from '~/services/post';
-import { getS3Image } from '~/utils/s3';
 
 type Props = NativeStackScreenProps<DetailActivityStackList, 'Post'>;
 
@@ -27,14 +26,15 @@ const PostScreen = ({ navigation }: Props) => {
   return (
     <TitleContainer title={activity?.name}>
       {posts?.map(post => {
-        // console.log(post.postImages);
         return (
           <PostThumbnail
             onLike={() => {
               mutation.mutate(post.id);
             }}
-            imageUrl={getS3Image(post.postImages[0].uri)}
-            onPress={() => navigation.push('CommentScreen')}
+            imageUrl={post.postImages}
+            onPress={() =>
+              navigation.push('CommentScreen', { postId: post.id })
+            }
             caption={post.description}
             publisher={post.user.username}
           />

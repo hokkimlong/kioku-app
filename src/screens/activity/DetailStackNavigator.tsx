@@ -8,12 +8,12 @@ import { backIcon, defaultAppbarStyle } from '../home/HomeNavigator';
 import NewPostScreen from './NewPostScreen';
 import ActivityTabs from './Navigator';
 import { Activity } from '~/services/activity';
-import CommentScreen from './commentScreen';
+import CommentScreen from './CommentScreen';
 
 export type DetailActivityStackList = {
   Post: undefined;
   NewPost: undefined;
-  CommentScreen: undefined;
+  CommentScreen: { postId: number };
 };
 
 const Stack = createNativeStackNavigator<DetailActivityStackList>();

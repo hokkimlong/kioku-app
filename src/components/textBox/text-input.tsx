@@ -27,6 +27,7 @@ const TextInputButton = ({ onSend }: TextInputButtonProps) => {
           color="#ff196f"
           onPress={() => {
             onSend(text);
+            setText('');
           }}
         />
       </View>

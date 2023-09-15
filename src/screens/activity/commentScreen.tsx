@@ -3,6 +3,10 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import TextBox from '~/components/textBox/text-box';
 import TextInputButton from '~/components/textBox/text-input';
 import { TitleContainer } from '~/components/ui/TitleContainer';
+import { DetailActivityStackList } from './DetailStackNavigator';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useMutation } from '@tanstack/react-query';
+import { createComment } from '~/services/post';
 
 const list = [
   {
@@ -53,7 +57,11 @@ const list = [
   },
 ];
 
-const CommentScreen = () => {
+type Props = NativeStackScreenProps<DetailActivityStackList, 'CommentScreen'>;
+
+const CommentScreen = ({ route }: Props) => {
+  const mutation = useMutation(createComment);
+
   return (
     <TitleContainer title="Comments">
       <View style={{ height: 650 }}>
@@ -67,7 +75,10 @@ const CommentScreen = () => {
         <View style={styles.input}>
           <TextInputButton
             onSend={value => {
-              console.log(value);
+              mutation.mutate({
+                postId: route.params.postId,
+                message: value,
+              });
             }}
           />
         </View>

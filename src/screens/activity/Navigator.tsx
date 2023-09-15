@@ -13,7 +13,7 @@ import {
 // import { AddIcon } from '~/components/ui/AddIconButton';
 // import LiveMap from '../map/LiveMap';
 import MapNavigator from '../map/Navigator';
-import ChatScreen from './chatScreen';
+import ChatScreen from './ChatScreen';
 
 export type ActivityHomeTabList = {
   Home: { addScreen: string };
