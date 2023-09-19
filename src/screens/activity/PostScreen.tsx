@@ -14,7 +14,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import PostThumbnail from '~/components/thumbnail/postThumbnail';
 import { useMutation } from '@tanstack/react-query';
 import { likePost } from '~/services/post';
-import { View } from 'react-native';
 
 type Props = NativeStackScreenProps<DetailActivityStackList, 'Post'>;
 

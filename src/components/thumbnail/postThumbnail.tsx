@@ -18,6 +18,7 @@ type PostProps = PropsWithChildren<{
   caption: string;
   reactionAmount: number;
   commentAmount: number;
+  isLike: boolean;
   onLike: () => void;
   onPress: () => void;
 }>;
@@ -30,6 +31,7 @@ const PostThumbnail = ({
   commentAmount,
   onLike,
   onPress,
+  isLike = false,
 }: PostProps) => {
   return (
     <View style={styles.wrapper}>
@@ -63,7 +65,12 @@ const PostThumbnail = ({
       <View style={styles.actionContainer}>
         <TouchableOpacity onPress={onLike}>
           <View style={styles.actionContainer}>
-            <Icon name="heart" size={18} color="#FF470D" solid />
+            <Icon
+              name="heart"
+              size={18}
+              color={isLike ? '#FF470D' : '#808080'}
+              solid
+            />
             <Text style={styles.actionText}>{reactionAmount ?? 0}</Text>
           </View>
         </TouchableOpacity>

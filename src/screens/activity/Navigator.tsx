@@ -15,6 +15,8 @@ import {
 import MapNavigator from '../map/Navigator';
 import ChatScreen from './ChatScreen';
 
+import Icon from 'react-native-vector-icons/FontAwesome5';
+
 export type ActivityHomeTabList = {
   Home: { addScreen: string };
   Activity: undefined;
@@ -35,7 +37,14 @@ const ActivityTabs = () => {
         name="Home"
         // initialParams={{ addScreen: 'Activity' }}
         component={PostScreen}
-        options={PostScreen.navigationOptions}
+        options={
+          (PostScreen.navigationOptions,
+          {
+            tabBarIcon: () => (
+              <Icon name="home" size={20} color="#72d4bb" solid />
+            ),
+          })
+        }
       />
       {/* <Tab.Screen name="Hs"
         component={PostScreen}
@@ -43,8 +52,22 @@ const ActivityTabs = () => {
       /> */}
       {/* <Tab.Screen name="" component={HomeScreen} /> */}
       {/* <Tab.Screen name="Nearby" component={NotificationScreen} /> */}
-      <Tab.Screen name="Chat" component={ChatScreen} />
-      <Tab.Screen name="Map" component={MapNavigator} />
+      <Tab.Screen
+        name="Chat"
+        component={ChatScreen}
+        options={{
+          tabBarIcon: () => (
+            <Icon name="comments" size={20} color="#72bcd4" solid />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Map"
+        component={MapNavigator}
+        options={{
+          tabBarIcon: () => <Icon name="map" size={20} color="#728bd4" solid />,
+        }}
+      />
     </Tab.Navigator>
   );
 };
