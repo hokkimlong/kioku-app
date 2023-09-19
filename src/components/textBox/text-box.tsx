@@ -34,13 +34,13 @@ const TextBox = ({
 
         {isComment && (
           <View style={styles.commentTitle}>
-            <Text style={styles.subtitle}>@LeBlud</Text>
+            <Text style={styles.subtitle}>@{item.name}</Text>
             <Text style={styles.subtitle}>8 Mar 23</Text>
           </View>
         )}
         {isComment &&
-          item.message?.map(item => (
-            <MsgBox isUser={isUser} message={item.msg} />
+          item?.message?.map((msg, index) => (
+            <MsgBox key={index} isUser={isUser} message={msg.msg} />
           ))}
       </View>
     </View>

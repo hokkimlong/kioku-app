@@ -38,9 +38,10 @@ const PostThumbnail = ({
       </View>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView horizontal={true}>
-          {imageUrl?.map(item => {
+          {imageUrl?.map((item, index) => {
             return (
               <View
+                key={index}
                 style={
                   imageUrl.length !== 1
                     ? styles.ImageContainer

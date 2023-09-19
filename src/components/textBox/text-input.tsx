@@ -11,12 +11,12 @@ const TextInputButton = ({ onSend }: TextInputButtonProps) => {
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.input}>
+      <View style={styles.inputContainer}>
         <TextInput
           placeholder="Message"
-          style={{ color: 'black' }}
           placeholderTextColor="black"
           onChangeText={newText => setText(newText)}
+          style={styles.textInput}
         />
       </View>
       <View style={styles.icon}>
@@ -42,14 +42,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     borderWidth: 1,
-    borderRadius: 15,
-    borderColor: 'rgba(0,0,0,0.4)',
-    padding: 2,
-    height: 50,
+    borderRadius: 10,
+    borderColor: 'rgba(0,0,0,0.1)',
   },
-  input: {
+  inputContainer: {
     width: '90%',
-    height: '100%',
+  },
+  textInput: {
+    color: 'black',
   },
   icon: {
     width: '10%',
