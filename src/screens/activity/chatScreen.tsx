@@ -1,8 +1,8 @@
 import React from 'react';
-import TitleContainerMsg from '~/components/ui/TitleContainerMsg';
+import ChatCommentContainer from '~/components/ui/ChatCommentContainer';
 
 const ChatScreen = () => {
-  return <TitleContainerMsg title={undefined} />;
+  return <ChatCommentContainer />;
 };
 
 export default ChatScreen;

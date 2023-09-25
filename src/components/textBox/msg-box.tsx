@@ -35,10 +35,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 15,
     backgroundColor: 'rgba(0,0,0,0.05)',
+    marginBottom: 5,
   },
   userText: {
     borderTopRightRadius: 0,
-    backgroundColor: 'rgba(0,0,0,0.9)',
+    backgroundColor: 'rgba(91,173,255,0.8)',
   },
   notUserText: {
     borderTopLeftRadius: 0,

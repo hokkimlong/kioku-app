@@ -30,17 +30,17 @@ export const chatLog = [
     name: 'soth Kimleng',
     message: [
       {
-        msg: 'vai learg time :)))',
+        msg: 'jg phirk sugar cane juice',
       },
     ],
     isUser: false,
   },
   {
     id: 4,
-    name: 'soth Kimleng',
+    name: 'Kimleng',
     message: [
       {
-        msg: 'if u see us in da club',
+        msg: 'phirk',
       },
     ],
     isUser: false,
@@ -50,7 +50,7 @@ export const chatLog = [
     name: 'soth Kimleng',
     message: [
       {
-        msg: 'if u see us in da club',
+        msg: 'jam brab pu driver out stop pg',
       },
     ],
     isUser: false,
@@ -60,7 +60,7 @@ export const chatLog = [
     name: 'soth Kimleng',
     message: [
       {
-        msg: 'if u see us in da club',
+        msg: 'ah shotgun brab pg',
       },
     ],
     isUser: false,
@@ -70,7 +70,7 @@ export const chatLog = [
     name: 'soth Kimleng',
     message: [
       {
-        msg: 'if u see us in da club',
+        msg: 'err brab hz',
       },
     ],
     isUser: false,
@@ -80,7 +80,7 @@ export const chatLog = [
     name: 'soth Kimleng',
     message: [
       {
-        msg: 'if u see us in da club',
+        msg: 'kk',
       },
     ],
     isUser: false,
@@ -90,7 +90,7 @@ export const chatLog = [
     name: 'soth Kimleng',
     message: [
       {
-        msg: 'if u see us in da club',
+        msg: 'hungry c bay nv',
       },
     ],
     isUser: false,
@@ -100,7 +100,7 @@ export const chatLog = [
     name: 'soth Kimleng',
     message: [
       {
-        msg: 'if u see us in da club',
+        msg: 'terb c hz, ah nis klean tt bat',
       },
     ],
     isUser: false,

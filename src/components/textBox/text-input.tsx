@@ -11,25 +11,42 @@ const TextInputButton = ({ onSend }: TextInputButtonProps) => {
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Message"
-          placeholderTextColor="black"
-          onChangeText={newText => setText(newText)}
-          style={styles.textInput}
-        />
-      </View>
-      <View style={styles.icon}>
+      <View style={styles.iconContainer}>
         <Icon
-          name="paper-plane"
-          size={30}
           solid
-          color="#ff196f"
+          name="paperclip"
+          size={25}
+          color="#5badff"
           onPress={() => {
             onSend(text);
             setText('');
           }}
+          style={styles.icon}
         />
+      </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          multiline
+          placeholder="Say Hello..."
+          placeholderTextColor="rgba(0,0,0,0.5)"
+          onChangeText={newText => setText(newText)}
+          style={styles.textInput}
+        />
+      </View>
+      <View style={styles.iconContainer}>
+        <View>
+          <Icon
+            solid
+            name="arrow-up"
+            size={25}
+            color="#5badff"
+            onPress={() => {
+              onSend(text);
+              setText('');
+            }}
+            style={styles.icon}
+          />
+        </View>
       </View>
     </View>
   );
@@ -37,22 +54,32 @@ const TextInputButton = ({ onSend }: TextInputButtonProps) => {
 
 const styles = StyleSheet.create({
   wrapper: {
+    height: '100%',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: 'rgba(0,0,0,0.1)',
+    justifyContent: 'space-around',
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   inputContainer: {
-    width: '90%',
+    width: '80%',
+    height: 30,
   },
   textInput: {
     color: 'black',
+    paddingVertical: 2,
+    paddingHorizontal: 10,
+    backgroundColor: 'rgba(0,0,0,0.08)',
+    borderRadius: 20,
+  },
+  iconContainer: {
+    display: 'flex',
+    justifyContent: 'center',
   },
   icon: {
-    width: '10%',
+    // padding: 50,
   },
 });
 

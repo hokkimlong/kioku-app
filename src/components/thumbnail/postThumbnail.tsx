@@ -68,7 +68,7 @@ const PostThumbnail = ({
             <Icon
               name="heart"
               size={18}
-              color={isLike ? '#FF470D' : '#808080'}
+              color={isLike ? '#ff0000' : '#808080'}
               solid
             />
             <Text style={styles.actionText}>{reactionAmount ?? 0}</Text>

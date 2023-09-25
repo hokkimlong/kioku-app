@@ -38,6 +38,7 @@ const TextBox = ({
             <Text style={styles.subtitle}>8 Mar 23</Text>
           </View>
         )}
+
         {isComment &&
           item?.message?.map((msg, index) => (
             <MsgBox key={index} isUser={isUser} message={msg.msg} />
