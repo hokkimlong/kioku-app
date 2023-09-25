@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View, TextInput, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 type TextInputButtonProps = {
@@ -26,6 +26,7 @@ const TextInputButton = ({ onSend }: TextInputButtonProps) => {
       </View>
       <View style={styles.inputContainer}>
         <TextInput
+          value={text}
           multiline
           placeholder="Say Hello..."
           placeholderTextColor="rgba(0,0,0,0.5)"
@@ -37,12 +38,13 @@ const TextInputButton = ({ onSend }: TextInputButtonProps) => {
         <View>
           <Icon
             solid
-            name="arrow-up"
+            name={text ? 'arrow-up' : 'arrow-right'}
             size={25}
             color="#5badff"
             onPress={() => {
               onSend(text);
               setText('');
+              Keyboard.dismiss();
             }}
             style={styles.icon}
           />

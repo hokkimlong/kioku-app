@@ -33,11 +33,12 @@ const ChatCommentContainer = ({
         {title !== undefined && (
           <View
             style={{
-              flex: 0.05,
+              height: 50,
               display: 'flex',
               justifyContent: 'center',
+              paddingHorizontal: '5%',
             }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{title}</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 30 }}>{title}</Text>
           </View>
         )}
         {/* chat section */}

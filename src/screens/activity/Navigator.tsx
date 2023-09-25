@@ -29,22 +29,21 @@ export type ActivityHomeTabList = {
 const Tab = createBottomTabNavigator<ActivityHomeTabList>();
 
 const ActivityTabs = () => {
+  console.log('postscreen', { ...PostScreen.navigationOptions() });
   return (
     <Tab.Navigator
     // screenOptions={{ header: DefaultAppBar }}
     >
       <Tab.Screen
-        name="Home"
+        name="Homee"
         // initialParams={{ addScreen: 'Activity' }}
         component={PostScreen}
-        options={
-          (PostScreen.navigationOptions,
-          {
-            tabBarIcon: () => (
-              <Icon name="home" size={20} color="#72d4bb" solid />
-            ),
-          })
-        }
+        options={{
+          ...PostScreen.navigationOptions(),
+          tabBarIcon: () => (
+            <Icon name="home" size={20} color="#72d4bb" solid />
+          ),
+        }}
       />
       {/* <Tab.Screen name="Hs"
         component={PostScreen}

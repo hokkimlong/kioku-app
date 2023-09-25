@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { View, KeyboardAvoidingView, Platform } from 'react-native';
 import { z } from 'zod';
 import { Input } from '~/components/form/Input';
 import { PasswordInput } from '~/components/form/PasswordInput';
@@ -44,22 +44,27 @@ const LoginScreen = ({ navigation }: Props) => {
   return (
     <FormProvider {...methods}>
       <TitleContainer title="Login" description="Connect, bond, and enjoy!">
-        <Input
-          keyboardType="email-address"
-          name="email"
-          label="Email"
-          placeholder="Enter your email"
-        />
-        <PasswordInput
-          name="password"
-          label="Password"
-          placeholder="Enter your password"
-        />
-        <Button onPress={methods.handleSubmit(onSubmit)}>Login</Button>
-        <LinkButton onPress={() => navigation.push('ForgotPassword')}>
-          Forgot password?
-        </LinkButton>
-        <View style={{ flex: 1 }} />
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+          keyboardVerticalOffset={100}>
+          <Input
+            keyboardType="email-address"
+            name="email"
+            label="Email"
+            placeholder="Enter your email"
+          />
+          <PasswordInput
+            name="password"
+            label="Password"
+            placeholder="Enter your password"
+          />
+          <Button onPress={methods.handleSubmit(onSubmit)}>Login</Button>
+          <LinkButton onPress={() => navigation.push('ForgotPassword')}>
+            Forgot password?
+          </LinkButton>
+          <View style={{ flex: 1 }} />
+        </KeyboardAvoidingView>
         <Button outlined onPress={() => navigation.push('Register')}>
           Create new account
         </Button>
