@@ -20,9 +20,9 @@ export const uploadImage = async (imageFile: Image) => {
 
   s3.putObject(params, (err, data) => {
     if (err) {
-      console.log(err, err.stack);
+      console.log('Uploaded Image error:', err, err.stack);
     } else {
-      console.log(data);
+      console.log('Uploaded Image:', data);
     }
   });
 };

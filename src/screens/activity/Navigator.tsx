@@ -1,18 +1,12 @@
 import React from 'react';
 import PostScreen from './PostScreen';
-import {
-  // BottomTabHeaderProps,
-  createBottomTabNavigator,
-} from '@react-navigation/bottom-tabs';
-// import HomeScreen from '../home/HomeScreen';
-// import NotificationScreen from '../home/NotificationScreen';
-// import ActivityDetailScreen from '../home/ActivityDetailScreen';
-// import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-// import { Appbar } from 'react-native-paper';
-// import { backIcon, defaultAppbarStyle } from '../home/HomeNavigator';
-// import { AddIcon } from '~/components/ui/AddIconButton';
-// import LiveMap from '../map/LiveMap';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 import MapNavigator from '../map/Navigator';
+
+import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import InformationScreen from './InformationScreen';
 import ChatScreen from './chatScreen';
 
 export type ActivityHomeTabList = {
@@ -22,29 +16,58 @@ export type ActivityHomeTabList = {
   Nearby: undefined;
   Chat: undefined;
   Map: undefined;
+  Information: undefined;
 };
 
 const Tab = createBottomTabNavigator<ActivityHomeTabList>();
 
 const ActivityTabs = () => {
+  console.log('postscreen', { ...PostScreen.navigationOptions() });
   return (
-    <Tab.Navigator
-    // screenOptions={{ header: DefaultAppBar }}
-    >
+    <Tab.Navigator>
       <Tab.Screen
         name="Home"
-        // initialParams={{ addScreen: 'Activity' }}
         component={PostScreen}
-        options={PostScreen.navigationOptions}
+        options={{
+          ...PostScreen.navigationOptions(),
+          tabBarIcon: () => (
+            <IconFontAwesome5 name="home" size={20} color="#72d4bb" solid />
+          ),
+        }}
       />
-      {/* <Tab.Screen name="Hs"
-        component={PostScreen}
-        options={PostScreen.navigationOptions}
-      /> */}
-      {/* <Tab.Screen name="" component={HomeScreen} /> */}
-      {/* <Tab.Screen name="Nearby" component={NotificationScreen} /> */}
-      <Tab.Screen name="Chat" component={ChatScreen} />
-      <Tab.Screen name="Map" component={MapNavigator} />
+      <Tab.Screen
+        name="Chat"
+        component={ChatScreen}
+        options={{
+          tabBarIcon: () => (
+            <IconFontAwesome6 name="comments" size={20} color="#72bcd4" solid />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Information"
+        component={InformationScreen}
+        options={{
+          ...InformationScreen.navigationOptions(),
+          tabBarIcon: () => (
+            <IconFontAwesome6
+              name="signs-post"
+              size={20}
+              color="#72d4bb"
+              solid
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Map"
+        component={MapNavigator}
+        options={{
+          tabBarIcon: () => (
+            <IconFontAwesome6 name="map" size={20} color="#728bd4" solid />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };

@@ -22,10 +22,19 @@ export type Post = {
   postImages: [];
 };
 
+export type createCommentDto = {
+  postId: number;
+  message: string;
+};
+
 export const createPost = (payload: createPostDto) => {
   return post('/post', payload);
 };
 
 export const likePost = (postId: number) => {
   return post(`/post/${postId}`, null);
+};
+
+export const createComment = (payload: createCommentDto) => {
+  return post('/post/comment', payload);
 };

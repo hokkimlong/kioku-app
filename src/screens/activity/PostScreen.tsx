@@ -1,22 +1,19 @@
 import React from 'react';
 import { TitleContainer } from '~/components/ui/TitleContainer';
-import { Appbar } from 'react-native-paper';
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { backIcon, defaultAppbarStyle } from '../home/HomeNavigator';
-import { AddIcon } from '~/components/ui/AddIconButton';
 import { useActivityPosts } from '~/services/activity';
-import {
-  DetailActivityStackList,
-  useActivityContext,
-} from './DetailStackNavigator';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useActivityContext } from './DetailStackNavigator';
 
 import PostThumbnail from '~/components/thumbnail/postThumbnail';
 import { useMutation } from '@tanstack/react-query';
 import { likePost } from '~/services/post';
-import { getS3Image } from '~/utils/s3';
+import {
+  BottomTabHeaderProps,
+  BottomTabScreenProps,
+} from '@react-navigation/bottom-tabs';
+import { ActivityHomeTabList } from './ActivityTab';
+import CustomAppbar from '~/components/ui/Appbar';
 
-type Props = NativeStackScreenProps<DetailActivityStackList, 'Post'>;
+type Props = BottomTabScreenProps<ActivityHomeTabList, 'Home'>;
 
 const PostScreen = ({ navigation }: Props) => {
   const activity = useActivityContext();
@@ -27,16 +24,18 @@ const PostScreen = ({ navigation }: Props) => {
   return (
     <TitleContainer title={activity?.name}>
       {posts?.map(post => {
-        console.log(post.postImages);
         return (
           <PostThumbnail
+            key={post.id}
             onLike={() => {
               mutation.mutate(post.id);
             }}
-            imageUrl={getS3Image(post.postImages[0].uri)}
-            onPress={() => navigation.push('CommentScreen')}
+            imageUrl={post.postImages}
+            onPress={() =>
+              navigation.push('CommentScreen', { postId: post.id })
+            }
             caption={post.description}
-            publisher={post.user.username}
+            publisher={post.user?.username}
           />
         );
       })}
@@ -46,22 +45,12 @@ const PostScreen = ({ navigation }: Props) => {
 
 PostScreen.navigationOptions = () => {
   return {
-    header: (props: NativeStackHeaderProps) => {
+    header: (props: BottomTabHeaderProps) => {
       return (
-        <Appbar.Header style={defaultAppbarStyle.header}>
-          <Appbar.Action
-            style={defaultAppbarStyle.action}
-            icon={backIcon}
-            onPress={props.navigation.goBack}
-            size={28}
-          />
-          <Appbar.Action
-            style={defaultAppbarStyle.action}
-            icon={AddIcon}
-            onPress={() => props.navigation.push('NewPost')}
-            size={36}
-          />
-        </Appbar.Header>
+        <CustomAppbar
+          onBack={props.navigation.goBack}
+          onAdd={() => props.navigation.navigate('NewPost')}
+        />
       );
     },
   };

@@ -4,16 +4,21 @@ import {
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
 } from 'react-native';
-import { IconButton, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { Image } from '~/services/post';
+import { getS3Image } from '~/utils/s3';
 
 type PostProps = PropsWithChildren<{
   publisher: string;
-  imageUrl: string;
+  imageUrl: Image[];
   caption: string;
   reactionAmount: number;
   commentAmount: number;
+  isLike: boolean;
   onLike: () => void;
   onPress: () => void;
 }>;
@@ -26,33 +31,53 @@ const PostThumbnail = ({
   commentAmount,
   onLike,
   onPress,
+  isLike = false,
 }: PostProps) => {
   return (
     <View style={styles.wrapper}>
       <View>
         <Text style={styles.publisher}>@{publisher}</Text>
       </View>
-      <View style={styles.ImageContainer}>
-        <ImageBackground
-          source={{ uri: imageUrl }}
-          style={styles.backgroundImage}
-          resizeMode="cover"
-        />
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView horizontal={true}>
+          {imageUrl?.map((item, index) => {
+            return (
+              <View
+                key={index}
+                style={
+                  imageUrl.length !== 1
+                    ? styles.ImageContainer
+                    : styles.SingularImageContainer
+                }>
+                <ImageBackground
+                  source={{ uri: getS3Image(item.uri) }}
+                  resizeMode="cover"
+                  style={styles.backgroundImage}
+                />
+              </View>
+            );
+          })}
+        </ScrollView>
+      </SafeAreaView>
       <View>
         <Text>{caption}</Text>
       </View>
       <View style={styles.actionContainer}>
         <TouchableOpacity onPress={onLike}>
           <View style={styles.actionContainer}>
-            <Icon name="heart" size={18} color="#FF470D" solid />
-            <Text style={styles.actionText}>{reactionAmount}</Text>
+            <Icon
+              name="heart"
+              size={18}
+              color={isLike ? '#ff0000' : '#808080'}
+              solid
+            />
+            <Text style={styles.actionText}>{reactionAmount ?? 0}</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={onPress}>
           <View style={styles.actionContainer}>
             <Icon name="comment" size={18} color="#E0D1FF" solid />
-            <Text style={styles.actionText}>{commentAmount}</Text>
+            <Text style={styles.actionText}>{commentAmount ?? 0}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -62,13 +87,20 @@ const PostThumbnail = ({
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginBottom: '5%',
     borderRadius: 10,
+    marginBottom: '5%',
   },
   ImageContainer: {
+    width: 330,
     height: 175,
-    borderColor: 'rgba(0,0,0,0.5)',
-    borderWidth: 0.3,
+    marginRight: 5,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  SingularImageContainer: {
+    width: 350,
+    height: 175,
+    marginRight: 5,
     borderRadius: 10,
     overflow: 'hidden',
   },
@@ -77,9 +109,9 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   publisher: {
-    fontWeight: 'bold',
     fontSize: 15,
     marginBottom: 3,
+    fontWeight: 'bold',
   },
   actionContainer: {
     display: 'flex',
@@ -88,6 +120,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     marginLeft: 2,
+    fontWeight: 'bold',
   },
 });
 
