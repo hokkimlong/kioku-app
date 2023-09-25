@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import SpinnerLoadingOverlay from 'react-native-loading-spinner-overlay';
 
-const initalState = { visible: true };
+const initalState = { visible: false };
 
 const SpinnerContext = createContext({
   openSpinner: () => {},

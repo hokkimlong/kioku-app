@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { post, get } from './fetcher';
 import { Post } from './post';
 import { InformationBoard } from './information';
+import { GroupChat } from './chat';
 
 export type createActivityDto = {
   name: string;
@@ -55,4 +56,13 @@ export const useActivityInformations = (activityId: number | undefined) => {
   );
 
   return { informationBoards: data, ...other };
+};
+
+export const useActivityChats = (activityId: number | undefined) => {
+  const { data, ...other } = useQuery<GroupChat[]>(
+    [informationQueryKey, activityId],
+    () => get<GroupChat[]>(`/activity/${activityId}/chat`),
+  );
+
+  return { groupChats: data, ...other };
 };
