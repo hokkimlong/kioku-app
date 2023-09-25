@@ -9,7 +9,7 @@ import {
 import { useActivityContext } from './DetailStackNavigator';
 import { View, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
-import { useActivityInformations } from '~/services/activity';
+import { useActivityChats } from '~/services/activity';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -17,7 +17,7 @@ type Props = BottomTabScreenProps<ActivityHomeTabList, 'Information'>;
 
 const InformationScreen = ({ navigation }: Props) => {
   const activity = useActivityContext();
-  const { informationBoards } = useActivityInformations(activity?.id);
+  const { informationBoards } = useActivityChats(activity?.id);
 
   return (
     <TitleContainer

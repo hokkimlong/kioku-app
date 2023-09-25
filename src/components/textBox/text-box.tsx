@@ -3,19 +3,22 @@ import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MsgBox from './msg-box';
+import { User } from '~/services/member';
 
 type TextBoxProps = PropsWithChildren<{
   isComment: boolean;
   isNotification: boolean;
   isUser: boolean;
-  item: any;
+  user: User;
+  message: string;
 }>;
 
 const TextBox = ({
   isComment = false,
   isNotification = false,
   isUser = false,
-  item,
+  user,
+  message,
 }: TextBoxProps) => {
   return (
     <View style={styles.wrapper}>
@@ -32,15 +35,18 @@ const TextBox = ({
 
         {isComment && (
           <View style={styles.commentTitle}>
-            <Text style={styles.subtitle}>@{item.name}</Text>
+            <Text style={styles.subtitle}>@{user.username}</Text>
             <Text style={styles.subtitle}>8 Mar 23</Text>
           </View>
         )}
 
-        {isComment &&
-          item?.message?.map((msg, index) => (
-            <MsgBox key={index} isUser={isUser} message={msg.msg} />
-          ))}
+        {
+          isComment && (
+            // item?.message?.map((msg, index) => (
+            <MsgBox isUser={isUser} message={message} />
+          )
+          // ))
+        }
       </View>
     </View>
   );

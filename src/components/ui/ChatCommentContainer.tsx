@@ -4,25 +4,22 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import TextBox from '~/components/textBox/text-box';
 import TextInputButton from '~/components/textBox/text-input';
+import { GroupChat } from '~/services/chat';
 import { chatLog } from '~/utils/temp/chatLog';
 
 type ChatScreenProps = {
   title: string | undefined;
-  mutation: any;
-  route: any;
+  onSend: (value: string) => void;
+  messages: GroupChat[];
   keyboardOffset: number;
 };
 
 const ChatCommentContainer = ({
   title,
-  mutation,
-  route,
+  onSend,
+  messages,
   keyboardOffset = -140,
 }: ChatScreenProps) => {
-  const sendMessage = (value: string) => {
-    console.log('send Message:', value);
-  };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
@@ -49,11 +46,14 @@ const ChatCommentContainer = ({
             this.scrollView.scrollToEnd({ animated: true });
           }}>
           <View>
-            {chatLog?.map(item => (
+            {messages?.map(item => (
               <TextBox
                 key={item.id}
-                item={item}
-                isUser={item.isUser}
+                // item={item}
+                // isUser={item.isUser}
+                user={item.user}
+                message={item.message}
+                isUser={false}
                 isComment={true}
                 isNotification={false}
               />
@@ -64,11 +64,7 @@ const ChatCommentContainer = ({
         <View style={{ height: 45 }}>
           <TextInputButton
             onSend={value => {
-              mutation.mutate({
-                postId: route.params.postId,
-                message: value,
-              });
-              sendMessage(value);
+              onSend(value);
             }}
           />
         </View>
