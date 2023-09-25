@@ -17,8 +17,6 @@ const TextBox = ({
   isUser = false,
   item,
 }: TextBoxProps) => {
-  console.log(item);
-
   return (
     <View style={styles.wrapper}>
       {isNotification && (

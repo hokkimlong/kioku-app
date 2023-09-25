@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { post, get } from './fetcher';
 import { Post } from './post';
+import { InformationBoard } from './information';
 
 export type createActivityDto = {
   name: string;
@@ -43,4 +44,15 @@ export const useActivityPosts = (activityId: number | undefined) => {
     get<Post[]>(`/activity/${activityId}/post`),
   );
   return { posts: data, ...other };
+};
+
+export const informationQueryKey = 'information-post';
+
+export const useActivityInformations = (activityId: number | undefined) => {
+  const { data, ...other } = useQuery<InformationBoard[]>(
+    [informationQueryKey, activityId],
+    () => get<InformationBoard[]>(`/activity/${activityId}/information`),
+  );
+
+  return { informationBoards: data, ...other };
 };
