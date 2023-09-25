@@ -12,7 +12,7 @@ const CommentScreen = ({ route }: Props) => {
 
   return (
     <ChatCommentContainer
-      title="Comment Section"
+      title="Comment"
       mutation={mutation}
       route={route}
       keyboardOffset={-190}

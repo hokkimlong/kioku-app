@@ -7,7 +7,7 @@ import { Appbar } from 'react-native-paper';
 import { backIcon, defaultAppbarStyle } from '../home/HomeNavigator';
 import NewPostScreen from './NewPostScreen';
 import { Activity } from '~/services/activity';
-import CommentScreen from './commentScreen';
+import CommentScreen from './CommentScreen';
 import NewInformationScreen from './NewInformationScreen';
 import InformationDetailScreen from './InformationDetailScreen';
 import ActivityTabs from './Navigator';

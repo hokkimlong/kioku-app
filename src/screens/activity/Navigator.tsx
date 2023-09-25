@@ -7,7 +7,7 @@ import MapNavigator from '../map/Navigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import InformationScreen from './InformationScreen';
-import ChatScreen from './chatScreen';
+import ChatScreen from './ChatScreen';
 
 export type ActivityHomeTabList = {
   Home: { addScreen: string };
