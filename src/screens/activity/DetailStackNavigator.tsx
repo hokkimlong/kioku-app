@@ -6,18 +6,18 @@ import {
 import { Appbar } from 'react-native-paper';
 import { backIcon, defaultAppbarStyle } from '../home/HomeNavigator';
 import NewPostScreen from './NewPostScreen';
-import ActivityTabs from './ActivityTab';
 import { Activity } from '~/services/activity';
 import CommentScreen from './commentScreen';
 import NewInformationScreen from './NewInformationScreen';
 import InformationDetailScreen from './InformationDetailScreen';
+import ActivityTabs from './Navigator';
 
 export type DetailActivityStackList = {
   Post: undefined;
   NewPost: undefined;
-  CommentScreen: undefined;
   NewInformation: undefined;
   InformationDetail: { id: number };
+  CommentScreen: { postId: number };
 };
 
 const Stack = createNativeStackNavigator<DetailActivityStackList>();

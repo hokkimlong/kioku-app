@@ -27,7 +27,7 @@ const data = [
 const ActivityDetailScreen = () => {
   return (
     <TitleContainer scroll title="Let's Hang out man">
-      {data?.map(item => (
+      {/* {data?.map(item => (
         <PostThumbnail
           key={item.id}
           publisher={item.publisher}
@@ -36,7 +36,7 @@ const ActivityDetailScreen = () => {
           reactionAmount={item.reactAmount}
           commentAmount={item.commentAmount}
         />
-      ))}
+      ))} */}
     </TitleContainer>
   );
 };

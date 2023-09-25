@@ -1,47 +1,22 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Text } from 'react-native-paper';
-import MsgBox from '~/components/textBox/msg-box';
-import TextBox from '~/components/textBox/text-box';
-import { TitleContainer } from '~/components/ui/TitleContainer';
+import { DetailActivityStackList } from './DetailStackNavigator';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useMutation } from '@tanstack/react-query';
+import { createComment } from '~/services/post';
+import ChatCommentContainer from '~/components/ui/ChatCommentContainer';
 
-const list = [
-  {
-    id: 1,
-    name: 'soth Kimleng',
-    message: [
-      {
-        msg: 'Hello',
-      },
-      {
-        msg: 'Bro lg ey ta nerb ta nerb jg',
-      },
-    ],
-    isUser: false,
-  },
-  {
-    id: 2,
-    name: 'soth Kimleng',
-    isUser: true,
-    message: [{ msg: 'DUma' }],
-  },
-  {
-    id: 3,
-    name: 'soth Kimleng',
-    isUser: false,
-    message: [{ msg: 'DUma' }],
-  },
-];
+type Props = NativeStackScreenProps<DetailActivityStackList, 'CommentScreen'>;
 
-const CommentScreen = () => {
+const CommentScreen = ({ route }: Props) => {
+  const mutation = useMutation(createComment);
+
   return (
-    <TitleContainer title="Comments">
-      {list?.map(item => (
-        <View style={{ marginVertical: 2 }} key={item.id}>
-          <TextBox isUser={item.isUser} isComment={true} item={item} />
-        </View>
-      ))}
-    </TitleContainer>
+    <ChatCommentContainer
+      title="Comment Section"
+      mutation={mutation}
+      route={route}
+      keyboardOffset={-190}
+    />
   );
 };
 

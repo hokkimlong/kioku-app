@@ -6,7 +6,6 @@ import { useActivityContext } from './DetailStackNavigator';
 import PostThumbnail from '~/components/thumbnail/postThumbnail';
 import { useMutation } from '@tanstack/react-query';
 import { likePost } from '~/services/post';
-import { getS3Image } from '~/utils/s3';
 import {
   BottomTabHeaderProps,
   BottomTabScreenProps,
@@ -31,8 +30,10 @@ const PostScreen = ({ navigation }: Props) => {
             onLike={() => {
               mutation.mutate(post.id);
             }}
-            imageUrl={getS3Image(post.postImages?.[0].uri)}
-            onPress={() => navigation.push('CommentScreen')}
+            imageUrl={post.postImages}
+            onPress={() =>
+              navigation.push('CommentScreen', { postId: post.id })
+            }
             caption={post.description}
             publisher={post.user?.username}
           />
