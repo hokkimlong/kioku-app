@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useUser } from './src/services/authentication';
 import MapNavigator from '~/screens/map/Navigator';
 import './src/utils/s3';
+import SpinnerProvider from '~/components/ui/Spinner';
 
 // import SpinnerProvider from '~/components/ui/Spinner';
 
@@ -23,9 +24,9 @@ function Main() {
   return (
     <QueryClientProvider client={queryClient}>
       <PaperProvider theme={paperTheme}>
-        {/* <SpinnerProvider> */}
-        <App />
-        {/* </SpinnerProvider> */}
+        <SpinnerProvider>
+          <App />
+        </SpinnerProvider>
       </PaperProvider>
     </QueryClientProvider>
   );

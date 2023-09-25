@@ -22,7 +22,6 @@ export type ActivityHomeTabList = {
 const Tab = createBottomTabNavigator<ActivityHomeTabList>();
 
 const ActivityTabs = () => {
-  console.log('postscreen', { ...PostScreen.navigationOptions() });
   return (
     <Tab.Navigator>
       <Tab.Screen
@@ -39,6 +38,7 @@ const ActivityTabs = () => {
         name="Chat"
         component={ChatScreen}
         options={{
+          headerShown: false,
           tabBarIcon: () => (
             <IconFontAwesome6 name="comments" size={20} color="#72bcd4" solid />
           ),

@@ -5,10 +5,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackList } from './HomeNavigator';
 import { useActivities } from '~/services/activity';
 import ActivityThumbnail from '~/components/thumbnail/ActivityThumbnail';
+import { useSpinner } from '~/components/ui/Spinner';
 
 type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
 const HomeScreen = ({ navigation }: Props) => {
   const { activities } = useActivities();
+
+  const { openSpinner, closeSpinner } = useSpinner();
 
   return (
     <TitleContainer
