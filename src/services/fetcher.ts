@@ -33,3 +33,10 @@ export const post = <T>(url: string, payload: any) => {
     method: 'post',
   }).then(response => response.data);
 };
+
+export const remove = <T>(url: string) => {
+  return axiosInstance<T>({
+    url,
+    method: 'delete',
+  }).then(response => response.data);
+};

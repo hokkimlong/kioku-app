@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { post, get } from './fetcher';
+import { post, get, remove } from './fetcher';
 import { Post } from './post';
 import { InformationBoard } from './information';
 import { GroupChat } from './chat';
@@ -14,6 +14,10 @@ export type createActivityDto = {
 
 export const createActivity = (activity: createActivityDto) => {
   return post('/activity', activity);
+};
+
+export const deleteActivity = (id: number) => {
+  return remove(`/activity/${id}`);
 };
 
 export type Activity = {
