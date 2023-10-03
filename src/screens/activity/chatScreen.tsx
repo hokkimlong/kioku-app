@@ -12,7 +12,7 @@ const ChatScreen = () => {
     onSuccess: () => refetch(),
   });
 
-  console.log('groupChats', groupChats);
+  // console.log('groupChats', groupChats);
 
   return (
     <ChatCommentContainer
@@ -21,7 +21,6 @@ const ChatScreen = () => {
         mutation.mutate({ message: value, activityId: activity?.id })
       }
       messages={groupChats}
-      keyboardOffset={-190}
     />
   );
 };

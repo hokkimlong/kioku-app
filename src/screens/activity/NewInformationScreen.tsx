@@ -17,6 +17,8 @@ import {
   useActivityContext,
 } from './DetailStackNavigator';
 import { createInformation } from '~/services/information';
+import { useSpinner } from '~/components/ui/Spinner';
+import { err } from 'react-native-svg/lib/typescript/xml';
 
 const schema = z.object({
   title: stringRequired,
@@ -34,6 +36,7 @@ type FormSchema = z.infer<typeof schema>;
 type Props = NativeStackScreenProps<DetailActivityStackList, 'NewInformation'>;
 
 const NewInformationScreen = ({ navigation }: Props) => {
+  const { openSpinner, closeSpinner } = useSpinner();
   const methods = useForm<FormSchema>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -77,12 +80,19 @@ const NewInformationScreen = ({ navigation }: Props) => {
         <Button
           onPress={methods.handleSubmit(data => {
             if (activity && activity.id) {
-              mutation.mutate({
-                activityId: activity.id,
-                title: data.title,
-                description: data.description,
-                images: data.images.map(image => ({ uri: image.key })),
-              });
+              try {
+                openSpinner();
+                mutation.mutate({
+                  activityId: activity.id,
+                  title: data.title,
+                  description: data.description,
+                  images: data.images.map(image => ({ uri: image.key })),
+                });
+              } catch (error) {
+                console.log(error);
+              } finally {
+                closeSpinner();
+              }
             }
           })}>
           Create

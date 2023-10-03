@@ -11,12 +11,7 @@ const CommentScreen = ({ route }: Props) => {
   const mutation = useMutation(createComment);
 
   return (
-    <ChatCommentContainer
-      title="Comment"
-      mutation={mutation}
-      route={route}
-      keyboardOffset={-190}
-    />
+    <ChatCommentContainer title="Comment" mutation={mutation} route={route} />
   );
 };
 
