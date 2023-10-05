@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import {
   View,
   ImageBackground,
@@ -6,11 +6,16 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, Menu } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Image } from '~/services/post';
 import { getS3Image } from '~/utils/s3';
+import { Post } from '~/services/post';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deletePost, postQueryKey } from '~/services/post';
+import { useSpinner } from '../ui/Spinner';
 
 type PostProps = PropsWithChildren<{
   publisher: string;
@@ -21,6 +26,7 @@ type PostProps = PropsWithChildren<{
   isLike: boolean;
   onLike: () => void;
   onPress: () => void;
+  post: Post;
 }>;
 
 const PostThumbnail = ({
@@ -32,11 +38,70 @@ const PostThumbnail = ({
   onLike,
   onPress,
   isLike = false,
+  post,
 }: PostProps) => {
+  const [visible, setVisible] = useState(false);
+  const queryClient = useQueryClient();
+  const { openSpinner, closeSpinner } = useSpinner();
+
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+
+  const mutation = useMutation(deletePost, {
+    onMutate: () => {
+      openSpinner();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries([postQueryKey]);
+    },
+    onSettled: () => {
+      closeSpinner();
+    },
+  });
+
+  const handleDeleteActivity = (id: number) => {
+    mutation.mutate(id);
+  };
+
   return (
     <View style={styles.wrapper}>
-      <View>
+      <View style={styles.publisherContainer}>
         <Text style={styles.publisher}>@{publisher}</Text>
+        <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
+          <Menu
+            visible={visible}
+            onDismiss={closeMenu}
+            anchor={<Icon solid size={20} name="ellipsis-h" color="#000" />}>
+            <Menu.Item
+              leadingIcon="pen"
+              title="Edit"
+              onPress={() => {
+                console.log('click on Edit');
+              }}
+            />
+            <Menu.Item
+              leadingIcon="delete"
+              title="Delete"
+              onPress={() => {
+                // handleDeleteActivity(item.id);
+                Alert.alert(
+                  'Delete',
+                  'Are you sure you want to "permanently" delete activity ?',
+                  [
+                    {
+                      text: 'Cancel',
+                      style: 'cancel',
+                    },
+                    {
+                      text: 'OK',
+                      onPress: () => handleDeleteActivity(post.id),
+                    },
+                  ],
+                );
+              }}
+            />
+          </Menu>
+        </TouchableOpacity>
       </View>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView horizontal={true}>
@@ -121,6 +186,12 @@ const styles = StyleSheet.create({
   actionText: {
     marginLeft: 2,
     fontWeight: 'bold',
+  },
+  settingIcon: {},
+  publisherContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

@@ -30,9 +30,10 @@ type ActivityProps = PropsWithChildren<{
 const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
   const [visible, setVisible] = useState(false);
   const { openSpinner, closeSpinner } = useSpinner();
+  const queryClient = useQueryClient();
+
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
-  const queryClient = useQueryClient();
 
   const mutation = useMutation(deleteActivity, {
     onMutate: () => {

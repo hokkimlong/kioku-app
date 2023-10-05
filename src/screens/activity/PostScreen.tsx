@@ -36,6 +36,7 @@ const PostScreen = ({ navigation }: Props) => {
             }
             caption={post.description}
             publisher={post.user?.username}
+            post={post}
           />
         );
       })}
