@@ -12,8 +12,6 @@ const ChatScreen = () => {
     onSuccess: () => refetch(),
   });
 
-  // console.log('groupChats', groupChats);
-
   return (
     <ChatCommentContainer
       title="Chat"

@@ -24,9 +24,10 @@ import { useSpinner } from '../ui/Spinner';
 type ActivityProps = PropsWithChildren<{
   item: Activity;
   onPress: () => void;
+  onEdit: (id: number) => void;
 }>;
 
-const ActivityThumbnail = ({ item, onPress }: ActivityProps) => {
+const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
   const [visible, setVisible] = useState(false);
   const { openSpinner, closeSpinner } = useSpinner();
   const openMenu = () => setVisible(true);
@@ -47,10 +48,6 @@ const ActivityThumbnail = ({ item, onPress }: ActivityProps) => {
 
   const handleDeleteActivity = (id: number) => {
     mutation.mutate(id);
-  };
-
-  const handleEditActivity = (id: number) => {
-    console.log('Activity:', id);
   };
 
   const startDate = new Date(item.startDate);
@@ -80,7 +77,7 @@ const ActivityThumbnail = ({ item, onPress }: ActivityProps) => {
                 <Menu.Item
                   leadingIcon="pen"
                   onPress={() => {
-                    handleEditActivity(item.id);
+                    onEdit(item.id);
                   }}
                   title="Edit"
                 />

@@ -16,13 +16,16 @@ const HomeScreen = ({ navigation }: Props) => {
   return (
     <TitleContainer
       title="Activity"
-      right={<AddIconButton onPress={() => navigation.push('NewActivity')} />}>
+      right={
+        <AddIconButton onPress={() => navigation.push('NewActivity', {})} />
+      }>
       {activities?.map(activity => {
         return (
           <ActivityThumbnail
             key={activity.id}
             item={activity}
             onPress={() => navigation.push('ActivityDetail', { activity })}
+            onEdit={id => navigation.push('NewActivity', { id })}
           />
         );
       })}

@@ -18,7 +18,7 @@ export type HomeStackList = {
   Home: undefined;
   Profile: undefined;
   ChatScreen: undefined;
-  NewActivity: undefined;
+  NewActivity: { id?: number };
   Notification: undefined;
   ActivityDetail: { activity: Activity };
 };

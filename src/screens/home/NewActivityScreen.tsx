@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ScrollView,
   View,
@@ -43,7 +43,11 @@ import { User, useUsers } from '~/services/member';
 import { pluralize } from '~/utils/pluralize';
 import { DateInput } from '~/components/form/Date';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { activityQueryKey, createActivity } from '~/services/activity';
+import {
+  activityQueryKey,
+  createActivity,
+  useActivityById,
+} from '~/services/activity';
 import { Image } from '~/services/post';
 import { uploadImage } from '~/utils/s3';
 
@@ -84,15 +88,35 @@ type FormSchema = {
 };
 
 const Stack = createNativeStackNavigator<NewActivityStackList>();
-const NewActivityNavigator = () => {
+
+const NewActivityNavigator = (props: any) => {
+  const activityEditId = props.route.params.id;
   const methods = useForm<FormSchema>({ resolver: zodResolver(schema) });
+  const activityEdit = useActivityById(activityEditId, {
+    onSuccess: (response: any) => {
+      // console.log(response);
+      methods.reset({
+        name: response.name,
+        image: response.image,
+        date: {
+          startDate: new Date(response.startDate),
+          endDate: new Date(response.endDate),
+        },
+      });
+    },
+  });
+
   return (
     <FormProvider {...methods}>
       <Stack.Navigator
         screenOptions={{
           header: DefaultAppBar,
         }}>
-        <Stack.Screen name="NewInfo" component={NewActivityInfo} />
+        <Stack.Screen
+          initialParams={{ id: activityEditId } as any}
+          name="NewInfo"
+          component={NewActivityInfo}
+        />
         <Stack.Screen name="MemberSelect" component={MemberSelector} />
       </Stack.Navigator>
     </FormProvider>
@@ -104,12 +128,13 @@ type NewActivityInfoProps = NativeStackScreenProps<
   'NewInfo'
 >;
 
-const NewActivityInfo = ({ navigation }: NewActivityInfoProps) => {
+const NewActivityInfo = ({ navigation, route }: NewActivityInfoProps) => {
   const { trigger } = useFormContext<FormSchema>();
+  // console.log('route', route.params);
 
   return (
     <TitleContainer
-      title="New Activity"
+      title={(route.params as any).id ? 'Edit Activity' : 'New Activity'}
       description="Let's start a new adventure">
       <Input
         name="name"

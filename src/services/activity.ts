@@ -42,6 +42,15 @@ export const useActivities = () => {
   return { activities: data, ...other };
 };
 
+export const useActivityById = (id: number, options: any) => {
+  const { data, ...other } = useQuery<Activity>(
+    [activityQueryKey, id],
+    () => get<Activity>('/activity/' + id),
+    options,
+  );
+  return { activity: data, ...other };
+};
+
 export const postQueryKey = 'activity-post';
 
 export const useActivityPosts = (activityId: number | undefined) => {
