@@ -49,6 +49,7 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
 
   const handleDeleteActivity = (id: number) => {
     mutation.mutate(id);
+    closeMenu();
   };
 
   const startDate = new Date(item.startDate);
@@ -79,6 +80,7 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
                   leadingIcon="pen"
                   onPress={() => {
                     onEdit(item.id);
+                    closeMenu();
                   }}
                   title="Edit"
                 />

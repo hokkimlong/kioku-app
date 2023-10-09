@@ -92,19 +92,6 @@ const Stack = createNativeStackNavigator<NewActivityStackList>();
 const NewActivityNavigator = (props: any) => {
   const activityEditId = props.route.params.id;
   const methods = useForm<FormSchema>({ resolver: zodResolver(schema) });
-  const activityEdit = useActivityById(activityEditId, {
-    onSuccess: (response: any) => {
-      // console.log(response);
-      methods.reset({
-        name: response.name,
-        image: response.image,
-        date: {
-          startDate: new Date(response.startDate),
-          endDate: new Date(response.endDate),
-        },
-      });
-    },
-  });
 
   return (
     <FormProvider {...methods}>
@@ -131,6 +118,19 @@ type NewActivityInfoProps = NativeStackScreenProps<
 const NewActivityInfo = ({ navigation, route }: NewActivityInfoProps) => {
   const { trigger } = useFormContext<FormSchema>();
   // console.log('route', route.params);
+  const activityEdit = useActivityById(activityEditId, {
+    onSuccess: (response: any) => {
+      // console.log(response);
+      methods.reset({
+        name: response.name,
+        image: response.image,
+        date: {
+          startDate: new Date(response.startDate),
+          endDate: new Date(response.endDate),
+        },
+      });
+    },
+  });
 
   return (
     <TitleContainer
@@ -144,16 +144,31 @@ const NewActivityInfo = ({ navigation, route }: NewActivityInfoProps) => {
       <DateInput label="Date" name="date" />
       <ImagePicker selectionLimit={1} label="Add new image" name="image" />
       <View style={{ flex: 1 }} />
-      <Button
-        outlined
-        onPress={async () => {
-          const result = await trigger(['name', 'image']);
-          if (result) {
-            navigation.push('MemberSelect');
-          }
-        }}>
-        Next
-      </Button>
+      {route.params && (route.params as { id?: string }).id ? (
+        <Button
+          onPress={handleSubmit(data => {
+            const payload = {
+              name: data.name,
+              ...data.date,
+              image: data.image?.[0].key,
+              members: data.members,
+            };
+            activityEdit.mutate(payload);
+          })}>
+          Create
+        </Button>
+      ) : (
+        <Button
+          outlined
+          onPress={async () => {
+            const result = await trigger(['name', 'image']);
+            if (result) {
+              navigation.push('MemberSelect');
+            }
+          }}>
+          Next
+        </Button>
+      )}
     </TitleContainer>
   );
 };
@@ -227,7 +242,6 @@ const MemberSelector = ({ navigation }: MemberSelectProps) => {
             image: data.image?.[0].key,
             members: data.members,
           };
-
           createActivityMutation.mutate(payload);
         })}>
         Create

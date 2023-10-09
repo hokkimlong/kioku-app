@@ -13,6 +13,8 @@ const HomeScreen = ({ navigation }: Props) => {
   const { activities } = useActivities();
   const { openSpinner, closeSpinner } = useSpinner();
 
+  console.log('activity', activities);
+
   return (
     <TitleContainer
       title="Activity"

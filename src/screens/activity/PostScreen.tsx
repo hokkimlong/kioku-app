@@ -27,16 +27,16 @@ const PostScreen = ({ navigation }: Props) => {
         return (
           <PostThumbnail
             key={post.id}
-            onLike={() => {
-              mutation.mutate(post.id);
-            }}
             imageUrl={post.postImages}
-            onPress={() =>
-              navigation.push('CommentScreen', { postId: post.id })
-            }
             caption={post.description}
             publisher={post.user?.username}
             post={post}
+            onPress={() =>
+              navigation.push('CommentScreen', { postId: post.id })
+            }
+            onLike={() => {
+              mutation.mutate(post.id);
+            }}
           />
         );
       })}

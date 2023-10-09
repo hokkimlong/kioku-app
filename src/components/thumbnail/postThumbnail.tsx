@@ -7,6 +7,7 @@ import {
   ScrollView,
   SafeAreaView,
   Alert,
+  Keyboard,
 } from 'react-native';
 import { Text, Menu } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -61,6 +62,7 @@ const PostThumbnail = ({
 
   const handleDeleteActivity = (id: number) => {
     mutation.mutate(id);
+    closeMenu();
   };
 
   return (
@@ -76,7 +78,8 @@ const PostThumbnail = ({
               leadingIcon="pen"
               title="Edit"
               onPress={() => {
-                console.log('click on Edit');
+                console.log('click on Edits');
+                closeMenu();
               }}
             />
             <Menu.Item
