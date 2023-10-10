@@ -40,3 +40,11 @@ export const remove = <T>(url: string) => {
     method: 'delete',
   }).then(response => response.data);
 };
+
+export const update = <T>(url: string, payload: any) => {
+  return axiosInstance<T>({
+    url,
+    data: payload,
+    method: 'patch',
+  }).then(response => response.data);
+};

@@ -47,9 +47,30 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
     },
   });
 
+  const handleLeaveActivity = () => {
+    console.log('leave activity');
+  };
+
   const handleDeleteActivity = (id: number) => {
     mutation.mutate(id);
     closeMenu();
+  };
+
+  const handleDeleteAlert = (id: number) => {
+    Alert.alert(
+      'Delete',
+      'Are you sure you want to "permanently" delete activity ?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => handleDeleteActivity(id),
+        },
+      ],
+    );
   };
 
   const startDate = new Date(item.startDate);
@@ -63,6 +84,7 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
       : differenceHours > 1
       ? `${differenceHours} hours remaining`
       : `${differenceMinutes} minutes remaining`;
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.wrapper}>
@@ -76,40 +98,33 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
                 anchor={
                   <Icon solid size={20} name="ellipsis-v" color="#fff" />
                 }>
-                <Menu.Item
-                  leadingIcon="pen"
-                  onPress={() => {
-                    onEdit(item.id);
-                    closeMenu();
-                  }}
-                  title="Edit"
-                />
-                <Menu.Item
-                  leadingIcon="delete"
-                  title="Delete"
-                  onPress={() => {
-                    // handleDeleteActivity(item.id);
-                    Alert.alert(
-                      'Delete',
-                      'Are you sure you want to "permanently" delete activity ?',
-                      [
-                        {
-                          text: 'Cancel',
-                          style: 'cancel',
-                        },
-                        {
-                          text: 'OK',
-                          onPress: () => handleDeleteActivity(item.id),
-                        },
-                      ],
-                    );
-                  }}
-                />
-                <Menu.Item
-                  leadingIcon="human"
-                  title="Add Member"
-                  onPress={() => {}}
-                />
+                {(item.users as { role: string }[])[0]?.role === 'ADMIN' ? (
+                  <>
+                    <Menu.Item
+                      leadingIcon="pen"
+                      onPress={() => {
+                        onEdit(item.id);
+                        closeMenu();
+                      }}
+                      title="Edit"
+                    />
+                    <Menu.Item
+                      leadingIcon="delete"
+                      title="Delete"
+                      onPress={() => {
+                        handleDeleteAlert(item.id);
+                      }}
+                    />
+                  </>
+                ) : (
+                  <Menu.Item
+                    leadingIcon="delete"
+                    title="Leave Activity"
+                    onPress={() => {
+                      handleLeaveActivity();
+                    }}
+                  />
+                )}
               </Menu>
             </TouchableOpacity>
             <View>
@@ -195,6 +210,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     padding: 15,
+    display: 'flex',
+    justifyContent: 'center',
   },
 });
 

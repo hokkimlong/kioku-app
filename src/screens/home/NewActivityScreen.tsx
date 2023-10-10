@@ -47,6 +47,7 @@ import {
   activityQueryKey,
   createActivity,
   useActivityById,
+  editActivity,
 } from '~/services/activity';
 import { Image } from '~/services/post';
 import { uploadImage } from '~/utils/s3';
@@ -104,7 +105,11 @@ const NewActivityNavigator = (props: any) => {
           name="NewInfo"
           component={NewActivityInfo}
         />
-        <Stack.Screen name="MemberSelect" component={MemberSelector} />
+        <Stack.Screen
+          initialParams={{ id: activityEditId } as any}
+          name="MemberSelect"
+          component={MemberSelector}
+        />
       </Stack.Navigator>
     </FormProvider>
   );
@@ -118,19 +123,6 @@ type NewActivityInfoProps = NativeStackScreenProps<
 const NewActivityInfo = ({ navigation, route }: NewActivityInfoProps) => {
   const { trigger } = useFormContext<FormSchema>();
   // console.log('route', route.params);
-  const activityEdit = useActivityById(activityEditId, {
-    onSuccess: (response: any) => {
-      // console.log(response);
-      methods.reset({
-        name: response.name,
-        image: response.image,
-        date: {
-          startDate: new Date(response.startDate),
-          endDate: new Date(response.endDate),
-        },
-      });
-    },
-  });
 
   return (
     <TitleContainer
@@ -144,31 +136,16 @@ const NewActivityInfo = ({ navigation, route }: NewActivityInfoProps) => {
       <DateInput label="Date" name="date" />
       <ImagePicker selectionLimit={1} label="Add new image" name="image" />
       <View style={{ flex: 1 }} />
-      {route.params && (route.params as { id?: string }).id ? (
-        <Button
-          onPress={handleSubmit(data => {
-            const payload = {
-              name: data.name,
-              ...data.date,
-              image: data.image?.[0].key,
-              members: data.members,
-            };
-            activityEdit.mutate(payload);
-          })}>
-          Create
-        </Button>
-      ) : (
-        <Button
-          outlined
-          onPress={async () => {
-            const result = await trigger(['name', 'image']);
-            if (result) {
-              navigation.push('MemberSelect');
-            }
-          }}>
-          Next
-        </Button>
-      )}
+      <Button
+        outlined
+        onPress={async () => {
+          const result = await trigger(['name', 'image']);
+          if (result) {
+            navigation.push('MemberSelect');
+          }
+        }}>
+        Next
+      </Button>
     </TitleContainer>
   );
 };
@@ -177,9 +154,11 @@ type MemberSelectProps = NativeStackScreenProps<
   NewActivityStackList,
   'MemberSelect'
 >;
-const MemberSelector = ({ navigation }: MemberSelectProps) => {
+
+const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
   const { handleSubmit, control, formState, getValues } =
     useFormContext<FormSchema>();
+  const activityId = route.params;
   const { fields, append, remove } = useFieldArray({
     name: 'members',
     control,
@@ -188,6 +167,7 @@ const MemberSelector = ({ navigation }: MemberSelectProps) => {
 
   const { users } = useUsers();
   const queryClient = useQueryClient();
+
   const createActivityMutation = useMutation(createActivity, {
     onSuccess: () => {
       const [image] = getValues('image');
@@ -203,6 +183,34 @@ const MemberSelector = ({ navigation }: MemberSelectProps) => {
       console.log(error.response.data);
     },
   });
+
+  const editActivityMutation = useMutation(editActivity, {
+    onSuccess: () => {
+      const [image] = getValues('image');
+      if (image) {
+        uploadImage(image);
+      }
+      navigation.getParent()?.goBack();
+      queryClient.invalidateQueries([activityQueryKey]);
+    },
+    onError: error => {
+      console.log(error.response.data);
+    },
+  });
+
+  // const activityEdit = useActivityById((route.params as any).id, {
+  //   onSuccess: (response: any) => {
+  //     // console.log(response);
+  //     methods.reset({
+  //       name: response.name,
+  //       image: response.image,
+  //       date: {
+  //         startDate: new Date(response.startDate),
+  //         endDate: new Date(response.endDate),
+  //       },
+  //     });
+  //   },
+  // });
 
   return (
     <TitleContainer
@@ -234,18 +242,35 @@ const MemberSelector = ({ navigation }: MemberSelectProps) => {
           );
         })}
       </ScrollView>
-      <Button
-        onPress={handleSubmit(data => {
-          const payload = {
-            name: data.name,
-            ...data.date,
-            image: data.image?.[0].key,
-            members: data.members,
-          };
-          createActivityMutation.mutate(payload);
-        })}>
-        Create
-      </Button>
+
+      {(route.params as any).id ? (
+        <Button
+          onPress={handleSubmit(data => {
+            const payload = {
+              id: (route.params as any).id,
+              name: data.name,
+              ...data.date,
+              image: data.image?.[0].key,
+              members: data.members,
+            };
+            editActivityMutation.mutate(payload);
+          })}>
+          Update
+        </Button>
+      ) : (
+        <Button
+          onPress={handleSubmit(data => {
+            const payload = {
+              name: data.name,
+              ...data.date,
+              image: data.image?.[0].key,
+              members: data.members,
+            };
+            createActivityMutation.mutate(payload);
+          })}>
+          Create
+        </Button>
+      )}
     </TitleContainer>
   );
 };
