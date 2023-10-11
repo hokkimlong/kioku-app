@@ -7,6 +7,7 @@ import { useActivities } from '~/services/activity';
 import ActivityThumbnail from '~/components/thumbnail/ActivityThumbnail';
 
 type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
+
 const HomeScreen = ({ navigation }: Props) => {
   const { activities } = useActivities();
 

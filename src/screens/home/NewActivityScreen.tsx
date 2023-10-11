@@ -92,7 +92,20 @@ const Stack = createNativeStackNavigator<NewActivityStackList>();
 
 const NewActivityNavigator = (props: any) => {
   const activityEditId = props.route.params.id;
+  const { activity: editActivityData } = useActivityById(activityEditId, {});
   const methods = useForm<FormSchema>({ resolver: zodResolver(schema) });
+
+  useEffect(() => {
+    if (editActivityData) {
+      methods.setValue('name', editActivityData.name);
+      methods.setValue('date.startDate', new Date(editActivityData.startDate));
+      methods.setValue('date.endDate', new Date(editActivityData.endDate));
+      // methods.setValue('members', editActivityData.members);
+      // methods.setValue('image', editActivityData.image);
+    }
+  }, [editActivityData, methods]);
+
+  console.log('editActivityData', editActivityData);
 
   return (
     <FormProvider {...methods}>
@@ -158,7 +171,6 @@ type MemberSelectProps = NativeStackScreenProps<
 const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
   const { handleSubmit, control, formState, getValues } =
     useFormContext<FormSchema>();
-  const activityId = route.params;
   const { fields, append, remove } = useFieldArray({
     name: 'members',
     control,
@@ -197,20 +209,6 @@ const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
       console.log(error.response.data);
     },
   });
-
-  // const activityEdit = useActivityById((route.params as any).id, {
-  //   onSuccess: (response: any) => {
-  //     // console.log(response);
-  //     methods.reset({
-  //       name: response.name,
-  //       image: response.image,
-  //       date: {
-  //         startDate: new Date(response.startDate),
-  //         endDate: new Date(response.endDate),
-  //       },
-  //     });
-  //   },
-  // });
 
   return (
     <TitleContainer
