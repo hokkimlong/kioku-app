@@ -58,10 +58,16 @@ export const useActivityInformations = (activityId: number | undefined) => {
   return { informationBoards: data, ...other };
 };
 
-export const useActivityChats = (activityId: number | undefined) => {
+export const groupChatQueryKey = 'group-chat';
+
+export const useActivityChats = (
+  activityId: number | undefined,
+  options: any,
+) => {
   const { data, ...other } = useQuery<GroupChat[]>(
-    [informationQueryKey, activityId],
+    [groupChatQueryKey, activityId],
     () => get<GroupChat[]>(`/activity/${activityId}/chat`),
+    options,
   );
 
   return { groupChats: data, ...other };
