@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { post, get } from './fetcher';
+import { post, get, remove, update } from './fetcher';
 import { Post } from './post';
 import { InformationBoard } from './information';
 import { GroupChat } from './chat';
@@ -12,8 +12,25 @@ export type createActivityDto = {
   members: { id: string }[];
 };
 
+export type editActivityDto = {
+  id: number;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  image: string;
+  members: { id: string }[];
+};
+
 export const createActivity = (activity: createActivityDto) => {
   return post('/activity', activity);
+};
+
+export const editActivity = (activity: editActivityDto) => {
+  return update('/activity/' + activity.id, activity);
+};
+
+export const deleteActivity = (id: number) => {
+  return remove(`/activity/${id}`);
 };
 
 export type Activity = {
@@ -22,6 +39,7 @@ export type Activity = {
   startDate: Date;
   endDate: Date;
   image: string;
+  users: {};
   _count: {
     informations: number;
     posts: number;
@@ -36,6 +54,15 @@ export const useActivities = () => {
     get<Activity[]>('/activity'),
   );
   return { activities: data, ...other };
+};
+
+export const useActivityById = (id: number, options: any) => {
+  const { data, ...other } = useQuery<Activity>(
+    [activityQueryKey, id],
+    () => get<Activity>('/activity/' + id),
+    options,
+  );
+  return { activity: data, ...other };
 };
 
 export const postQueryKey = 'activity-post';

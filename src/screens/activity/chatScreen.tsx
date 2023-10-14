@@ -50,7 +50,6 @@ const ChatScreen = () => {
       }}
       currentUser={user}
       messages={groupChats}
-      keyboardOffset={-190}
     />
   );
 };

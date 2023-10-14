@@ -12,6 +12,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthenticationStackList } from './Navigator';
 import { useLogin } from '~/services/authentication';
 import { alert } from '~/utils/alert';
+import { useSpinner } from '~/components/ui/Spinner';
 
 // import { useLogin } from '~/services/authentication';
 
@@ -23,14 +24,17 @@ const schema = z.object({
 type FormSchema = z.infer<typeof schema>;
 
 type Props = NativeStackScreenProps<AuthenticationStackList, 'Login'>;
+
 const LoginScreen = ({ navigation }: Props) => {
   const { loginUser } = useLogin();
+  const { openSpinner, closeSpinner } = useSpinner();
 
   const methods = useForm<FormSchema>({
     resolver: zodResolver(schema),
   });
 
   const onSubmit = (formData: FormSchema) => {
+    openSpinner();
     loginUser(formData)
       .then(response => {
         // console.log(response);
@@ -38,6 +42,9 @@ const LoginScreen = ({ navigation }: Props) => {
       })
       .catch(error => {
         alert.error('fail', error.response.data.message);
+      })
+      .finally(() => {
+        closeSpinner();
       });
   };
 

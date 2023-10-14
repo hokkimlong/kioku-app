@@ -17,6 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { postQueryKey } from '~/services/activity';
 import { uploadImage } from '~/utils/s3';
+import { useSpinner } from '~/components/ui/Spinner';
 
 const schema = z
   .object({
@@ -52,6 +53,7 @@ type FormSchema = {
 type Props = NativeStackScreenProps<DetailActivityStackList, 'NewPost'>;
 
 const NewPostScreen = ({ navigation }: Props) => {
+  const { openSpinner, closeSpinner } = useSpinner();
   const methods = useForm<FormSchema>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -93,11 +95,18 @@ const NewPostScreen = ({ navigation }: Props) => {
         <Button
           onPress={methods.handleSubmit(data => {
             if (activity && activity.id) {
-              mutation.mutate({
-                activityId: activity.id,
-                description: data.description,
-                images: data.images.map(image => ({ uri: image.key })),
-              });
+              try {
+                openSpinner();
+                mutation.mutate({
+                  activityId: activity.id,
+                  description: data.description,
+                  images: data.images.map(image => ({ uri: image.key })),
+                });
+              } catch (error) {
+                console.log(error);
+              } finally {
+                closeSpinner();
+              }
             }
           })}>
           Create

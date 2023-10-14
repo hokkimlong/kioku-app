@@ -1,4 +1,4 @@
-import { post } from './fetcher';
+import { post, remove } from './fetcher';
 
 export type Image = {
   uri: string;
@@ -27,8 +27,14 @@ export type createCommentDto = {
   message: string;
 };
 
+export const postQueryKey = 'post';
+
 export const createPost = (payload: createPostDto) => {
   return post('/post', payload);
+};
+
+export const deletePost = (id: number) => {
+  return remove(`/post/${id}`);
 };
 
 export const likePost = (postId: number) => {

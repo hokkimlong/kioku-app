@@ -41,10 +41,7 @@ const TextBox = ({
         )}
 
         {
-          isComment && (
-            // item?.message?.map((msg, index) => (
-            <MsgBox isUser={isUser} message={message} />
-          )
+          isComment && <MsgBox isUser={isUser} message={message} />
           // ))
         }
       </View>
