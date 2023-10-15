@@ -1,12 +1,13 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import { Activity } from '~/services/activity';
-import { Text } from 'react-native-paper';
+import { Menu, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {
   View,
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {
   differenceInDays,
@@ -15,13 +16,68 @@ import {
   format,
 } from 'date-fns';
 import { getS3Image } from '~/utils/s3';
+import { deleteActivity } from '~/services/activity';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { activityQueryKey } from '~/services/activity';
+import { useSpinner } from '../ui/Spinner';
 
 type ActivityProps = PropsWithChildren<{
   item: Activity;
   onPress: () => void;
+  onEdit: (id: number) => void;
 }>;
 
-const ActivityThumbnail = ({ item, onPress }: ActivityProps) => {
+const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
+  const { openSpinner, closeSpinner } = useSpinner();
+  const queryClient = useQueryClient();
+
+  const [visible, setVisible] = useState(false);
+  const openMenu = () => {
+    setVisible(true);
+  };
+
+  const closeMenu = () => {
+    setVisible(false);
+  };
+
+  const mutation = useMutation(deleteActivity, {
+    onMutate: () => {
+      openSpinner();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries([activityQueryKey]);
+    },
+    onSettled: () => {
+      closeSpinner();
+    },
+  });
+
+  const handleLeaveActivity = () => {
+    console.log('leave activity');
+  };
+
+  const handleDeleteActivity = (id: number) => {
+    mutation.mutate(id);
+    closeMenu();
+  };
+
+  const handleDeleteAlert = (id: number) => {
+    Alert.alert(
+      'Delete',
+      'Are you sure you want to "permanently" delete activity ?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => handleDeleteActivity(id),
+        },
+      ],
+    );
+  };
+
   const startDate = new Date(item.startDate);
   const endDate = new Date();
   const differentDays = differenceInDays(startDate, endDate);
@@ -33,12 +89,49 @@ const ActivityThumbnail = ({ item, onPress }: ActivityProps) => {
       : differenceHours > 1
       ? `${differenceHours} hours remaining`
       : `${differenceMinutes} minutes remaining`;
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.wrapper}>
         <ImageBackground
           source={{ uri: item.image ? getS3Image(item.image) : '' }}>
           <View style={styles.innerContainer}>
+            <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
+              <Menu
+                visible={visible}
+                onDismiss={closeMenu}
+                anchor={
+                  <Icon solid size={20} name="ellipsis-v" color="#fff" />
+                }>
+                {item.isAdmin ? (
+                  <>
+                    <Menu.Item
+                      leadingIcon="pen"
+                      onPress={() => {
+                        onEdit(item.id);
+                        closeMenu();
+                      }}
+                      title="Edit"
+                    />
+                    <Menu.Item
+                      leadingIcon="delete"
+                      title="Delete"
+                      onPress={() => {
+                        handleDeleteAlert(item.id);
+                      }}
+                    />
+                  </>
+                ) : (
+                  <Menu.Item
+                    leadingIcon="delete"
+                    title="Leave Activity"
+                    onPress={() => {
+                      handleLeaveActivity();
+                    }}
+                  />
+                )}
+              </Menu>
+            </TouchableOpacity>
             <View>
               <Text
                 variant="headlineSmall"
@@ -116,6 +209,14 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 5,
     fontSize: 20,
+  },
+  settingIcon: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    padding: 15,
+    display: 'flex',
+    justifyContent: 'center',
   },
 });
 

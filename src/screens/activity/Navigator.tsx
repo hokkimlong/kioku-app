@@ -7,7 +7,7 @@ import MapNavigator from '../map/Navigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import InformationScreen from './InformationScreen';
-import ChatScreen from './chatScreen';
+import ChatScreen from './ChatScreen';
 
 export type ActivityHomeTabList = {
   Home: { addScreen: string };
@@ -38,7 +38,7 @@ const ActivityTabs = () => {
         name="Chat"
         component={ChatScreen}
         options={{
-          headerShown: false,
+          // headerShown: false,
           tabBarIcon: () => (
             <IconFontAwesome6 name="comments" size={20} color="#72bcd4" solid />
           ),
@@ -59,15 +59,13 @@ const ActivityTabs = () => {
           ),
         }}
       />
-      <Tab.Screen
-        name="Map"
-        component={MapNavigator}
+      {/* <Tab.Screen name="Map" component={MapNavigator}
         options={{
           tabBarIcon: () => (
             <IconFontAwesome6 name="map" size={20} color="#728bd4" solid />
           ),
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };

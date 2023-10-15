@@ -1,49 +1,37 @@
 import React from 'react';
-import { Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
 import { View, ScrollView, StyleSheet } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import { Text } from 'react-native-paper';
 import TextBox from '~/components/textBox/text-box';
 import TextInputButton from '~/components/textBox/text-input';
-import { GroupChat } from '~/services/chat';
-import { chatLog } from '~/utils/temp/chatLog';
+import { Message } from '~/services/chat';
+import { User } from '~/services/member';
 
 type ChatScreenProps = {
   title: string | undefined;
   onSend: (value: string) => void;
-  messages: GroupChat[];
+  messages: Message[] | undefined;
   keyboardOffset: number;
+  currentUser: User | undefined;
 };
 
 const ChatCommentContainer = ({
   title,
   onSend,
   messages,
+  currentUser,
   keyboardOffset = -140,
 }: ChatScreenProps) => {
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
-      keyboardVerticalOffset={keyboardOffset}
-      style={{ flex: 1 }}>
-      <View style={styles.wrapper}>
-        {/* title */}
-        {title !== undefined && (
-          <View
-            style={{
-              height: 50,
-              display: 'flex',
-              justifyContent: 'center',
-              paddingHorizontal: '5%',
-            }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 30 }}>{title}</Text>
-          </View>
-        )}
-        {/* chat section */}
+    <View style={styles.wrapper}>
+      {/* {title !== undefined && (
         <ScrollView
-          style={{ height: 600, paddingHorizontal: '5%' }}
-          ref={ref => (this.scrollView = ref)}
-          onContentSizeChange={() => {
-            this.scrollView.scrollToEnd({ animated: true });
+          style={{
+            height: 50,
+            display: 'flex',
+            // justifyContent: 'center',
+            paddingHorizontal: '5%',
           }}>
           <View>
             {messages?.map(item => (
@@ -51,25 +39,56 @@ const ChatCommentContainer = ({
                 key={item.id}
                 // item={item}
                 // isUser={item.isUser}
+                isUser={item.user.username === currentUser.username}
                 user={item.user}
                 message={item.message}
-                isUser={false}
                 isComment={true}
                 isNotification={false}
               />
             ))}
           </View>
+          <View style={{ height: 45 }}>
+            <TextInputButton
+              onSend={value => {
+                onSend(value);
+              }}
+            />
+          </View>
         </ScrollView>
-        {/* input section */}
-        <View style={{ height: 45 }}>
-          <TextInputButton
-            onSend={value => {
-              onSend(value);
-            }}
-          />
+      )} */}
+      {/* chat section */}
+      <ScrollView
+        style={{ flex: 0.9, paddingHorizontal: '5%' }}
+        ref={ref => (this.scrollView = ref)}
+        onContentSizeChange={() => {
+          this.scrollView.scrollToEnd({ animated: true });
+        }}>
+        <View>
+          {messages?.map((item, index) => (
+            <TextBox
+              key={item.id}
+              user={item.user}
+              isUser={item.user.username === currentUser?.username}
+              message={item.message}
+              createdAt={item.createdAt}
+              isComment={true}
+              isOnGoing={
+                index > 0 &&
+                item.user.username === messages[index - 1].user.username
+              }
+              isNotification={false}
+            />
+          ))}
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </ScrollView>
+      {/* input section */}
+      <TextInputButton
+        onSend={value => {
+          onSend(value);
+        }}
+      />
+      {/* <Input /> */}
+    </View>
   );
 };
 

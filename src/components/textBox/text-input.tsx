@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Keyboard } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Keyboard,
+  KeyboardAvoidingView,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 type TextInputButtonProps = {
@@ -11,53 +17,39 @@ const TextInputButton = ({ onSend }: TextInputButtonProps) => {
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.iconContainer}>
-        <Icon
-          solid
-          name="paperclip"
-          size={25}
-          color="#5badff"
-          onPress={() => {
-            onSend(text);
-            setText('');
-          }}
-          style={styles.icon}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          value={text}
-          multiline
-          placeholder="Say Hello..."
-          placeholderTextColor="rgba(0,0,0,0.5)"
-          onChangeText={newText => setText(newText)}
-          style={styles.textInput}
-        />
-      </View>
-      <View style={styles.iconContainer}>
-        <View>
-          <Icon
-            solid
-            name={text ? 'arrow-up' : 'arrow-right'}
-            size={25}
-            color="#5badff"
-            onPress={() => {
-              onSend(text);
-              setText('');
-              Keyboard.dismiss();
-            }}
-            style={styles.icon}
-          />
-        </View>
-      </View>
+      {/* <Icon
+        solid
+        name="paperclip"
+        size={20}
+        color="#5badff"
+        style={styles.icon}
+      /> */}
+      <TextInput
+        value={text}
+        multiline
+        placeholder="Aa.."
+        placeholderTextColor="rgba(0,0,0,0.5)"
+        onChangeText={newText => setText(newText)}
+        style={styles.textInput}
+      />
+      <Icon
+        solid
+        name={text ? 'arrow-up' : 'arrow-right'}
+        size={20}
+        color="#5badff"
+        onPress={() => {
+          onSend(text);
+          setText('');
+          Keyboard.dismiss();
+        }}
+        style={styles.icon}
+      />
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   wrapper: {
-    height: '100%',
-    display: 'flex',
+    height: 37,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -65,23 +57,16 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
-  inputContainer: {
-    width: '80%',
-    height: 30,
-  },
   textInput: {
+    flex: 1,
+    fontSize: 13,
     color: 'black',
-    paddingVertical: 2,
+    borderRadius: 20,
     paddingHorizontal: 10,
     backgroundColor: 'rgba(0,0,0,0.08)',
-    borderRadius: 20,
-  },
-  iconContainer: {
-    display: 'flex',
-    justifyContent: 'center',
   },
   icon: {
-    // padding: 50,
+    marginHorizontal: 5,
   },
 });
 

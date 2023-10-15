@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ScrollView,
   View,
@@ -43,9 +43,15 @@ import { User, useUsers } from '~/services/member';
 import { pluralize } from '~/utils/pluralize';
 import { DateInput } from '~/components/form/Date';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { activityQueryKey, createActivity } from '~/services/activity';
+import {
+  activityQueryKey,
+  createActivity,
+  useActivityById,
+  editActivity,
+} from '~/services/activity';
 import { Image } from '~/services/post';
-import { uploadImage } from '~/utils/s3';
+import { getS3Image, uploadImage } from '~/utils/s3';
+import { useSpinner } from '~/components/ui/Spinner';
 
 type NewActivityStackList = {
   NewInfo: undefined;
@@ -84,16 +90,44 @@ type FormSchema = {
 };
 
 const Stack = createNativeStackNavigator<NewActivityStackList>();
-const NewActivityNavigator = () => {
+
+const NewActivityNavigator = (props: any) => {
+  const activityEditId = props.route.params.id;
+  const { activity: editActivityData } = useActivityById(activityEditId, {});
   const methods = useForm<FormSchema>({ resolver: zodResolver(schema) });
+
+  useEffect(() => {
+    if (editActivityData) {
+      methods.setValue('name', editActivityData.name);
+      methods.setValue('date.startDate', new Date(editActivityData.startDate));
+      methods.setValue('date.endDate', new Date(editActivityData.endDate));
+
+      methods.setValue('members', editActivityData.users);
+      methods.setValue('image', [
+        {
+          uri: getS3Image(editActivityData.image),
+          key: editActivityData.image,
+        },
+      ]);
+    }
+  }, [editActivityData, methods]);
+
   return (
     <FormProvider {...methods}>
       <Stack.Navigator
         screenOptions={{
           header: DefaultAppBar,
         }}>
-        <Stack.Screen name="NewInfo" component={NewActivityInfo} />
-        <Stack.Screen name="MemberSelect" component={MemberSelector} />
+        <Stack.Screen
+          initialParams={{ id: activityEditId } as any}
+          name="NewInfo"
+          component={NewActivityInfo}
+        />
+        <Stack.Screen
+          initialParams={{ id: activityEditId } as any}
+          name="MemberSelect"
+          component={MemberSelector}
+        />
       </Stack.Navigator>
     </FormProvider>
   );
@@ -104,12 +138,12 @@ type NewActivityInfoProps = NativeStackScreenProps<
   'NewInfo'
 >;
 
-const NewActivityInfo = ({ navigation }: NewActivityInfoProps) => {
+const NewActivityInfo = ({ navigation, route }: NewActivityInfoProps) => {
   const { trigger } = useFormContext<FormSchema>();
 
   return (
     <TitleContainer
-      title="New Activity"
+      title={(route.params as any).id ? 'Edit Activity' : 'New Activity'}
       description="Let's start a new adventure">
       <Input
         name="name"
@@ -137,7 +171,8 @@ type MemberSelectProps = NativeStackScreenProps<
   NewActivityStackList,
   'MemberSelect'
 >;
-const MemberSelector = ({ navigation }: MemberSelectProps) => {
+
+const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
   const { handleSubmit, control, formState, getValues } =
     useFormContext<FormSchema>();
   const { fields, append, remove } = useFieldArray({
@@ -145,17 +180,40 @@ const MemberSelector = ({ navigation }: MemberSelectProps) => {
     control,
     keyName: 'key',
   });
+  const { openSpinner, closeSpinner } = useSpinner();
 
-  const { users } = useUsers();
+  const [search, setSearch] = useState('');
+  const { users } = useUsers(search);
   const queryClient = useQueryClient();
+
   const createActivityMutation = useMutation(createActivity, {
-    onSuccess: () => {
+    onMutate: () => {
+      openSpinner();
+    },
+    onSuccess: async () => {
       const [image] = getValues('image');
 
       if (image) {
-        uploadImage(image);
+        await uploadImage(image);
       }
 
+      navigation.getParent()?.goBack();
+      queryClient.invalidateQueries([activityQueryKey]);
+    },
+    onError: error => {
+      console.log(error.response.data);
+    },
+    onSettled: () => {
+      closeSpinner();
+    },
+  });
+
+  const editActivityMutation = useMutation(editActivity, {
+    onSuccess: () => {
+      const [image] = getValues('image');
+      if (!image?.uri.includes('http')) {
+        uploadImage(image);
+      }
       navigation.getParent()?.goBack();
       queryClient.invalidateQueries([activityQueryKey]);
     },
@@ -167,9 +225,14 @@ const MemberSelector = ({ navigation }: MemberSelectProps) => {
   return (
     <TitleContainer
       scroll={false}
-      title="Add Members"
+      title={route.params?.id ? 'Members' : 'Add Members'}
       description="Let's add your member">
-      <BaseInput placeholder="Search your member" />
+      <BaseInput
+        onChangeText={(value: string) => {
+          setSearch(value);
+        }}
+        placeholder="Search your member"
+      />
       <View style={{ paddingVertical: 10 }}>
         <Text>
           Selected {fields.length} {pluralize('member', fields.length)}
@@ -194,19 +257,36 @@ const MemberSelector = ({ navigation }: MemberSelectProps) => {
           );
         })}
       </ScrollView>
-      <Button
-        onPress={handleSubmit(data => {
-          const payload = {
-            name: data.name,
-            ...data.date,
-            image: data.image?.[0].key,
-            members: data.members,
-          };
 
-          createActivityMutation.mutate(payload);
-        })}>
-        Create
-      </Button>
+      {(route.params as any).id ? (
+        <Button
+          onPress={handleSubmit(data => {
+            const payload = {
+              id: (route.params as any).id,
+              name: data.name,
+              ...data.date,
+              image: data.image?.[0].key,
+              members: data.members,
+            };
+
+            editActivityMutation.mutate(payload);
+          })}>
+          Update
+        </Button>
+      ) : (
+        <Button
+          onPress={handleSubmit(data => {
+            const payload = {
+              name: data.name,
+              ...data.date,
+              image: data.image?.[0].key,
+              members: data.members,
+            };
+            createActivityMutation.mutate(payload);
+          })}>
+          Create
+        </Button>
+      )}
     </TitleContainer>
   );
 };
@@ -250,9 +330,9 @@ export const ImagePicker = ({
 }: {
   name: string;
   label: string;
-  selectionLimit: number;
+  selectionLimit?: number;
 }) => {
-  const { fields, prepend, remove } = useFieldArray({ name });
+  const { fields, prepend, remove, replace } = useFieldArray({ name });
   const { formState } = useFormContext();
   const error = formState.errors[name];
   const theme = useTheme();
@@ -263,12 +343,21 @@ export const ImagePicker = ({
   const handleClose = () => setOpen(false);
 
   const handleAddImage = ({ assets }: ImagePickerResponse) => {
-    prepend(
-      assets?.map(asset => ({
-        key: asset.fileName,
-        uri: asset.uri,
-      })),
-    );
+    if (selectionLimit === 1) {
+      replace(
+        assets?.map(asset => ({
+          key: asset.fileName,
+          uri: asset.uri,
+        })),
+      );
+    } else {
+      prepend(
+        assets?.map(asset => ({
+          key: asset.fileName,
+          uri: asset.uri,
+        })),
+      );
+    }
 
     handleClose();
   };

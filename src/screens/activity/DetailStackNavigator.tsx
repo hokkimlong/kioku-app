@@ -7,15 +7,15 @@ import { Appbar } from 'react-native-paper';
 import { backIcon, defaultAppbarStyle } from '../home/HomeNavigator';
 import NewPostScreen from './NewPostScreen';
 import { Activity } from '~/services/activity';
-import CommentScreen from './commentScreen';
+import CommentScreen from './CommentScreen';
 import NewInformationScreen from './NewInformationScreen';
 import InformationDetailScreen from './InformationDetailScreen';
 import ActivityTabs from './Navigator';
 
 export type DetailActivityStackList = {
   Post: undefined;
-  NewPost: undefined;
-  NewInformation: undefined;
+  NewPost: { id: number };
+  NewInformation: { id: number };
   InformationDetail: { id: number };
   CommentScreen: { postId: number };
 };
@@ -39,11 +39,7 @@ const DetailActivityNavigator = (props: any) => {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="NewPost" component={NewPostScreen} />
-        <Stack.Screen
-          name="CommentScreen"
-          component={CommentScreen}
-          options={{ headerShown: false }}
-        />
+        <Stack.Screen name="CommentScreen" component={CommentScreen} />
         <Stack.Screen name="NewInformation" component={NewInformationScreen} />
         <Stack.Screen
           name="InformationDetail"

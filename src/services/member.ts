@@ -7,9 +7,9 @@ export type User = {
   email: string;
 };
 
-export const useUsers = () => {
-  const { data, ...other } = useQuery<User[]>(['users'], () =>
-    get<User[]>('/users'),
+export const useUsers = (search: string) => {
+  const { data, ...other } = useQuery<User[]>(['users', search], () =>
+    get<User[]>('/users', { search }),
   );
   return { users: data, ...other };
 };
