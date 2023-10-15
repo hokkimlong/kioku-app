@@ -96,8 +96,6 @@ const NewActivityNavigator = (props: any) => {
   const { activity: editActivityData } = useActivityById(activityEditId, {});
   const methods = useForm<FormSchema>({ resolver: zodResolver(schema) });
 
-  console.log('editActivityData', editActivityData);
-
   useEffect(() => {
     if (editActivityData) {
       methods.setValue('name', editActivityData.name);

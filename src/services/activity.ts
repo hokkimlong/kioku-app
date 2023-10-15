@@ -25,12 +25,16 @@ export const createActivity = (activity: createActivityDto) => {
   return post('/activity', activity);
 };
 
+export const deleteActivity = (id: number) => {
+  return remove(`/activity/${id}`);
+};
+
 export const editActivity = (activity: editActivityDto) => {
   return update('/activity/' + activity.id, activity);
 };
 
-export const deleteActivity = (id: number) => {
-  return remove(`/activity/${id}`);
+export const leaveActivity = (id: number) => {
+  return update(`/activity/leave/${id}`, {});
 };
 
 export type Activity = {

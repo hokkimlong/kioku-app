@@ -66,11 +66,11 @@ const ChatCommentContainer = ({
         <View>
           {messages?.map((item, index) => (
             <TextBox
-              key={item.id}
+              key={index}
               user={item.user}
               isUser={item.user.username === currentUser?.username}
               message={item.message}
-              createdAt={item.createdAt}
+              createdAt={item?.createdAt || new Date()}
               isComment={true}
               isOnGoing={
                 index > 0 &&
