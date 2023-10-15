@@ -49,6 +49,13 @@ const InformationScreen = ({ navigation }: Props) => {
       description="Let's your friend know more">
       <FlatList
         refreshing={isFetching}
+        ListEmptyComponent={() => (
+          <Text
+            variant="bodyLarge"
+            style={{ textAlign: 'center', color: 'gray' }}>
+            No Information
+          </Text>
+        )}
         onRefresh={refetch}
         data={informationBoards}
         ItemSeparatorComponent={() => <View style={{ height: 18 }} />}

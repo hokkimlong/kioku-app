@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useState } from 'react';
-import { Activity } from '~/services/activity';
+import { Activity, leaveActivity } from '~/services/activity';
 import { Menu, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {
@@ -31,6 +31,8 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
   const { openSpinner, closeSpinner } = useSpinner();
   const queryClient = useQueryClient();
 
+  // console.log('ActivityItem', item);
+
   const [visible, setVisible] = useState(false);
   const openMenu = () => {
     setVisible(true);
@@ -40,7 +42,7 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
     setVisible(false);
   };
 
-  const mutation = useMutation(deleteActivity, {
+  const deleteMutation = useMutation(deleteActivity, {
     onMutate: () => {
       openSpinner();
     },
@@ -52,12 +54,26 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
     },
   });
 
-  const handleLeaveActivity = () => {
-    console.log('leave activity');
+  const leaveMutation = useMutation(leaveActivity, {
+    onMutate: () => {
+      openSpinner();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries([activityQueryKey]);
+    },
+    onSettled: () => {
+      closeSpinner();
+    },
+  });
+
+  const handleLeaveActivity = (id: number) => {
+    console.log('leave activity', id);
+    leaveMutation.mutate(id);
+    closeMenu();
   };
 
   const handleDeleteActivity = (id: number) => {
-    mutation.mutate(id);
+    deleteMutation.mutate(id);
     closeMenu();
   };
 
@@ -126,7 +142,7 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
                     leadingIcon="delete"
                     title="Leave Activity"
                     onPress={() => {
-                      handleLeaveActivity();
+                      handleLeaveActivity(item.id);
                     }}
                   />
                 )}
