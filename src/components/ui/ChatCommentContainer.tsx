@@ -64,21 +64,29 @@ const ChatCommentContainer = ({
           this.scrollView.scrollToEnd({ animated: true });
         }}>
         <View>
-          {messages?.map((item, index) => (
-            <TextBox
-              key={index}
-              user={item.user}
-              isUser={item.user.username === currentUser?.username}
-              message={item.message}
-              createdAt={item?.createdAt || new Date()}
-              isComment={true}
-              isOnGoing={
-                index > 0 &&
-                item.user.username === messages[index - 1].user.username
-              }
-              isNotification={false}
-            />
-          ))}
+          {messages?.length === 0 ? (
+            <Text
+              variant="bodyLarge"
+              style={{ textAlign: 'center', color: 'gray' }}>
+              No Content Yet !!!
+            </Text>
+          ) : (
+            messages?.map((item, index) => (
+              <TextBox
+                key={index}
+                user={item.user}
+                isUser={item.user.username === currentUser?.username}
+                message={item.message}
+                createdAt={item?.createdAt || new Date()}
+                isComment={true}
+                isOnGoing={
+                  index > 0 &&
+                  item.user.username === messages[index - 1].user.username
+                }
+                isNotification={false}
+              />
+            ))
+          )}
         </View>
       </ScrollView>
       {/* input section */}
