@@ -6,14 +6,15 @@ import {
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 import HomeScreen from './HomeScreen';
-import { Appbar, Menu } from 'react-native-paper';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Appbar, Badge, Menu } from 'react-native-paper';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import ProfileScreen from './ProfileScreen';
 import NotificationScreen from './NotificationScreen';
 import NewActivityNavigator from './NewActivityScreen';
 import DetailActivityNavigator from '../activity/DetailStackNavigator';
 import { Activity } from '~/services/activity';
 import { useLogout, useUser } from '~/services/authentication';
+import { useNotifications } from '~/services/notification';
 
 export type HomeStackList = {
   Home: undefined;
@@ -50,6 +51,10 @@ const HomeNavigator = () => {
 };
 
 export const DefaultAppBar = (props: NativeStackHeaderProps) => {
+  const { notifications } = useNotifications({
+    enabled: !props.back,
+  });
+
   return (
     <Appbar.Header style={defaultAppbarStyle.header}>
       {props.back ? (
@@ -61,12 +66,19 @@ export const DefaultAppBar = (props: NativeStackHeaderProps) => {
         />
       ) : (
         <>
-          <Appbar.Action
-            style={defaultAppbarStyle.action}
-            icon={notificationIcon}
-            onPress={() => props.navigation.push('Notification')}
-            size={28}
-          />
+          <View>
+            <Appbar.Action
+              style={defaultAppbarStyle.action}
+              icon={notificationIcon}
+              onPress={() => props.navigation.push('Notification')}
+              size={28}
+            />
+            {notifications?.unSeenCount > 0 && (
+              <Badge style={{ position: 'absolute', margin: 6 }}>
+                {notifications?.unSeenCount}
+              </Badge>
+            )}
+          </View>
           <Appbar.Action
             style={defaultAppbarStyle.actionRight}
             icon={ProfileIcon}

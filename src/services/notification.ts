@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Activity } from './activity';
-import { get } from './fetcher';
+import { get, post } from './fetcher';
 
 export type Notification = {
   id: string;
@@ -10,12 +10,22 @@ export type Notification = {
   informationId: number;
 };
 
+export type NotificationResponse = {
+  data: Notification[];
+  unSeenCount: number;
+};
+
 export const notificationQueryKey = 'notification';
 
-export const useNotifications = () => {
-  const { data, ...other } = useQuery<Notification[]>(
+export const useNotifications = (options?: any) => {
+  const { data, ...other } = useQuery<NotificationResponse>(
     [notificationQueryKey],
-    () => get<Notification[]>('/notification'),
+    () => get<NotificationResponse>('/notification'),
+    options,
   );
   return { notifications: data, ...other };
+};
+
+export const markAsSeen = () => {
+  return post('/notification', null);
 };
