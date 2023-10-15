@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
+import appConfig from '~/config/app-config.json';
 
-const socket = io('ws://192.168.18.10:3000');
+const socket = io(appConfig.socketURL);
 
 export default socket;
