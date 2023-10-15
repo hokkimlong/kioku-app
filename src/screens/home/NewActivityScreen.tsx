@@ -105,8 +105,6 @@ const NewActivityNavigator = (props: any) => {
     }
   }, [editActivityData, methods]);
 
-  console.log('editActivityData', editActivityData);
-
   return (
     <FormProvider {...methods}>
       <Stack.Navigator

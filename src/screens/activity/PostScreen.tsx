@@ -21,6 +21,8 @@ const PostScreen = ({ navigation }: Props) => {
 
   const mutation = useMutation(likePost);
 
+  console.log('posts', posts);
+
   return (
     <TitleContainer title={activity?.name}>
       {posts?.map(post => {

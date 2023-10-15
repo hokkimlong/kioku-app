@@ -75,14 +75,6 @@ const PostThumbnail = ({
             onDismiss={closeMenu}
             anchor={<Icon solid size={20} name="ellipsis-h" color="#000" />}>
             <Menu.Item
-              leadingIcon="pen"
-              title="Edit"
-              onPress={() => {
-                console.log('click on Edits');
-                closeMenu();
-              }}
-            />
-            <Menu.Item
               leadingIcon="delete"
               title="Delete"
               onPress={() => {
