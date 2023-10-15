@@ -5,13 +5,13 @@ import { FlatList } from 'react-native-gesture-handler';
 import { Text } from 'react-native-paper';
 import TextBox from '~/components/textBox/text-box';
 import TextInputButton from '~/components/textBox/text-input';
-import { GroupChat } from '~/services/chat';
+import { Message } from '~/services/chat';
 import { User } from '~/services/member';
 
 type ChatScreenProps = {
   title: string | undefined;
   onSend: (value: string) => void;
-  messages: GroupChat[] | undefined;
+  messages: Message[] | undefined;
   keyboardOffset: number;
   currentUser: User | undefined;
 };
@@ -25,13 +25,12 @@ const ChatCommentContainer = ({
 }: ChatScreenProps) => {
   return (
     <View style={styles.wrapper}>
-      {/* title */}
-      {title !== undefined && (
-        <View
+      {/* {title !== undefined && (
+        <ScrollView
           style={{
             height: 50,
             display: 'flex',
-            justifyContent: 'center',
+            // justifyContent: 'center',
             paddingHorizontal: '5%',
           }}>
           <View>
@@ -48,16 +47,15 @@ const ChatCommentContainer = ({
               />
             ))}
           </View>
+          <View style={{ height: 45 }}>
+            <TextInputButton
+              onSend={value => {
+                onSend(value);
+              }}
+            />
+          </View>
         </ScrollView>
-        {/* input section */}
-        <View style={{ height: 45 }}>
-          <TextInputButton
-            onSend={value => {
-              onSend(value);
-            }}
-          />
-        </View>
-      )}
+      )} */}
       {/* chat section */}
       <ScrollView
         style={{ flex: 0.9, paddingHorizontal: '5%' }}
@@ -66,13 +64,18 @@ const ChatCommentContainer = ({
           this.scrollView.scrollToEnd({ animated: true });
         }}>
         <View>
-          {messages?.map(item => (
+          {messages?.map((item, index) => (
             <TextBox
               key={item.id}
               user={item.user}
+              isUser={item.user.username === currentUser?.username}
               message={item.message}
-              isUser={false}
+              createdAt={item.createdAt}
               isComment={true}
+              isOnGoing={
+                index > 0 &&
+                item.user.username === messages[index - 1].user.username
+              }
               isNotification={false}
             />
           ))}

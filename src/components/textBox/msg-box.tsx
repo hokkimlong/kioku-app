@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 15,
     backgroundColor: 'rgba(0,0,0,0.05)',
-    marginBottom: 5,
   },
   userText: {
     borderTopRightRadius: 0,

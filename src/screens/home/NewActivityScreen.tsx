@@ -50,7 +50,8 @@ import {
   editActivity,
 } from '~/services/activity';
 import { Image } from '~/services/post';
-import { uploadImage } from '~/utils/s3';
+import { getS3Image, uploadImage } from '~/utils/s3';
+import { useSpinner } from '~/components/ui/Spinner';
 
 type NewActivityStackList = {
   NewInfo: undefined;
@@ -100,12 +101,16 @@ const NewActivityNavigator = (props: any) => {
       methods.setValue('name', editActivityData.name);
       methods.setValue('date.startDate', new Date(editActivityData.startDate));
       methods.setValue('date.endDate', new Date(editActivityData.endDate));
-      // methods.setValue('members', editActivityData.members);
-      // methods.setValue('image', editActivityData.image);
+
+      methods.setValue('members', editActivityData.users);
+      methods.setValue('image', [
+        {
+          uri: getS3Image(editActivityData.image),
+          key: editActivityData.image,
+        },
+      ]);
     }
   }, [editActivityData, methods]);
-
-  console.log('editActivityData', editActivityData);
 
   return (
     <FormProvider {...methods}>
@@ -135,7 +140,6 @@ type NewActivityInfoProps = NativeStackScreenProps<
 
 const NewActivityInfo = ({ navigation, route }: NewActivityInfoProps) => {
   const { trigger } = useFormContext<FormSchema>();
-  // console.log('route', route.params);
 
   return (
     <TitleContainer
@@ -176,16 +180,21 @@ const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
     control,
     keyName: 'key',
   });
+  const { openSpinner, closeSpinner } = useSpinner();
 
-  const { users } = useUsers();
+  const [search, setSearch] = useState('');
+  const { users } = useUsers(search);
   const queryClient = useQueryClient();
 
   const createActivityMutation = useMutation(createActivity, {
-    onSuccess: () => {
+    onMutate: () => {
+      openSpinner();
+    },
+    onSuccess: async () => {
       const [image] = getValues('image');
 
       if (image) {
-        uploadImage(image);
+        await uploadImage(image);
       }
 
       navigation.getParent()?.goBack();
@@ -194,12 +203,15 @@ const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
     onError: error => {
       console.log(error.response.data);
     },
+    onSettled: () => {
+      closeSpinner();
+    },
   });
 
   const editActivityMutation = useMutation(editActivity, {
     onSuccess: () => {
       const [image] = getValues('image');
-      if (image) {
+      if (!image?.uri.includes('http')) {
         uploadImage(image);
       }
       navigation.getParent()?.goBack();
@@ -213,9 +225,14 @@ const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
   return (
     <TitleContainer
       scroll={false}
-      title="Add Members"
+      title={route.params?.id ? 'Members' : 'Add Members'}
       description="Let's add your member">
-      <BaseInput placeholder="Search your member" />
+      <BaseInput
+        onChangeText={(value: string) => {
+          setSearch(value);
+        }}
+        placeholder="Search your member"
+      />
       <View style={{ paddingVertical: 10 }}>
         <Text>
           Selected {fields.length} {pluralize('member', fields.length)}
@@ -251,6 +268,7 @@ const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
               image: data.image?.[0].key,
               members: data.members,
             };
+
             editActivityMutation.mutate(payload);
           })}>
           Update
@@ -312,9 +330,9 @@ export const ImagePicker = ({
 }: {
   name: string;
   label: string;
-  selectionLimit: number;
+  selectionLimit?: number;
 }) => {
-  const { fields, prepend, remove } = useFieldArray({ name });
+  const { fields, prepend, remove, replace } = useFieldArray({ name });
   const { formState } = useFormContext();
   const error = formState.errors[name];
   const theme = useTheme();
@@ -325,12 +343,21 @@ export const ImagePicker = ({
   const handleClose = () => setOpen(false);
 
   const handleAddImage = ({ assets }: ImagePickerResponse) => {
-    prepend(
-      assets?.map(asset => ({
-        key: asset.fileName,
-        uri: asset.uri,
-      })),
-    );
+    if (selectionLimit === 1) {
+      replace(
+        assets?.map(asset => ({
+          key: asset.fileName,
+          uri: asset.uri,
+        })),
+      );
+    } else {
+      prepend(
+        assets?.map(asset => ({
+          key: asset.fileName,
+          uri: asset.uri,
+        })),
+      );
+    }
 
     handleClose();
   };

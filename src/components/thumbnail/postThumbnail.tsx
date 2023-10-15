@@ -7,16 +7,12 @@ import {
   ScrollView,
   SafeAreaView,
   Alert,
-  Keyboard,
 } from 'react-native';
 import { Text, Menu } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Image } from '~/services/post';
 import { getS3Image } from '~/utils/s3';
 import { Post } from '~/services/post';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deletePost, postQueryKey } from '~/services/post';
-import { useSpinner } from '../ui/Spinner';
 
 type PostProps = PropsWithChildren<{
   publisher: string;
@@ -28,6 +24,8 @@ type PostProps = PropsWithChildren<{
   onLike: () => void;
   onPress: () => void;
   post: Post;
+  onDelete: (id: number) => void;
+  onEdit: (id: number) => void;
 }>;
 
 const PostThumbnail = ({
@@ -40,28 +38,16 @@ const PostThumbnail = ({
   onPress,
   isLike = false,
   post,
+  onDelete,
+  onEdit,
 }: PostProps) => {
   const [visible, setVisible] = useState(false);
-  const queryClient = useQueryClient();
-  const { openSpinner, closeSpinner } = useSpinner();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-  const mutation = useMutation(deletePost, {
-    onMutate: () => {
-      openSpinner();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries([postQueryKey]);
-    },
-    onSettled: () => {
-      closeSpinner();
-    },
-  });
-
   const handleDeleteActivity = (id: number) => {
-    mutation.mutate(id);
+    onDelete(id);
     closeMenu();
   };
 
@@ -78,7 +64,7 @@ const PostThumbnail = ({
               leadingIcon="pen"
               title="Edit"
               onPress={() => {
-                console.log('click on Edits');
+                onEdit(post.id);
                 closeMenu();
               }}
             />
@@ -86,7 +72,6 @@ const PostThumbnail = ({
               leadingIcon="delete"
               title="Delete"
               onPress={() => {
-                // handleDeleteActivity(item.id);
                 Alert.alert(
                   'Delete',
                   'Are you sure you want to "permanently" delete activity ?',

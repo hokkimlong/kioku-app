@@ -17,13 +17,13 @@ const TextInputButton = ({ onSend }: TextInputButtonProps) => {
 
   return (
     <View style={styles.wrapper}>
-      <Icon
+      {/* <Icon
         solid
         name="paperclip"
         size={20}
         color="#5badff"
         style={styles.icon}
-      />
+      /> */}
       <TextInput
         value={text}
         multiline

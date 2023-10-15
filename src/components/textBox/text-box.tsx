@@ -4,6 +4,7 @@ import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MsgBox from './msg-box';
 import { User } from '~/services/member';
+import { format } from 'date-fns';
 
 type TextBoxProps = PropsWithChildren<{
   isComment: boolean;
@@ -11,6 +12,8 @@ type TextBoxProps = PropsWithChildren<{
   isUser: boolean;
   user: User;
   message: string;
+  isOnGoing: boolean;
+  createdAt: string;
 }>;
 
 const TextBox = ({
@@ -19,6 +22,8 @@ const TextBox = ({
   isUser = false,
   user,
   message,
+  isOnGoing,
+  createdAt,
 }: TextBoxProps) => {
   return (
     <View style={styles.wrapper}>
@@ -33,10 +38,12 @@ const TextBox = ({
         )}
         {isNotification && <MsgBox isUser={isUser} message="message" />}
 
-        {isComment && (
+        {!isOnGoing && isComment && (
           <View style={styles.commentTitle}>
             <Text style={styles.subtitle}>@{user.username}</Text>
-            <Text style={styles.subtitle}>8 Mar 23</Text>
+            <Text style={styles.subtitle}>
+              {format(new Date(createdAt), 'dd MMM yy')}
+            </Text>
           </View>
         )}
 

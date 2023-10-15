@@ -11,14 +11,17 @@ import { stringRequired } from '~/components/form/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { informationQueryKey } from '~/services/activity';
-import { uploadImage } from '~/utils/s3';
+import { getS3Image, uploadImage } from '~/utils/s3';
 import {
   DetailActivityStackList,
   useActivityContext,
 } from './DetailStackNavigator';
-import { createInformation } from '~/services/information';
+import {
+  createInformation,
+  updateInformation,
+  useInformationById,
+} from '~/services/information';
 import { useSpinner } from '~/components/ui/Spinner';
-import { err } from 'react-native-svg/lib/typescript/xml';
 
 const schema = z.object({
   title: stringRequired,
@@ -35,8 +38,8 @@ type FormSchema = z.infer<typeof schema>;
 
 type Props = NativeStackScreenProps<DetailActivityStackList, 'NewInformation'>;
 
-const NewInformationScreen = ({ navigation }: Props) => {
-  const { openSpinner, closeSpinner } = useSpinner();
+const NewInformationScreen = ({ navigation, route }: Props) => {
+  const id = route.params?.id;
   const methods = useForm<FormSchema>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -46,29 +49,55 @@ const NewInformationScreen = ({ navigation }: Props) => {
     },
   });
   const queryClient = useQueryClient();
-  const mutation = useMutation(createInformation, {
-    onSuccess: () => {
+  const { openSpinner, closeSpinner } = useSpinner();
+  const mutation = useMutation(id ? updateInformation : createInformation, {
+    onMutate: () => {
+      openSpinner();
+    },
+    onSuccess: async () => {
       const values = methods.getValues('images');
 
       if (values.length > 0) {
-        values.forEach(item => {
-          uploadImage(item);
-        });
+        await Promise.all(
+          values.map(item => {
+            if (!item.uri.includes('http')) {
+              uploadImage(item);
+            }
+          }),
+        );
       }
 
       navigation.goBack();
       queryClient.invalidateQueries([informationQueryKey]);
     },
+    onSettled: () => {
+      closeSpinner();
+    },
   });
+
+  useInformationById(id, {
+    enabled: !!id,
+    onSuccess: (data: any) => {
+      methods.reset({
+        title: data.title,
+        description: data.description,
+        images: data.images.map((image: any) => ({
+          key: image.uri,
+          uri: getS3Image(image.uri),
+        })),
+      });
+    },
+  });
+
   const activity = useActivityContext();
 
   return (
     <FormProvider {...methods}>
       <TitleContainer
-        title="New Information"
+        title={id ? 'Information' : 'New Information'}
         description="Let’s start a new adventure">
         <Input name="title" label="Title" />
-        <ImagePicker selectionLimit={1} label="Images" name="images" />
+        <ImagePicker label="Images" name="images" />
         <Input
           name="description"
           label="Description"
@@ -82,12 +111,22 @@ const NewInformationScreen = ({ navigation }: Props) => {
             if (activity && activity.id) {
               try {
                 openSpinner();
-                mutation.mutate({
-                  activityId: activity.id,
-                  title: data.title,
-                  description: data.description,
-                  images: data.images.map(image => ({ uri: image.key })),
-                });
+                if (id) {
+                  mutation.mutate({
+                    id,
+                    activityId: activity.id,
+                    title: data.title,
+                    description: data.description,
+                    images: data.images.map(image => ({ uri: image.key })),
+                  });
+                } else {
+                  mutation.mutate({
+                    activityId: activity.id,
+                    title: data.title,
+                    description: data.description,
+                    images: data.images.map(image => ({ uri: image.key })),
+                  } as any);
+                }
               } catch (error) {
                 console.log(error);
               } finally {
@@ -95,7 +134,7 @@ const NewInformationScreen = ({ navigation }: Props) => {
               }
             }
           })}>
-          Create
+          {id ? 'Update' : 'Create'}
         </Button>
       </TitleContainer>
     </FormProvider>

@@ -52,6 +52,7 @@ export const DateInput = ({
         />
       </TouchableOpacity>
       <DatePickerModal
+        validRange={{ startDate: new Date() }}
         locale="en"
         mode="range"
         visible={open}

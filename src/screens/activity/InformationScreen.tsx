@@ -1,44 +1,78 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TitleContainer } from '~/components/ui/TitleContainer';
 import CustomAppbar from '~/components/ui/Appbar';
-import { ActivityHomeTabList } from './ActivityTab';
 import {
   BottomTabHeaderProps,
   BottomTabScreenProps,
 } from '@react-navigation/bottom-tabs';
 import { useActivityContext } from './DetailStackNavigator';
-import { View, TouchableOpacity } from 'react-native';
-import { Text } from 'react-native-paper';
-import { useActivityChats } from '~/services/activity';
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  FlatList,
+} from 'react-native';
+import { Menu, Text } from 'react-native-paper';
+import { useActivityInformations } from '~/services/activity';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { ActivityHomeTabList } from './Navigator';
+import { useMutation } from '@tanstack/react-query';
+import { useSpinner } from '~/components/ui/Spinner';
+import { deleteInformation } from '~/services/information';
 
 type Props = BottomTabScreenProps<ActivityHomeTabList, 'Information'>;
 
 const InformationScreen = ({ navigation }: Props) => {
   const activity = useActivityContext();
-  const { informationBoards } = useActivityChats(activity?.id);
+  const { informationBoards, refetch, isFetching } = useActivityInformations(
+    activity?.id,
+  );
+  const { openSpinner, closeSpinner } = useSpinner();
+
+  const deleteMutation = useMutation(deleteInformation, {
+    onMutate: () => {
+      openSpinner();
+    },
+    onSuccess: () => {
+      refetch();
+    },
+    onSettled: () => {
+      closeSpinner();
+    },
+  });
 
   return (
     <TitleContainer
       title={'Information'}
       description="Let's your friend know more">
-      {informationBoards?.map(informationBoard => {
-        return (
-          <View style={{ marginBottom: 18 }} key={informationBoard.id}>
-            <InformationCard
-              onPress={() =>
-                navigation
-                  .getParent()
-                  ?.navigate('InformationDetail', { id: informationBoard.id })
-              }
-              title={informationBoard.title}
-              createdAt={informationBoard.createdAt}
-              imageCount={informationBoard._count.images}
-            />
-          </View>
-        );
-      })}
+      <FlatList
+        refreshing={isFetching}
+        onRefresh={refetch}
+        data={informationBoards}
+        ItemSeparatorComponent={() => <View style={{ height: 18 }} />}
+        renderItem={({ item }) => (
+          <InformationCard
+            onPress={() =>
+              navigation
+                .getParent()
+                ?.navigate('InformationDetail', { id: item.id })
+            }
+            title={item.title}
+            createdAt={item.createdAt}
+            imageCount={item._count.images}
+            onDelete={() => {
+              deleteMutation.mutate(item.id);
+            }}
+            onEdit={() => {
+              navigation
+                .getParent()
+                ?.navigate('NewInformation', { id: item.id });
+            }}
+          />
+        )}
+      />
     </TitleContainer>
   );
 };
@@ -48,12 +82,41 @@ const InformationCard = ({
   createdAt,
   imageCount,
   onPress,
+  onDelete,
+  onEdit,
 }: {
   title: string;
   createdAt: Date;
   imageCount: number;
   onPress: () => void;
+  onDelete: () => void;
+  onEdit: () => void;
 }) => {
+  const [visible, setVisible] = useState(false);
+  const openMenu = () => {
+    setVisible(true);
+  };
+
+  const handleDeleteAlert = () => {
+    Alert.alert(
+      'Delete',
+      'Are you sure you want to "permanently" delete information?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: onDelete,
+        },
+      ],
+    );
+  };
+
+  const closeMenu = () => {
+    setVisible(false);
+  };
   return (
     <TouchableOpacity onPress={onPress}>
       <View
@@ -65,6 +128,29 @@ const InformationCard = ({
           style={{
             backgroundColor: getColorFromDate(new Date(createdAt)),
           }}>
+          <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
+            <Menu
+              visible={visible}
+              onDismiss={closeMenu}
+              anchor={<Icon solid size={20} name="ellipsis-v" color="#fff" />}>
+              <Menu.Item
+                leadingIcon="pen"
+                onPress={() => {
+                  onEdit();
+                  closeMenu();
+                }}
+                title="Edit"
+              />
+              <Menu.Item
+                leadingIcon="delete"
+                title="Delete"
+                onPress={() => {
+                  handleDeleteAlert();
+                  closeMenu();
+                }}
+              />
+            </Menu>
+          </TouchableOpacity>
           <View
             style={{
               height: 120,
@@ -74,6 +160,8 @@ const InformationCard = ({
             }}>
             <Text
               variant="headlineSmall"
+              numberOfLines={1}
+              ellipsizeMode="tail"
               style={{ color: 'white', fontWeight: 'bold' }}>
               {title}
             </Text>
@@ -125,5 +213,17 @@ function getColorFromDate(date: Date) {
 
   return color;
 }
+
+const styles = StyleSheet.create({
+  settingIcon: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    padding: 15,
+    display: 'flex',
+    justifyContent: 'center',
+    zIndex: 999,
+  },
+});
 
 export default InformationScreen;
