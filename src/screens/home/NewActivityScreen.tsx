@@ -93,10 +93,10 @@ const Stack = createNativeStackNavigator<NewActivityStackList>();
 
 const NewActivityNavigator = (props: any) => {
   const activityEditId = props.route.params.id;
-  const { activity: editActivityData } = useActivityById(activityEditId, {});
+  const { activity: editActivityData } = useActivityById(activityEditId, {
+    enabled: !!activityEditId,
+  });
   const methods = useForm<FormSchema>({ resolver: zodResolver(schema) });
-
-  console.log('editActivityData', editActivityData);
 
   useEffect(() => {
     if (editActivityData) {

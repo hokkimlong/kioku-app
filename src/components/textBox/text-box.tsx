@@ -13,6 +13,7 @@ type TextBoxProps = PropsWithChildren<{
   message: string;
   isOnGoing: boolean;
   createdAt: string;
+  notificationTitle?: string;
 }>;
 
 const TextBox = ({
@@ -23,14 +24,18 @@ const TextBox = ({
   message,
   isOnGoing,
   createdAt,
+  notificationTitle,
 }: TextBoxProps) => {
   return (
     <View style={styles.wrapper}>
       <View style={{ width: '100%' }}>
         {isNotification && (
           <>
-            <Text style={styles.subtitle}>Let's have some fun</Text>
-            <MsgBox isUser={isUser} message="message" />
+            <Text style={styles.subtitle}>{notificationTitle}</Text>
+            <MsgBox isUser={isUser} message={message} />
+            <Text style={styles.subtitle}>
+              {format(new Date(createdAt), 'dd MMM yy HH:mm')}
+            </Text>
           </>
         )}
 
@@ -42,7 +47,6 @@ const TextBox = ({
             </Text>
           </View>
         )}
-
         {isComment && <MsgBox isUser={isUser} message={message} />}
       </View>
     </View>
