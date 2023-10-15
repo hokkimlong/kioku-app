@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {
@@ -6,13 +6,14 @@ import {
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 import HomeScreen from './HomeScreen';
-import { Appbar } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
+import { Appbar, Menu } from 'react-native-paper';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import ProfileScreen from './ProfileScreen';
 import NotificationScreen from './NotificationScreen';
 import NewActivityNavigator from './NewActivityScreen';
 import DetailActivityNavigator from '../activity/DetailStackNavigator';
 import { Activity } from '~/services/activity';
+import { useLogout, useUser } from '~/services/authentication';
 
 export type HomeStackList = {
   Home: undefined;
@@ -68,8 +69,7 @@ export const DefaultAppBar = (props: NativeStackHeaderProps) => {
           />
           <Appbar.Action
             style={defaultAppbarStyle.actionRight}
-            icon={profileIcon}
-            onPress={() => props.navigation.push('Profile')}
+            icon={ProfileIcon}
             size={30}
           />
         </>
@@ -101,8 +101,38 @@ export const backIcon = () => (
   <MaterialIcon color={'black'} size={28} name="arrow-back-ios" />
 );
 
-const profileIcon = () => (
-  <MaterialIcon color={'black'} size={30} name="alternate-email" />
-);
+const ProfileIcon = () => {
+  const [visible, setVisible] = useState(false);
+  const openMenu = () => {
+    setVisible(true);
+  };
+
+  const closeMenu = () => {
+    setVisible(false);
+  };
+
+  const { logout } = useLogout();
+  const { user } = useUser();
+  return (
+    <TouchableOpacity onPress={openMenu}>
+      <Menu
+        visible={visible}
+        onDismiss={closeMenu}
+        anchor={
+          <MaterialIcon color={'black'} size={30} name="alternate-email" />
+        }>
+        <Menu.Item leadingIcon="account" title={`@${user?.username}`} />
+        <Menu.Item
+          leadingIcon="logout"
+          onPress={() => {
+            logout();
+            closeMenu();
+          }}
+          title="Logout"
+        />
+      </Menu>
+    </TouchableOpacity>
+  );
+};
 
 export default HomeNavigator;

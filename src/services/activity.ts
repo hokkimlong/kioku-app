@@ -69,7 +69,6 @@ export const useActivityById = (id: number, options: any) => {
 export const postQueryKey = 'activity-post';
 
 export const useActivityPosts = (activityId: number | undefined) => {
-  console.log(postQueryKey, activityId);
   const { data, ...other } = useQuery<Post[]>([postQueryKey, activityId], () =>
     get<Post[]>(`/activity/${activityId}/post`),
   );

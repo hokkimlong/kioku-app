@@ -97,6 +97,10 @@ const InformationCard = ({
     setVisible(true);
   };
 
+  const closeMenu = () => {
+    setVisible(false);
+  };
+
   const handleDeleteAlert = () => {
     Alert.alert(
       'Delete',
@@ -114,9 +118,6 @@ const InformationCard = ({
     );
   };
 
-  const closeMenu = () => {
-    setVisible(false);
-  };
   return (
     <TouchableOpacity onPress={onPress}>
       <View
