@@ -7,7 +7,6 @@ import { PasswordInput } from '~/components/form/PasswordInput';
 import { TitleContainer } from '~/components/ui/TitleContainer';
 import { Button } from '~/components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import LinkButton from '~/components/ui/LinkButton';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthenticationStackList } from './Navigator';
 import { useLogin } from '~/services/authentication';
@@ -36,10 +35,6 @@ const LoginScreen = ({ navigation }: Props) => {
   const onSubmit = (formData: FormSchema) => {
     openSpinner();
     loginUser(formData)
-      .then(response => {
-        // console.log(response);
-        alert.success('Success', 'login success');
-      })
       .catch(error => {
         alert.error('fail', error.response.data.message);
       })
@@ -67,9 +62,9 @@ const LoginScreen = ({ navigation }: Props) => {
             placeholder="Enter your password"
           />
           <Button onPress={methods.handleSubmit(onSubmit)}>Login</Button>
-          <LinkButton onPress={() => navigation.push('ForgotPassword')}>
+          {/* <LinkButton onPress={() => navigation.push('ForgotPassword')}>
             Forgot password?
-          </LinkButton>
+          </LinkButton> */}
           <View style={{ flex: 1 }} />
         </KeyboardAvoidingView>
         <Button outlined onPress={() => navigation.push('Register')}>

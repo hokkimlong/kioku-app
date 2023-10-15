@@ -28,12 +28,17 @@ type ActivityProps = PropsWithChildren<{
 }>;
 
 const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
-  const [visible, setVisible] = useState(false);
   const { openSpinner, closeSpinner } = useSpinner();
   const queryClient = useQueryClient();
 
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
+  const [visible, setVisible] = useState(false);
+  const openMenu = () => {
+    setVisible(true);
+  };
+
+  const closeMenu = () => {
+    setVisible(false);
+  };
 
   const mutation = useMutation(deleteActivity, {
     onMutate: () => {
@@ -98,7 +103,7 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
                 anchor={
                   <Icon solid size={20} name="ellipsis-v" color="#fff" />
                 }>
-                {(item.users as { role: string }[])[0]?.role === 'ADMIN' ? (
+                {item.isAdmin ? (
                   <>
                     <Menu.Item
                       leadingIcon="pen"

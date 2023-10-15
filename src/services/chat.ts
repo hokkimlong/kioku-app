@@ -6,7 +6,7 @@ export type CreateMessageGroupDto = {
   message: string;
 };
 
-export type GroupChat = {
+export type Message = {
   message: string;
   user: User;
 };

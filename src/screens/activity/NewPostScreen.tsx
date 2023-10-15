@@ -6,7 +6,7 @@ import { Input } from '~/components/form/Input';
 import { ImagePicker } from '../home/NewActivityScreen';
 import { View } from 'react-native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Image, createPost } from '~/services/post';
+import { Image, createPost, updatePost, usePostById } from '~/services/post';
 import {
   DetailActivityStackList,
   useActivityContext,
@@ -16,7 +16,7 @@ import { stringRequired } from '~/components/form/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { postQueryKey } from '~/services/activity';
-import { uploadImage } from '~/utils/s3';
+import { getS3Image, uploadImage } from '~/utils/s3';
 import { useSpinner } from '~/components/ui/Spinner';
 
 const schema = z
@@ -52,7 +52,8 @@ type FormSchema = {
 
 type Props = NativeStackScreenProps<DetailActivityStackList, 'NewPost'>;
 
-const NewPostScreen = ({ navigation }: Props) => {
+const NewPostScreen = ({ navigation, route }: Props) => {
+  const id = route?.params?.id;
   const { openSpinner, closeSpinner } = useSpinner();
   const methods = useForm<FormSchema>({
     resolver: zodResolver(schema),
@@ -61,19 +62,43 @@ const NewPostScreen = ({ navigation }: Props) => {
       images: [],
     },
   });
+
+  usePostById(id, {
+    enabled: !!id,
+    onSuccess: (data: any) => {
+      methods.reset({
+        description: data.description,
+        images: data.postImages.map((image: any) => ({
+          uri: getS3Image(image.uri),
+          key: image.uri,
+        })),
+      });
+    },
+  });
+
   const queryClient = useQueryClient();
-  const mutation = useMutation(createPost, {
-    onSuccess: () => {
+  const mutation = useMutation((id ? updatePost : createPost) as any, {
+    onMutate: () => {
+      openSpinner();
+    },
+    onSuccess: async () => {
       const values = methods.getValues('images');
 
       if (values.length > 0) {
-        values.forEach(item => {
-          uploadImage(item);
-        });
+        await Promise.all(
+          values.map(item => {
+            if (!item.uri.includes('http')) {
+              uploadImage(item);
+            }
+          }),
+        );
       }
 
       navigation.goBack();
       queryClient.invalidateQueries([postQueryKey]);
+    },
+    onSettled: () => {
+      closeSpinner();
     },
   });
   const activity = useActivityContext();
@@ -81,9 +106,9 @@ const NewPostScreen = ({ navigation }: Props) => {
   return (
     <FormProvider {...methods}>
       <TitleContainer
-        title="New Post"
+        title={id ? 'Post' : 'New Post'}
         description="Let’s start a new adventure">
-        <ImagePicker selectionLimit={1} label="Images" name="images" />
+        <ImagePicker label="Images" name="images" />
         <Input
           name="description"
           label="Description"
@@ -98,10 +123,11 @@ const NewPostScreen = ({ navigation }: Props) => {
               try {
                 openSpinner();
                 mutation.mutate({
+                  id,
                   activityId: activity.id,
                   description: data.description,
                   images: data.images.map(image => ({ uri: image.key })),
-                });
+                } as any);
               } catch (error) {
                 console.log(error);
               } finally {
@@ -109,7 +135,7 @@ const NewPostScreen = ({ navigation }: Props) => {
               }
             }
           })}>
-          Create
+          {id ? 'Update' : 'Create'}
         </Button>
       </TitleContainer>
     </FormProvider>

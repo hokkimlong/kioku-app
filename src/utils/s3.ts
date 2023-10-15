@@ -18,12 +18,16 @@ export const uploadImage = async (imageFile: Image) => {
     Body: body,
   };
 
-  s3.putObject(params, (err, data) => {
-    if (err) {
-      console.log('Uploaded Image error:', err, err.stack);
-    } else {
-      console.log('Uploaded Image:', data);
-    }
+  return new Promise((resolve, reject) => {
+    s3.putObject(params, (err, data) => {
+      if (err) {
+        console.log('Uploaded Image error:', err, err.stack);
+        reject(err);
+      } else {
+        resolve(data);
+        console.log('Uploaded Image:', data);
+      }
+    });
   });
 };
 

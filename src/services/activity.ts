@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { post, get, remove, update } from './fetcher';
 import { Post } from './post';
 import { InformationBoard } from './information';
-import { GroupChat } from './chat';
+import { Message } from './chat';
 
 export type createActivityDto = {
   name: string;
@@ -39,7 +39,8 @@ export type Activity = {
   startDate: Date;
   endDate: Date;
   image: string;
-  users: {};
+  users: any[];
+  isAdmin: boolean;
   _count: {
     informations: number;
     posts: number;
@@ -85,10 +86,16 @@ export const useActivityInformations = (activityId: number | undefined) => {
   return { informationBoards: data, ...other };
 };
 
-export const useActivityChats = (activityId: number | undefined) => {
-  const { data, ...other } = useQuery<GroupChat[]>(
-    [informationQueryKey, activityId],
-    () => get<GroupChat[]>(`/activity/${activityId}/chat`),
+export const groupChatQueryKey = 'group-chat';
+
+export const useActivityChats = (
+  activityId: number | undefined,
+  options: any,
+) => {
+  const { data, ...other } = useQuery<Message[]>(
+    [groupChatQueryKey, activityId],
+    () => get<Message[]>(`/activity/${activityId}/chat`),
+    options,
   );
 
   return { groupChats: data, ...other };

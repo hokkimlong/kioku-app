@@ -5,31 +5,57 @@ import { FlatList } from 'react-native-gesture-handler';
 import { Text } from 'react-native-paper';
 import TextBox from '~/components/textBox/text-box';
 import TextInputButton from '~/components/textBox/text-input';
-import { GroupChat } from '~/services/chat';
+import { Message } from '~/services/chat';
+import { User } from '~/services/member';
 
 type ChatScreenProps = {
   title: string | undefined;
   onSend: (value: string) => void;
-  messages: GroupChat[];
+  messages: Message[] | undefined;
+  keyboardOffset: number;
+  currentUser: User | undefined;
 };
 
-const ChatCommentContainer = ({ title, onSend, messages }: ChatScreenProps) => {
-  // console.log('keyboardListener');
-
+const ChatCommentContainer = ({
+  title,
+  onSend,
+  messages,
+  currentUser,
+  keyboardOffset = -140,
+}: ChatScreenProps) => {
   return (
     <View style={styles.wrapper}>
-      {/* title */}
-      {title !== undefined && (
-        <View
+      {/* {title !== undefined && (
+        <ScrollView
           style={{
             height: 50,
             display: 'flex',
-            justifyContent: 'center',
+            // justifyContent: 'center',
             paddingHorizontal: '5%',
           }}>
-          <Text style={{ fontWeight: 'bold', fontSize: 30 }}>{title}</Text>
-        </View>
-      )}
+          <View>
+            {messages?.map(item => (
+              <TextBox
+                key={item.id}
+                // item={item}
+                // isUser={item.isUser}
+                isUser={item.user.username === currentUser.username}
+                user={item.user}
+                message={item.message}
+                isComment={true}
+                isNotification={false}
+              />
+            ))}
+          </View>
+          <View style={{ height: 45 }}>
+            <TextInputButton
+              onSend={value => {
+                onSend(value);
+              }}
+            />
+          </View>
+        </ScrollView>
+      )} */}
       {/* chat section */}
       <ScrollView
         style={{ flex: 0.9, paddingHorizontal: '5%' }}
@@ -38,13 +64,18 @@ const ChatCommentContainer = ({ title, onSend, messages }: ChatScreenProps) => {
           this.scrollView.scrollToEnd({ animated: true });
         }}>
         <View>
-          {messages?.map(item => (
+          {messages?.map((item, index) => (
             <TextBox
               key={item.id}
               user={item.user}
+              isUser={item.user.username === currentUser?.username}
               message={item.message}
-              isUser={false}
+              createdAt={item.createdAt}
               isComment={true}
+              isOnGoing={
+                index > 0 &&
+                item.user.username === messages[index - 1].user.username
+              }
               isNotification={false}
             />
           ))}
