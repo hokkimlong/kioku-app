@@ -235,7 +235,7 @@ const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
         placeholder="Search your member"
       />
       <View style={{ paddingVertical: 10 }}>
-        <Text>
+        <Text style={{ color: 'rgba(0,0,0,0.7)' }}>
           Selected {fields.length} {pluralize('member', fields.length)}
         </Text>
       </View>
@@ -306,7 +306,7 @@ const MemberListItem = ({
       style={{ marginLeft: -14, marginRight: -18 }}
       onPress={onPress}
       title={value}
-      titleStyle={{ fontWeight: 'bold' }}
+      titleStyle={{ fontWeight: 'bold', color: 'black' }}
       right={() => (
         <View
           style={{
