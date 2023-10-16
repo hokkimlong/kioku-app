@@ -36,6 +36,7 @@ export const BaseInput = forwardRef((props: TextInputProps, ref) => {
       placeholderTextColor="#7E7E7E"
       {...props}
       ref={ref as any}
+      textColor="black"
     />
   );
 });
@@ -54,6 +55,7 @@ const inputStyle = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 3,
+    color: 'rgba(0,0,0,0.7)',
   },
 });
 

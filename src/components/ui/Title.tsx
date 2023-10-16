@@ -15,5 +15,6 @@ const titleStyle = StyleSheet.create({
   root: {
     fontSize: 40,
     fontWeight: 'bold',
+    color: 'black',
   },
 });
