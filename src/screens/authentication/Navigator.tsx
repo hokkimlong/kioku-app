@@ -8,13 +8,15 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import VerificationScreen from './VerificationScreen';
 import NewPasswordScreen from './NewPasswordScreen';
 import { StyleSheet } from 'react-native';
+import ResetPasswordSuccess from './ResetPasswordSuccess';
 
 export type AuthenticationStackList = {
   Login: undefined;
   Register: undefined;
   ForgotPassword: undefined;
-  Verification: undefined;
-  NewPasswordScreen: undefined;
+  Verification: { identifier: string };
+  NewPasswordScreen: { identifier: string; validToken: string };
+  ResetPasswordSuccess: undefined;
 };
 
 const Stack = createNativeStackNavigator<AuthenticationStackList>();
@@ -30,6 +32,10 @@ const AuthenticationNavigator = () => {
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       <Stack.Screen name="Verification" component={VerificationScreen} />
       <Stack.Screen name="NewPasswordScreen" component={NewPasswordScreen} />
+      <Stack.Screen
+        name="ResetPasswordSuccess"
+        component={ResetPasswordSuccess}
+      />
     </Stack.Navigator>
   );
 };

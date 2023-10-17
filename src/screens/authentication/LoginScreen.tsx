@@ -12,11 +12,10 @@ import { AuthenticationStackList } from './Navigator';
 import { useLogin } from '~/services/authentication';
 import { alert } from '~/utils/alert';
 import { useSpinner } from '~/components/ui/Spinner';
-
-// import { useLogin } from '~/services/authentication';
+import LinkButton from '~/components/ui/LinkButton';
 
 const schema = z.object({
-  email: z.string().email().nonempty(),
+  identifier: z.string().nonempty().min(1),
   password: z.string().nonempty(),
 });
 
@@ -52,9 +51,9 @@ const LoginScreen = ({ navigation }: Props) => {
           keyboardVerticalOffset={100}>
           <Input
             keyboardType="email-address"
-            name="email"
-            label="Email"
-            placeholder="Enter your email"
+            name="identifier"
+            label="Username / Email"
+            placeholder="Enter your username or email"
           />
           <PasswordInput
             name="password"
@@ -62,9 +61,9 @@ const LoginScreen = ({ navigation }: Props) => {
             placeholder="Enter your password"
           />
           <Button onPress={methods.handleSubmit(onSubmit)}>Login</Button>
-          {/* <LinkButton onPress={() => navigation.push('ForgotPassword')}>
+          <LinkButton onPress={() => navigation.push('ForgotPassword')}>
             Forgot password?
-          </LinkButton> */}
+          </LinkButton>
           <View style={{ flex: 1 }} />
         </KeyboardAvoidingView>
         <Button outlined onPress={() => navigation.push('Register')}>

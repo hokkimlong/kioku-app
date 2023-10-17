@@ -7,41 +7,59 @@ import { Button } from '~/components/ui/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthenticationStackList } from './Navigator';
-
-// import { useLogin } from '~/services/authentication';
+import { useMutation } from '@tanstack/react-query';
+import { useSpinner } from '~/components/ui/Spinner';
+import { forgotPassword } from '~/services/authentication';
+import { stringRequired } from '~/components/form/utils';
+import { alert } from '~/utils/alert';
 
 const schema = z.object({
-  email: z.string().email().nonempty(),
+  identifier: stringRequired,
 });
 
-type FormSchema = z.infer<typeof schema>;
+export type ForgotPasswordSchema = z.infer<typeof schema>;
 
 type Props = NativeStackScreenProps<AuthenticationStackList, 'ForgotPassword'>;
 const ForgotPasswordScreen = ({ navigation }: Props) => {
-  // const { loginUser } = useLogin();
-
-  const methods = useForm<FormSchema>({
+  const methods = useForm<ForgotPasswordSchema>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (formData: FormSchema) => {
-    console.log(formData);
+  const { openSpinner, closeSpinner } = useSpinner();
+
+  const mutation = useMutation(forgotPassword, {
+    onMutate() {
+      openSpinner();
+    },
+    onSuccess(data: any) {
+      const { identifier } = data;
+      navigation.push('Verification', { identifier });
+      methods.reset({ identifier: '' });
+    },
+    onError(error: any) {
+      alert.error('Error', error.response.data.message);
+    },
+    onSettled() {
+      closeSpinner();
+    },
+  });
+
+  const onSubmit = (formData: ForgotPasswordSchema) => {
+    mutation.mutate(formData);
   };
 
   return (
     <FormProvider {...methods}>
       <TitleContainer
         title="Forgot Password"
-        description="Connect, bond, and enjoy!">
+        description="No worry. sometime we forget thing">
         <Input
           keyboardType="email-address"
-          name="email"
-          label="Email"
-          placeholder="Enter your email"
+          name="identifier"
+          label="Username / Email"
+          placeholder="Enter your username or email"
         />
-        <Button onPress={() => navigation.push('Verification')}>
-          Reset Password
-        </Button>
+        <Button onPress={methods.handleSubmit(onSubmit)}>Reset Password</Button>
       </TitleContainer>
     </FormProvider>
   );

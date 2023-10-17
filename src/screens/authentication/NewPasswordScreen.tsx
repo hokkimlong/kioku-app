@@ -7,12 +7,21 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthenticationStackList } from './Navigator';
 import { PasswordInput } from '~/components/form/PasswordInput';
+import { stringRequired } from '~/components/form/utils';
+import { resetPassword } from '~/services/authentication';
+import { useSpinner } from '~/components/ui/Spinner';
+import { useMutation } from '@tanstack/react-query';
+import { alert } from '~/utils/alert';
 
-// import { useLogin } from '~/services/authentication';
-
-const schema = z.object({
-  email: z.string().email().nonempty(),
-});
+const schema = z
+  .object({
+    newPassword: stringRequired,
+    confirmPassword: stringRequired,
+  })
+  .refine(data => data.newPassword === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
 type FormSchema = z.infer<typeof schema>;
 
@@ -20,15 +29,37 @@ type Props = NativeStackScreenProps<
   AuthenticationStackList,
   'NewPasswordScreen'
 >;
-const NewPasswordScreen = ({ navigation }: Props) => {
-  // const { loginUser } = useLogin();
+const NewPasswordScreen = ({ navigation, route }: Props) => {
+  const { identifier, validToken } = route.params;
 
   const methods = useForm<FormSchema>({
     resolver: zodResolver(schema),
   });
 
+  const { openSpinner, closeSpinner } = useSpinner();
+
+  const mutation = useMutation(resetPassword, {
+    onMutate() {
+      openSpinner();
+    },
+    onSuccess() {
+      navigation.popToTop();
+      navigation.navigate('ResetPasswordSuccess');
+    },
+    onError(error: any) {
+      alert.error('Error', error.response.data.message);
+    },
+    onSettled() {
+      closeSpinner();
+    },
+  });
+
   const onSubmit = (formData: FormSchema) => {
-    console.log(formData);
+    mutation.mutate({
+      newPassword: formData.newPassword,
+      identifier,
+      token: validToken,
+    });
   };
 
   return (
@@ -37,21 +68,16 @@ const NewPasswordScreen = ({ navigation }: Props) => {
         title="Enter new Password"
         description="Connect, bond, and enjoy!">
         <PasswordInput
-          name="password"
+          name="newPassword"
           label="New Password"
           placeholder="Enter your new password"
         />
         <PasswordInput
-          name="password"
+          name="confirmPassword"
           label="Confirm New Password"
           placeholder="Confirm you new password"
         />
-        <Button
-          onPress={() => {
-            navigation.push('');
-          }}>
-          Submit
-        </Button>
+        <Button onPress={methods.handleSubmit(onSubmit)}>Submit</Button>
       </TitleContainer>
     </FormProvider>
   );

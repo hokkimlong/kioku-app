@@ -5,6 +5,8 @@ import { RegisterFormSchema } from '~/screens/authentication/RegisterScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { alert } from '~/utils/alert';
 import { User } from './member';
+import { useSpinner } from '~/components/ui/Spinner';
+import { ForgotPasswordSchema } from '~/screens/authentication/ForgotPasswordScreen';
 
 export const useUser = () => {
   const { data, ...other } = useQuery<User>(['user'], () =>
@@ -18,21 +20,21 @@ export const accessToken = {
   async store(token: string) {
     try {
       await AsyncStorage.setItem(this.TOKEN_KEY, token);
-    } catch (e) {
+    } catch (e: any) {
       alert.error(e?.title, e?.message);
     }
   },
   async remove() {
     try {
       await AsyncStorage.removeItem(this.TOKEN_KEY);
-    } catch (e) {
+    } catch (e: any) {
       alert.error(e?.title, e?.message);
     }
   },
   async get() {
     try {
       return await AsyncStorage.getItem(this.TOKEN_KEY);
-    } catch (e) {
+    } catch (e: any) {
       alert.error(e?.title, e?.message);
     }
   },
@@ -49,23 +51,29 @@ export const useLogout = () => {
 };
 
 export const useLogin = () => {
-  // const { openSpinner, closeSpinner } = useSpinner();
+  const { openSpinner, closeSpinner } = useSpinner();
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) => {
-      return post('/auth', { email, password });
+    mutationFn: ({
+      identifier,
+      password,
+    }: {
+      identifier: string;
+      password: string;
+    }) => {
+      return post('/auth', { identifier, password });
     },
-    onSuccess(response) {
+    onSuccess(response: any) {
       if (response.access_token) {
         accessToken.store(response.access_token);
         queryClient.invalidateQueries(['user']);
       }
     },
     onMutate() {
-      // openSpinner();
+      openSpinner();
     },
     onSettled() {
-      // closeSpinner();
+      closeSpinner();
     },
   });
 
@@ -73,17 +81,33 @@ export const useLogin = () => {
 };
 
 export const useRegister = () => {
-  // const { openSpinner, closeSpinner } = useSpinner();
+  const { openSpinner, closeSpinner } = useSpinner();
   const mutation = useMutation({
     mutationFn: (formData: Omit<RegisterFormSchema, 'confirmPassword'>) => {
       return post('/auth/register', formData);
     },
     onMutate() {
-      // openSpinner();
+      openSpinner();
     },
     onSettled() {
-      // closeSpinner();
+      closeSpinner();
     },
   });
   return { ...mutation, registerUser: mutation.mutateAsync };
+};
+
+export const forgotPassword = (formData: ForgotPasswordSchema) => {
+  return post('/auth/forgot-password', formData);
+};
+
+export const verifyCode = (formData: { identifier: string; code: string }) => {
+  return post('/auth/verify-forgot-password', formData);
+};
+
+export const resetPassword = (formData: {
+  token: string;
+  newPassword: string;
+  identifier: string;
+}) => {
+  return post('/auth/reset-password', formData);
 };
