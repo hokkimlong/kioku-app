@@ -5,6 +5,8 @@ export type User = {
   id: string;
   username: string;
   email: string;
+  activities: any[];
+  posts: any[];
 };
 
 export const useUsers = (search: string) => {
