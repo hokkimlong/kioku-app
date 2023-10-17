@@ -82,6 +82,7 @@ export const DefaultAppBar = (props: NativeStackHeaderProps) => {
           <Appbar.Action
             style={defaultAppbarStyle.actionRight}
             icon={ProfileIcon}
+            onPress={() => props.navigation.push('Profile')}
             size={30}
           />
         </>
@@ -126,24 +127,25 @@ const ProfileIcon = () => {
   const { logout } = useLogout();
   const { user } = useUser();
   return (
-    <TouchableOpacity onPress={openMenu}>
-      <Menu
-        visible={visible}
-        onDismiss={closeMenu}
-        anchor={
-          <MaterialIcon color={'black'} size={30} name="alternate-email" />
-        }>
-        <Menu.Item leadingIcon="account" title={`@${user?.username}`} />
-        <Menu.Item
-          leadingIcon="logout"
-          onPress={() => {
-            logout();
-            closeMenu();
-          }}
-          title="Logout"
-        />
-      </Menu>
-    </TouchableOpacity>
+    // <TouchableOpacity onPress={openMenu}>
+    //   <Menu
+    //     visible={visible}
+    //     onDismiss={closeMenu}
+    //     anchor={
+    //       <MaterialIcon color={'black'} size={30} name="alternate-email" />
+    //     }>
+    //     <Menu.Item leadingIcon="account" title={`@${user?.username}`} />
+    //     <Menu.Item
+    //       leadingIcon="logout"
+    //       onPress={() => {
+    //         logout();
+    //         closeMenu();
+    //       }}
+    //       title="Logout"
+    //     />
+    //   </Menu>
+    // </TouchableOpacity>
+    <MaterialIcon color={'black'} size={30} name="alternate-email" />
   );
 };
 
