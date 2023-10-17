@@ -324,6 +324,8 @@ const MemberListItem = ({
 
 const deviceWidth = Dimensions.get('window').width;
 
+import { Image as ImageCompressor } from 'react-native-compressor';
+
 export const ImagePicker = ({
   name,
   label,
@@ -343,21 +345,24 @@ export const ImagePicker = ({
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleAddImage = ({ assets }: ImagePickerResponse) => {
+  const handleAddImage = async ({ assets }: ImagePickerResponse) => {
+    if (!assets?.length) {
+      return;
+    }
+    const compressedAssets = await Promise.all(
+      assets?.map(async (asset: any) => {
+        const compressed = await ImageCompressor.compress(asset.uri);
+        return {
+          key: asset.fileName,
+          uri: compressed,
+        };
+      }),
+    );
+
     if (selectionLimit === 1) {
-      replace(
-        assets?.map(asset => ({
-          key: asset.fileName,
-          uri: asset.uri,
-        })),
-      );
+      replace(compressedAssets);
     } else {
-      prepend(
-        assets?.map(asset => ({
-          key: asset.fileName,
-          uri: asset.uri,
-        })),
-      );
+      prepend(compressedAssets);
     }
 
     handleClose();
