@@ -2,12 +2,14 @@ import React from 'react';
 import PostScreen from './PostScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import MapNavigator from '../map/Navigator';
-
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Octicons from 'react-native-vector-icons/Octicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import InformationScreen from './InformationScreen';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import ChatScreen from './ChatScreen';
+import { Colors } from '~/utils/color';
 
 export type ActivityHomeTabList = {
   Home: { addScreen: string };
@@ -23,14 +25,28 @@ const Tab = createBottomTabNavigator<ActivityHomeTabList>();
 
 const ActivityTabs = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: Colors.background,
+          elevation: 0,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          borderTopWidth: 1,
+          borderColor: Colors.background,
+        },
+        tabBarActiveTintColor: Colors.primary,
+        // tabBarA
+        // tabBarBackground: () => Colors.background,
+      }}>
       <Tab.Screen
         name="Home"
         component={PostScreen}
         options={{
           ...PostScreen.navigationOptions(),
-          tabBarIcon: () => (
-            <IconFontAwesome5 name="home" size={20} color="#72d4bb" solid />
+          tabBarIcon: ({ color, size }) => (
+            <Octicons name="home" size={size} color={color} />
           ),
         }}
       />
@@ -39,8 +55,8 @@ const ActivityTabs = () => {
         component={ChatScreen}
         options={{
           // headerShown: false,
-          tabBarIcon: () => (
-            <IconFontAwesome6 name="comments" size={20} color="#72bcd4" solid />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="chatbubbles-outline" size={size} color={color} />
           ),
         }}
       />
@@ -49,12 +65,11 @@ const ActivityTabs = () => {
         component={InformationScreen}
         options={{
           ...InformationScreen.navigationOptions(),
-          tabBarIcon: () => (
-            <IconFontAwesome6
-              name="signs-post"
-              size={20}
-              color="#72d4bb"
-              solid
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="bulletin-board"
+              size={size}
+              color={color}
             />
           ),
         }}

@@ -65,16 +65,22 @@ const NewPasswordScreen = ({ navigation, route }: Props) => {
   return (
     <FormProvider {...methods}>
       <TitleContainer
-        title="Enter new Password"
+        title="Enter new password"
         description="Connect, bond, and enjoy!">
         <PasswordInput
           name="newPassword"
           label="New Password"
+          autoCapitalize="none"
+          returnKeyType="next"
+          onSubmitEditing={() => methods.setFocus('confirmPassword')}
           placeholder="Enter your new password"
         />
         <PasswordInput
           name="confirmPassword"
           label="Confirm New Password"
+          autoCapitalize="none"
+          onSubmitEditing={methods.handleSubmit(onSubmit)}
+          returnKeyType="send"
           placeholder="Confirm you new password"
         />
         <Button onPress={methods.handleSubmit(onSubmit)}>Submit</Button>

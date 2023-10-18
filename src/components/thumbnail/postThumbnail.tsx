@@ -7,13 +7,18 @@ import {
   ScrollView,
   SafeAreaView,
   Alert,
+  Dimensions,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { Text, Menu } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Image } from '~/services/post';
+import { Image, likePost } from '~/services/post';
 import { getS3Image } from '~/utils/s3';
 import { Post } from '~/services/post';
 import { useUser } from '~/services/authentication';
+import { Colors } from '~/utils/color';
+import { Image as NativeImage } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type PostProps = PropsWithChildren<{
   publisher: string;
@@ -28,6 +33,8 @@ type PostProps = PropsWithChildren<{
   onDelete: (id: number) => void;
   onEdit: (id: number) => void;
 }>;
+
+const win = Dimensions.get('window');
 
 const PostThumbnail = ({
   publisher,
@@ -56,7 +63,12 @@ const PostThumbnail = ({
   return (
     <View style={styles.wrapper}>
       <View style={styles.publisherContainer}>
-        <Text style={styles.publisher}>@{publisher}</Text>
+        <Text variant="bodyMedium" style={styles.publisher}>
+          <Text variant="bodyLarge" style={{ color: Colors.primary }}>
+            @
+          </Text>
+          {publisher}
+        </Text>
         {user?.id === post?.userId && (
           <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
             <Menu
@@ -95,48 +107,80 @@ const PostThumbnail = ({
           </TouchableOpacity>
         )}
       </View>
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView horizontal={true}>
-          {imageUrl?.map((item, index) => {
-            return (
-              <View
-                key={index}
-                style={
-                  imageUrl.length !== 1
-                    ? styles.ImageContainer
-                    : styles.SingularImageContainer
-                }>
-                <ImageBackground
+      <View style={{ marginBottom: 8 }}>
+        <Text variant="bodyMedium">{caption}</Text>
+      </View>
+      <ScrollView horizontal={true} style={{ flex: 1 }}>
+        {imageUrl?.map((item, index) => {
+          return (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start',
+                width: imageUrl.length > 1 ? win.width * 0.8 : win.width * 0.95,
+                marginRight: 5,
+              }}>
+              <TouchableWithoutFeedback>
+                <NativeImage
                   source={{ uri: getS3Image(item.uri) }}
-                  resizeMode="cover"
-                  style={styles.backgroundImage}
+                  resizeMode="contain"
+                  style={{
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: Colors.line,
+                    resizeMode: 'cover',
+                    flex: 1,
+                    aspectRatio: 0.8,
+                  }}
                 />
-              </View>
-            );
-          })}
-        </ScrollView>
-      </SafeAreaView>
-      <View>
-        <Text>{caption}</Text>
+              </TouchableWithoutFeedback>
+            </View>
+          );
+        })}
+      </ScrollView>
+      <View style={{ flexDirection: 'row', marginTop: 4 }}>
+        <Text
+          style={{ marginRight: 5, color: Colors.textColorCaption }}
+          variant="bodyMedium">
+          {`${reactionAmount} like${reactionAmount > 1 ? 's' : ''}`}
+        </Text>
+        <Text
+          variant="bodyMedium"
+          style={{
+            color: Colors.textColorCaption,
+          }}>
+          {`${commentAmount} comment${commentAmount > 1 ? 's' : ''}`}
+        </Text>
       </View>
       <View style={styles.actionContainer}>
-        <TouchableOpacity onPress={onLike}>
-          <View style={styles.actionContainer}>
-            <Icon
-              name="heart"
-              size={18}
-              color={isLike ? '#ff0000' : '#808080'}
-              solid
-            />
-            <Text style={styles.actionText}>{reactionAmount ?? 0}</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onPress}>
-          <View style={styles.actionContainer}>
-            <Icon name="comment" size={18} color="#E0D1FF" solid />
-            <Text style={styles.actionText}>{commentAmount ?? 0}</Text>
-          </View>
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity onPress={onLike}>
+            <View style={styles.actionContainer}>
+              <Ionicons
+                name={isLike ? 'heart' : 'heart-outline'}
+                size={26}
+                color={isLike ? '#ff0000' : Colors.textColorPrimary}
+              />
+              {/* <Text style={{ marginLeft: 2 }} variant="bodyLarge">
+              {reactionAmount ?? 0}
+            </Text> */}
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onPress}>
+            <View style={styles.actionContainer}>
+              <Ionicons
+                name={'chatbubble-outline'}
+                size={24}
+                color={Colors.textColorPrimary}
+              />
+              {/* <Text style={{ marginLeft: 2 }} variant="bodyLarge">
+              {commentAmount ?? 0}
+            </Text> */}
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -149,15 +193,19 @@ const styles = StyleSheet.create({
   },
   ImageContainer: {
     width: 330,
-    height: 175,
+    height: 400,
     marginRight: 5,
     borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.line,
     overflow: 'hidden',
   },
   SingularImageContainer: {
     width: 350,
-    height: 175,
+    height: 400,
     marginRight: 5,
+    borderWidth: 1,
+    borderColor: Colors.line,
     borderRadius: 10,
     overflow: 'hidden',
   },
@@ -166,13 +214,13 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   publisher: {
-    fontSize: 15,
-    marginBottom: 3,
-    fontWeight: 'bold',
+    marginBottom: 2,
   },
   actionContainer: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
     marginRight: 10,
   },
   actionText: {

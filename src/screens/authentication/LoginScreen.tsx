@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { View, KeyboardAvoidingView, Platform } from 'react-native';
+import { View } from 'react-native';
 import { z } from 'zod';
 import { Input } from '~/components/form/Input';
 import { PasswordInput } from '~/components/form/PasswordInput';
@@ -45,27 +45,27 @@ const LoginScreen = ({ navigation }: Props) => {
   return (
     <FormProvider {...methods}>
       <TitleContainer title="Login" description="Connect, bond, and enjoy!">
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
-          keyboardVerticalOffset={100}>
-          <Input
-            keyboardType="email-address"
-            name="identifier"
-            label="Username / Email"
-            placeholder="Enter your username or email"
-          />
-          <PasswordInput
-            name="password"
-            label="Password"
-            placeholder="Enter your password"
-          />
-          <Button onPress={methods.handleSubmit(onSubmit)}>Login</Button>
-          <LinkButton onPress={() => navigation.push('ForgotPassword')}>
-            Forgot password?
-          </LinkButton>
-          <View style={{ flex: 1 }} />
-        </KeyboardAvoidingView>
+        <Input
+          autoCapitalize="none"
+          keyboardType="email-address"
+          returnKeyType="next"
+          name="identifier"
+          label="Username / Email"
+          placeholder="Enter your username or email"
+          onSubmitEditing={() => methods.setFocus('password')}
+        />
+        <PasswordInput
+          autoCapitalize="none"
+          name="password"
+          label="Password"
+          placeholder="Enter your password"
+          onSubmitEditing={methods.handleSubmit(onSubmit)}
+        />
+        <Button onPress={methods.handleSubmit(onSubmit)}>Login</Button>
+        <LinkButton onPress={() => navigation.push('ForgotPassword')}>
+          Forgot password?
+        </LinkButton>
+        <View style={{ flex: 1 }} />
         <Button outlined onPress={() => navigation.push('Register')}>
           Create new account
         </Button>

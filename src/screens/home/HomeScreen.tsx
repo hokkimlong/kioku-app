@@ -16,7 +16,7 @@ const HomeScreen = ({ navigation }: Props) => {
   return (
     <TitleContainer
       scroll={false}
-      title="Activity"
+      title="Activities"
       right={
         <AddIconButton onPress={() => navigation.push('NewActivity', {})} />
       }>

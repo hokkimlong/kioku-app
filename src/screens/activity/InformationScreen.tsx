@@ -46,8 +46,8 @@ const InformationScreen = ({ navigation }: Props) => {
 
   return (
     <TitleContainer
-      title={'Information'}
-      description="Let's your friend know more">
+      title={'Informations'}
+      description="Let's your friends know more">
       <FlatList
         refreshing={isFetching}
         ListEmptyComponent={() => (

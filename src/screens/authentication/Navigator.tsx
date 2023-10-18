@@ -9,6 +9,7 @@ import VerificationScreen from './VerificationScreen';
 import NewPasswordScreen from './NewPasswordScreen';
 import { StyleSheet } from 'react-native';
 import ResetPasswordSuccess from './ResetPasswordSuccess';
+import { Colors, backgroundColor } from '~/utils/color';
 
 export type AuthenticationStackList = {
   Login: undefined;
@@ -62,7 +63,7 @@ const DefaultAppBar = (props: any) => {
 
 const style = StyleSheet.create({
   header: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.background,
     elevation: 0,
     height: 70,
   },
@@ -75,7 +76,7 @@ const style = StyleSheet.create({
 });
 
 const backIcon = () => (
-  <MaterialIcon color={'black'} size={28} name="arrow-back-ios" />
+  <MaterialIcon color={'white'} size={28} name="arrow-back-ios" />
 );
 
 export default AuthenticationNavigator;

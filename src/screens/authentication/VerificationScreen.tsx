@@ -74,6 +74,8 @@ const VerificationScreen = ({ navigation, route }: Props) => {
           name="code"
           label="Code"
           placeholder="Enter 5 digit code"
+          returnKeyType="next"
+          onSubmitEditing={() => methods.handleSubmit(onSubmit)}
         />
         <View
           style={{

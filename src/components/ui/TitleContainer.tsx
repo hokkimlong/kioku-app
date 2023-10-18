@@ -20,10 +20,12 @@ export const TitleContainer = ({
 }: FormContainerProps) => {
   return (
     <Container scroll={scroll} onPress={Keyboard.dismiss}>
-      <View style={formStyle.title}>
-        <Title>{title}</Title>
-        {right && right}
-      </View>
+      {title && (
+        <View style={formStyle.title}>
+          <Title>{title}</Title>
+          {right && right}
+        </View>
+      )}
       {description && <Description>{description}</Description>}
       <View style={formStyle.content}>{children}</View>
     </Container>

@@ -63,26 +63,38 @@ const RegisterScreen = ({ navigation }: Props) => {
 
   return (
     <FormProvider {...methods}>
-      <TitleContainer title="Register" description="Connect, bond, and enjoy!">
+      <TitleContainer title="Register" description="Join, embark, and fun!">
         <Input
           name="username"
           label="Username"
+          autoCapitalize="none"
+          onSubmitEditing={() => methods.setFocus('email')}
+          returnKeyType="next"
           placeholder="Enter your username"
         />
         <Input
           keyboardType="email-address"
+          autoCapitalize="none"
+          returnKeyType="next"
+          onSubmitEditing={() => methods.setFocus('password')}
           name="email"
           label="Email"
           placeholder="Enter your email"
         />
         <PasswordInput
           name="password"
+          autoCapitalize="none"
+          returnKeyType="next"
+          onSubmitEditing={() => methods.setFocus('confirmPassword')}
           label="Password"
           placeholder="Enter your password"
         />
         <PasswordInput
           name="confirmPassword"
+          autoCapitalize="none"
           label="Confirm Password"
+          returnKeyType="send"
+          onSubmitEditing={methods.handleSubmit(onSubmit)}
           placeholder="Confirm your password"
         />
         <Button onPress={methods.handleSubmit(onSubmit)}>Register</Button>

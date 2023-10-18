@@ -112,9 +112,9 @@ const NewPostScreen = ({ navigation, route }: Props) => {
         <Input
           name="description"
           label="Description"
-          style={{ paddingVertical: 5 }}
+          style={{ paddingVertical: 3 }}
           multiline
-          numberOfLines={8}
+          numberOfLines={5}
         />
         <View style={{ flex: 1 }} />
         <Button

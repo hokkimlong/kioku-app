@@ -2,6 +2,7 @@ import React, { PropsWithChildren, forwardRef } from 'react';
 import { useController } from 'react-hook-form';
 import { View, StyleSheet } from 'react-native';
 import { Text, TextInput, TextInputProps } from 'react-native-paper';
+import { Colors } from '~/utils/color';
 
 export interface InputProps extends TextInputProps {
   label: string;
@@ -32,11 +33,11 @@ export const BaseInput = forwardRef((props: TextInputProps, ref) => {
     <TextInput
       mode="outlined"
       outlineStyle={inputStyle.outlined}
-      outlineColor="#ECECEC"
-      placeholderTextColor="#7E7E7E"
+      outlineColor={Colors.line}
+      placeholderTextColor={Colors.textColorCaption}
       {...props}
       ref={ref as any}
-      textColor="black"
+      textColor="white"
     />
   );
 });
@@ -47,15 +48,14 @@ const inputStyle = StyleSheet.create({
   },
   outlined: {
     borderRadius: 16,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: Colors.backgroundLight,
     minHeight: 55,
     display: 'flex',
     justifyContent: 'center',
   },
   label: {
-    fontSize: 16,
-    marginBottom: 3,
-    color: 'rgba(0,0,0,0.7)',
+    marginBottom: 2,
+    color: Colors.textColorLight,
   },
 });
 

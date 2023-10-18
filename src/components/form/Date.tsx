@@ -55,6 +55,7 @@ export const DateInput = ({
         validRange={{ startDate: new Date() }}
         locale="en"
         mode="range"
+        theme="dark"
         visible={open}
         onDismiss={onDismiss}
         startDate={value.startDate}

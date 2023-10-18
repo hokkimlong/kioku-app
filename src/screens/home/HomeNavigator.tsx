@@ -16,6 +16,7 @@ import { Activity } from '~/services/activity';
 import { useLogout, useUser } from '~/services/authentication';
 import { useNotifications } from '~/services/notification';
 import ChangeUsername from './ChangeUsername';
+import { Colors } from '~/utils/color';
 
 export type HomeStackList = {
   Home: undefined;
@@ -84,7 +85,7 @@ export const DefaultAppBar = (props: NativeStackHeaderProps) => {
           </View>
           <Appbar.Action
             style={defaultAppbarStyle.actionRight}
-            icon={ProfileIcon}
+            icon={profileIcon}
             onPress={() => props.navigation.push('Profile')}
             size={30}
           />
@@ -96,8 +97,10 @@ export const DefaultAppBar = (props: NativeStackHeaderProps) => {
 
 export const defaultAppbarStyle = StyleSheet.create({
   header: {
-    backgroundColor: 'white',
-    elevation: 1,
+    backgroundColor: Colors.background,
+    // elevation: 1,
+    // borderWidth: 1,
+    // borderBottomColor: Colors.line,
     height: 55,
     justifyContent: 'space-between',
   },
@@ -110,46 +113,23 @@ export const defaultAppbarStyle = StyleSheet.create({
 });
 
 const notificationIcon = () => (
-  <Fontisto color={'black'} size={27} name="bell" />
+  <Fontisto color={Colors.textColorPrimary} size={27} name="bell" />
 );
 
 export const backIcon = () => (
-  <MaterialIcon color={'black'} size={28} name="arrow-back-ios" />
+  <MaterialIcon
+    color={Colors.textColorPrimary}
+    size={28}
+    name="arrow-back-ios"
+  />
 );
 
-const ProfileIcon = () => {
-  const [visible, setVisible] = useState(false);
-  const openMenu = () => {
-    setVisible(true);
-  };
-
-  const closeMenu = () => {
-    setVisible(false);
-  };
-
-  const { logout } = useLogout();
-  const { user } = useUser();
-  return (
-    // <TouchableOpacity onPress={openMenu}>
-    //   <Menu
-    //     visible={visible}
-    //     onDismiss={closeMenu}
-    //     anchor={
-    //       <MaterialIcon color={'black'} size={30} name="alternate-email" />
-    //     }>
-    //     <Menu.Item leadingIcon="account" title={`@${user?.username}`} />
-    //     <Menu.Item
-    //       leadingIcon="logout"
-    //       onPress={() => {
-    //         logout();
-    //         closeMenu();
-    //       }}
-    //       title="Logout"
-    //     />
-    //   </Menu>
-    // </TouchableOpacity>
-    <MaterialIcon color={'black'} size={30} name="alternate-email" />
-  );
-};
+const profileIcon = () => (
+  <MaterialIcon
+    color={Colors.textColorPrimary}
+    size={30}
+    name="alternate-email"
+  />
+);
 
 export default HomeNavigator;

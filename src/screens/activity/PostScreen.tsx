@@ -12,7 +12,7 @@ import {
 } from '@react-navigation/bottom-tabs';
 import CustomAppbar from '~/components/ui/Appbar';
 import { FlatList, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Divider, Text } from 'react-native-paper';
 import { ActivityHomeTabList } from './Navigator';
 import { useSpinner } from '~/components/ui/Spinner';
 
@@ -38,15 +38,15 @@ const PostScreen = ({ navigation }: Props) => {
     },
   });
 
-  console.log('posts', posts);
-
   return (
-    <TitleContainer title={activity?.name}>
+    <View style={{ marginLeft: 10 }}>
       <FlatList
         refreshing={isFetching}
         data={posts}
         onRefresh={refetch}
-        ItemSeparatorComponent={() => <View style={{ height: 18 }} />}
+        ItemSeparatorComponent={() => (
+          <View style={{ marginVertical: 5 }}>{/* <Divider /> */}</View>
+        )}
         keyExtractor={item => item.id.toString()}
         ListEmptyComponent={() => {
           return (
@@ -88,7 +88,7 @@ const PostScreen = ({ navigation }: Props) => {
           />
         )}
       />
-    </TitleContainer>
+    </View>
   );
 };
 

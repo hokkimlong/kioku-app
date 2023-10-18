@@ -54,10 +54,13 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
         title="Forgot Password"
         description="No worry. sometime we forget thing">
         <Input
+          autoCapitalize="none"
           keyboardType="email-address"
           name="identifier"
           label="Username / Email"
           placeholder="Enter your username or email"
+          returnKeyType="send"
+          onSubmitEditing={methods.handleSubmit(onSubmit)}
         />
         <Button onPress={methods.handleSubmit(onSubmit)}>Reset Password</Button>
       </TitleContainer>

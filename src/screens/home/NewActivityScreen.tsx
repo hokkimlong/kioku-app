@@ -152,7 +152,7 @@ const NewActivityInfo = ({ navigation, route }: NewActivityInfoProps) => {
         placeholder="Enter your activity name"
       />
       <DateInput label="Date" name="date" />
-      <ImagePicker selectionLimit={1} label="Add new image" name="image" />
+      <ImagePicker selectionLimit={1} label="Image" name="image" />
       <View style={{ flex: 1 }} />
       <Button
         outlined
@@ -229,13 +229,14 @@ const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
       title={route.params?.id ? 'Members' : 'Add Members'}
       description="Let's add your member">
       <BaseInput
+        autoCapitalize="none"
         onChangeText={(value: string) => {
           setSearch(value);
         }}
         placeholder="Search your member"
       />
       <View style={{ paddingVertical: 10 }}>
-        <Text style={{ color: 'rgba(0,0,0,0.7)' }}>
+        <Text style={{ color: Colors.textColorCaption }}>
           Selected {fields.length} {pluralize('member', fields.length)}
         </Text>
       </View>
@@ -305,14 +306,16 @@ const MemberListItem = ({
     <List.Item
       style={{ marginLeft: -14, marginRight: -18 }}
       onPress={onPress}
-      title={value}
-      titleStyle={{ fontWeight: 'bold', color: 'black' }}
+      title={`@${value.toLowerCase()}`}
+      titleStyle={{ color: Colors.textColorPrimary }}
       right={() => (
         <View
           style={{
             overflow: 'hidden',
             borderRadius: 1000,
-            backgroundColor: active ? '#479522' : '#D9D9D9',
+            borderWidth: 1,
+            borderColor: Colors.line,
+            backgroundColor: active ? Colors.primary : Colors.backgroundLight,
             width: 20,
             height: 20,
           }}
@@ -325,6 +328,8 @@ const MemberListItem = ({
 const deviceWidth = Dimensions.get('window').width;
 
 import { Image as ImageCompressor } from 'react-native-compressor';
+import { Colors } from '~/utils/color';
+import { TouchableWithoutFeedback } from 'react-native';
 
 export const ImagePicker = ({
   name,
@@ -383,7 +388,7 @@ export const ImagePicker = ({
               bottom: 0,
               left: 0,
               padding: 20,
-              backgroundColor: 'white',
+              backgroundColor: Colors.background,
             }}>
             <Button
               onPress={() => {
@@ -412,25 +417,29 @@ export const ImagePicker = ({
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <View>
-          <AddIconButton
-            style={{
-              backgroundColor: '#F5F5F5',
-              borderRadius: 20,
-              borderColor: error ? theme.colors.error : '#ECECEC',
-              borderWidth: error ? 2 : 1,
-            }}
-            size={115}
-            onPress={handleOpen}
-          />
-        </View>
+        {(selectionLimit === 1 && fields.length === 0) ||
+        selectionLimit === 0 ? (
+          <View>
+            <AddIconButton
+              style={{
+                backgroundColor: Colors.backgroundLight,
+                marginRight: 12,
+                borderRadius: 20,
+                borderColor: error ? theme.colors.error : Colors.line,
+                borderWidth: error ? 2 : 1,
+              }}
+              size={115}
+              onPress={handleOpen}
+            />
+          </View>
+        ) : null}
         {fields.map((item: Asset, index) => (
           <View
             key={item.id}
             style={{
-              marginLeft: 12,
               borderRadius: 20,
               width: 160,
+              marginRight: 12,
               height: 130,
               flex: 1,
               overflow: 'hidden',
@@ -445,18 +454,26 @@ export const ImagePicker = ({
                 top: 0,
                 right: 0,
                 zIndex: 1,
-                backgroundColor: 'white',
+                backgroundColor: Colors.background,
                 marginRight: 2,
                 marginTop: 2,
               }}
-              icon={props => <Feathericon {...props} name="x" />}
+              icon={props => (
+                <Feathericon
+                  {...props}
+                  color={Colors.textColorPrimary}
+                  name="x"
+                />
+              )}
             />
-            <NativeImage
-              style={{ width: 160, height: 130, objectFit: 'cover' }}
-              source={{
-                uri: item.uri,
-              }}
-            />
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <NativeImage
+                style={{ width: 160, height: 130, objectFit: 'cover' }}
+                source={{
+                  uri: item.uri,
+                }}
+              />
+            </TouchableWithoutFeedback>
           </View>
         ))}
       </ScrollView>

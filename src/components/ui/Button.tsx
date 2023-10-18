@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Text } from 'react-native-paper';
+import { Colors } from '~/utils/color';
 
 interface ButtonProps extends TouchableOpacityProps {
   outlined?: boolean;
@@ -43,12 +44,12 @@ const buttonStyle = StyleSheet.create({
     marginVertical: 12,
   },
   outlinedText: {
-    color: '#992967',
+    color: '#CE4B8D',
   },
   outlined: {
     borderRadius: 15,
     padding: 16,
-    backgroundColor: 'white',
+    backgroundColor: Colors.background,
     justifyContent: 'center',
     display: 'flex',
   },

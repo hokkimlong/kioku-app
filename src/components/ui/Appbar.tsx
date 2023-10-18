@@ -3,6 +3,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { Appbar as ReactPaperAppbar } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import { AddIcon } from './AddIconButton';
+import { Colors } from '~/utils/color';
 type Props = {
   onBack?: () => void;
   onAdd?: () => void;
@@ -32,12 +33,16 @@ const CustomAppbar = ({ onBack, onAdd }: Props) => {
 };
 
 const backIcon = () => (
-  <MaterialIcon color={'black'} size={28} name="arrow-back-ios" />
+  <MaterialIcon
+    color={Colors.textColorPrimary}
+    size={28}
+    name="arrow-back-ios"
+  />
 );
 
 const appbarStyle = StyleSheet.create({
   header: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.background,
     elevation: 1,
     height: 55,
     justifyContent: 'space-between',

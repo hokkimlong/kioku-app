@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Text, TextProps } from 'react-native-paper';
+import { Colors } from '~/utils/color';
 
 export const Description = (props: TextProps<any>) => {
   const { children, ...otherProps } = props;
@@ -14,6 +15,6 @@ export const Description = (props: TextProps<any>) => {
 const descriptionStyle = StyleSheet.create({
   root: {
     fontSize: 16,
-    color: '#827979',
+    color: Colors.textColorLight,
   },
 });

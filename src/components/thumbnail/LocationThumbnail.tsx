@@ -7,6 +7,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import { Text } from 'react-native-paper';
+import { Colors } from '~/utils/color';
 
 const image = {
   uri: 'https://jade-decisive-mouse-858.mypinata.cloud/ipfs/Qma4Gqhvo5cMyoryAMCzztdNFx2R3Ub9ePqpdKk8tn3Coa',
@@ -46,7 +47,7 @@ const style = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    color: 'black',
+    color: Colors.textColorPrimary,
   },
   backgroundImage: {
     flex: 1,

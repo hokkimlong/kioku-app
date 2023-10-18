@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Button, ButtonProps } from 'react-native-paper';
+import { Colors } from '~/utils/color';
 
 const LinkButton = (props: ButtonProps) => {
   const { children, onPress } = props;
@@ -8,6 +9,7 @@ const LinkButton = (props: ButtonProps) => {
     <Button
       contentStyle={buttonStyle.content}
       style={buttonStyle.root}
+      textColor={Colors.textColorPrimary}
       onPress={onPress}>
       {children}
     </Button>
