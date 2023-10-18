@@ -21,6 +21,7 @@ import { ActivityHomeTabList } from './Navigator';
 import { useMutation } from '@tanstack/react-query';
 import { useSpinner } from '~/components/ui/Spinner';
 import { deleteInformation } from '~/services/information';
+import { useUser } from '~/services/authentication';
 
 type Props = BottomTabScreenProps<ActivityHomeTabList, 'Information'>;
 
@@ -66,6 +67,7 @@ const InformationScreen = ({ navigation }: Props) => {
                 .getParent()
                 ?.navigate('InformationDetail', { id: item.id })
             }
+            authorId={item.userId}
             title={item.title}
             createdAt={item.createdAt}
             imageCount={item._count.images}
@@ -85,6 +87,7 @@ const InformationScreen = ({ navigation }: Props) => {
 };
 
 const InformationCard = ({
+  authorId,
   title,
   createdAt,
   imageCount,
@@ -92,6 +95,7 @@ const InformationCard = ({
   onDelete,
   onEdit,
 }: {
+  authorId: number;
   title: string;
   createdAt: Date;
   imageCount: number;
@@ -99,7 +103,9 @@ const InformationCard = ({
   onDelete: () => void;
   onEdit: () => void;
 }) => {
+  const { user } = useUser();
   const [visible, setVisible] = useState(false);
+
   const openMenu = () => {
     setVisible(true);
   };
@@ -136,29 +142,33 @@ const InformationCard = ({
           style={{
             backgroundColor: getColorFromDate(new Date(createdAt)),
           }}>
-          <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
-            <Menu
-              visible={visible}
-              onDismiss={closeMenu}
-              anchor={<Icon solid size={20} name="ellipsis-v" color="#fff" />}>
-              <Menu.Item
-                leadingIcon="pen"
-                onPress={() => {
-                  onEdit();
-                  closeMenu();
-                }}
-                title="Edit"
-              />
-              <Menu.Item
-                leadingIcon="delete"
-                title="Delete"
-                onPress={() => {
-                  handleDeleteAlert();
-                  closeMenu();
-                }}
-              />
-            </Menu>
-          </TouchableOpacity>
+          {Number(user?.id) === Number(authorId) && (
+            <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
+              <Menu
+                visible={visible}
+                onDismiss={closeMenu}
+                anchor={
+                  <Icon solid size={20} name="ellipsis-v" color="#fff" />
+                }>
+                <Menu.Item
+                  leadingIcon="pen"
+                  onPress={() => {
+                    onEdit();
+                    closeMenu();
+                  }}
+                  title="Edit"
+                />
+                <Menu.Item
+                  leadingIcon="delete"
+                  title="Delete"
+                  onPress={() => {
+                    handleDeleteAlert();
+                    closeMenu();
+                  }}
+                />
+              </Menu>
+            </TouchableOpacity>
+          )}
           <View
             style={{
               height: 120,

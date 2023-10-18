@@ -56,40 +56,28 @@ const ProfileScreen = () => {
         </TouchableOpacity>
       }>
       <View style={styles.infoContainer}>
-        <Icon solid name="at" size={25} color="#5badff" style={styles.icon} />
+        <Icon solid name="at" size={25} color="#000" style={styles.icon} />
         <View>
           <Text style={styles.label}>Username</Text>
           <Text style={styles.infoText}>@{user?.username}</Text>
         </View>
       </View>
       <View style={styles.infoContainer}>
-        <Icon solid name="user" size={25} color="#5badff" style={styles.icon} />
+        <Icon solid name="user" size={25} color="#000" style={styles.icon} />
         <View>
           <Text style={styles.label}>Email</Text>
           <Text style={styles.infoText}>{user?.email}</Text>
         </View>
       </View>
       <View style={styles.infoContainer}>
-        <Icon
-          solid
-          name="running"
-          size={25}
-          color="#5badff"
-          style={styles.icon}
-        />
+        <Icon solid name="running" size={25} color="#000" style={styles.icon} />
         <View>
           <Text style={styles.label}>Total Activities</Text>
           <Text style={styles.infoText}>{user?.activities.length}</Text>
         </View>
       </View>
       <View style={styles.infoContainer}>
-        <Icon
-          solid
-          name="images"
-          size={20}
-          color="#5badff"
-          style={styles.icon}
-        />
+        <Icon solid name="images" size={20} color="#000" style={styles.icon} />
         <View>
           <Text style={styles.label}>Total Posts</Text>
           <Text style={styles.infoText}>{user?.posts.length}</Text>

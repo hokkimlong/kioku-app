@@ -12,6 +12,7 @@ type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
 
 const HomeScreen = ({ navigation }: Props) => {
   const { activities, refetch, isFetching } = useActivities();
+
   return (
     <TitleContainer
       scroll={false}

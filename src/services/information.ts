@@ -24,6 +24,7 @@ export type InformationBoard = {
   description: string;
   images: Image[];
   createdAt: Date;
+  userId: number;
   _count: {
     images: number;
   };

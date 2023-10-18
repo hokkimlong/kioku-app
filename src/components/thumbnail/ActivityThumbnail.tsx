@@ -31,8 +31,6 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
   const { openSpinner, closeSpinner } = useSpinner();
   const queryClient = useQueryClient();
 
-  // console.log('ActivityItem', item);
-
   const [visible, setVisible] = useState(false);
   const openMenu = () => {
     setVisible(true);
@@ -67,7 +65,6 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
   });
 
   const handleLeaveActivity = (id: number) => {
-    console.log('leave activity', id);
     leaveMutation.mutate(id);
     closeMenu();
   };

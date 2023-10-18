@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Image } from '~/services/post';
 import { getS3Image } from '~/utils/s3';
 import { Post } from '~/services/post';
+import { useUser } from '~/services/authentication';
 
 type PostProps = PropsWithChildren<{
   publisher: string;
@@ -41,6 +42,7 @@ const PostThumbnail = ({
   onDelete,
   onEdit,
 }: PostProps) => {
+  const { user } = useUser();
   const [visible, setVisible] = useState(false);
 
   const openMenu = () => setVisible(true);
@@ -55,41 +57,43 @@ const PostThumbnail = ({
     <View style={styles.wrapper}>
       <View style={styles.publisherContainer}>
         <Text style={styles.publisher}>@{publisher}</Text>
-        <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
-          <Menu
-            visible={visible}
-            onDismiss={closeMenu}
-            anchor={<Icon solid size={20} name="ellipsis-h" color="#000" />}>
-            <Menu.Item
-              leadingIcon="pen"
-              title="Edit"
-              onPress={() => {
-                onEdit(post.id);
-                closeMenu();
-              }}
-            />
-            <Menu.Item
-              leadingIcon="delete"
-              title="Delete"
-              onPress={() => {
-                Alert.alert(
-                  'Delete',
-                  'Are you sure you want to "permanently" delete activity ?',
-                  [
-                    {
-                      text: 'Cancel',
-                      style: 'cancel',
-                    },
-                    {
-                      text: 'OK',
-                      onPress: () => handleDeleteActivity(post.id),
-                    },
-                  ],
-                );
-              }}
-            />
-          </Menu>
-        </TouchableOpacity>
+        {user?.id === post?.userId && (
+          <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
+            <Menu
+              visible={visible}
+              onDismiss={closeMenu}
+              anchor={<Icon solid size={20} name="ellipsis-h" color="#000" />}>
+              <Menu.Item
+                leadingIcon="pen"
+                title="Edit"
+                onPress={() => {
+                  onEdit(post.id);
+                  closeMenu();
+                }}
+              />
+              <Menu.Item
+                leadingIcon="delete"
+                title="Delete"
+                onPress={() => {
+                  Alert.alert(
+                    'Delete',
+                    'Are you sure you want to "permanently" delete activity ?',
+                    [
+                      {
+                        text: 'Cancel',
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'OK',
+                        onPress: () => handleDeleteActivity(post.id),
+                      },
+                    ],
+                  );
+                }}
+              />
+            </Menu>
+          </TouchableOpacity>
+        )}
       </View>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView horizontal={true}>
