@@ -15,6 +15,7 @@ import DetailActivityNavigator from '../activity/DetailStackNavigator';
 import { Activity } from '~/services/activity';
 import { useLogout, useUser } from '~/services/authentication';
 import { useNotifications } from '~/services/notification';
+import ChangeUsername from './ChangeUsername';
 
 export type HomeStackList = {
   Home: undefined;
@@ -23,6 +24,7 @@ export type HomeStackList = {
   NewActivity: { id?: number };
   Notification: undefined;
   ActivityDetail: { activity: Activity };
+  ChangeUsername: undefined;
 };
 
 const Stack = createNativeStackNavigator<HomeStackList>();
@@ -46,6 +48,7 @@ const HomeNavigator = () => {
         options={{ headerShown: false }}
         component={DetailActivityNavigator}
       />
+      <Stack.Screen name="ChangeUsername" component={ChangeUsername} />
     </Stack.Navigator>
   );
 };

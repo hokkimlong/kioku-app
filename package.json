@@ -33,6 +33,7 @@
     "react-native-loading-spinner-overlay": "^3.0.1",
     "react-native-paper": "^5.9.1",
     "react-native-paper-dates": "^0.18.14",
+    "react-native-prompt": "^1.0.0",
     "react-native-reanimated-carousel": "^3.5.1",
     "react-native-safe-area-context": "^3.4.1",
     "react-native-screens": "^3.22.1",

@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
-import { useLogout, useUser } from '~/services/authentication';
+import { editUsername, useLogout, useUser } from '~/services/authentication';
 import { TitleContainer } from '~/components/ui/TitleContainer';
 import { Text, Menu } from 'react-native-paper';
 import { Button } from '~/components/ui/Button';
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useSpinner } from '~/components/ui/Spinner';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteUser, usersQueryKey } from '~/services/member';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { HomeStackList } from './HomeNavigator';
 
-const ProfileScreen = () => {
+type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
+
+const ProfileScreen = ({ navigation }: Props) => {
+  const { openSpinner, closeSpinner } = useSpinner();
+  const queryClient = useQueryClient();
   const { logout } = useLogout();
   const { user } = useUser();
 
@@ -17,6 +26,22 @@ const ProfileScreen = () => {
 
   const closeMenu = () => {
     setVisible(false);
+  };
+
+  const deleteUserMutation = useMutation(deleteUser, {
+    onMutate: () => {
+      openSpinner();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+    onSettled: () => {
+      closeSpinner();
+    },
+  });
+
+  const handleRemoveAccount = () => {
+    deleteUserMutation.mutate();
   };
 
   return (
@@ -31,7 +56,7 @@ const ProfileScreen = () => {
             <Menu.Item
               leadingIcon="account-edit"
               onPress={() => {
-                console.log('Edit');
+                navigation.push('ChangeUsername');
                 closeMenu();
               }}
               title="Change Username"
@@ -47,7 +72,7 @@ const ProfileScreen = () => {
             <Menu.Item
               leadingIcon="account-remove"
               onPress={() => {
-                console.log('Edit');
+                handleRemoveAccount();
                 closeMenu();
               }}
               title="Delete Account"
