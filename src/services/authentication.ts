@@ -115,3 +115,7 @@ export const resetPassword = (formData: {
 export const editUsername = (formData: { username: string }) => {
   return post('/auth/edit-username', formData);
 };
+
+export const editEmail = (formData: { email: string }) => {
+  return post('/auth/edit-email', formData);
+};

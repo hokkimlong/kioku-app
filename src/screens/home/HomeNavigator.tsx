@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {
@@ -6,16 +6,15 @@ import {
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 import HomeScreen from './HomeScreen';
-import { Appbar, Badge, Menu } from 'react-native-paper';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Appbar, Badge } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
 import ProfileScreen from './ProfileScreen';
 import NotificationScreen from './NotificationScreen';
 import NewActivityNavigator from './NewActivityScreen';
 import DetailActivityNavigator from '../activity/DetailStackNavigator';
 import { Activity } from '~/services/activity';
-import { useLogout, useUser } from '~/services/authentication';
 import { useNotifications } from '~/services/notification';
-import ChangeUsername from './ChangeUsername';
+import XEditUserScreen from './EditUserScreen';
 import { Colors } from '~/utils/color';
 
 export type HomeStackList = {
@@ -25,7 +24,7 @@ export type HomeStackList = {
   NewActivity: { id?: number };
   Notification: undefined;
   ActivityDetail: { activity: Activity };
-  ChangeUsername: undefined;
+  EditUserScreen: { title: string };
 };
 
 const Stack = createNativeStackNavigator<HomeStackList>();
@@ -49,7 +48,7 @@ const HomeNavigator = () => {
         options={{ headerShown: false }}
         component={DetailActivityNavigator}
       />
-      <Stack.Screen name="ChangeUsername" component={ChangeUsername} />
+      <Stack.Screen name="EditUserScreen" component={XEditUserScreen} />
     </Stack.Navigator>
   );
 };

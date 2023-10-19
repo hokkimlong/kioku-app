@@ -2,43 +2,22 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Alert } from 'react-native';
 import { Button } from '~/components/ui/Button';
 import { TitleContainer } from '~/components/ui/TitleContainer';
-import { useSpinner } from '~/components/ui/Spinner';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { editUsername } from '~/services/authentication';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { HomeStackList } from './HomeNavigator';
 
-type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
+type EditUserDetailProps = {
+  title: string;
+  onMutation(username: string): void;
+};
 
-const ChangeUsername = ({ navigation }: Props) => {
+const EditUserDetail = ({ title, onMutation }: EditUserDetailProps) => {
   const [text, setText] = useState('');
-  const { openSpinner, closeSpinner } = useSpinner();
-  const queryClient = useQueryClient();
 
-  const editUsernameMutation = useMutation(editUsername, {
-    onMutate: () => {
-      openSpinner();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries();
-      navigation.goBack();
-    },
-    onSettled: () => {
-      closeSpinner();
-    },
-  });
-
-  const handleEditUsername = () => {
-    // console.log('text', text);
-    editUsernameMutation.mutate({ username: text });
-  };
   return (
-    <TitleContainer title="Change Username">
+    <TitleContainer title={`Change ${title}`}>
       <View style={styles.root}>
         <TextInput
           value={text}
           multiline
-          placeholder="New Username"
+          placeholder={`New ${title}`}
           placeholderTextColor="rgba(0,0,0,0.5)"
           onChangeText={newText => setText(newText)}
           style={styles.textInput}
@@ -56,9 +35,7 @@ const ChangeUsername = ({ navigation }: Props) => {
                   },
                   {
                     text: 'OK',
-                    onPress: () =>
-                      text.length !== 0 &&
-                      editUsernameMutation.mutate({ username: text }),
+                    onPress: () => text.length !== 0 && onMutation(text),
                   },
                 ],
               );
@@ -84,7 +61,7 @@ const styles = StyleSheet.create({
     color: 'black',
     borderRadius: 10,
     paddingHorizontal: 10,
-    backgroundColor: 'rgba(0,0,0,0.08)',
+    backgroundColor: 'white',
   },
   buttonContainer: {
     width: '50%',
@@ -92,4 +69,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChangeUsername;
+export default EditUserDetail;

@@ -52,11 +52,13 @@ const ProfileScreen = ({ navigation }: Props) => {
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            anchor={<Icon solid size={20} name="edit" color="#000" />}>
+            anchor={<Icon solid size={20} name="edit" color="#fff" />}>
             <Menu.Item
               leadingIcon="account-edit"
               onPress={() => {
-                navigation.push('ChangeUsername');
+                navigation.push('EditUserScreen', {
+                  title: 'Username',
+                });
                 closeMenu();
               }}
               title="Change Username"
@@ -64,7 +66,9 @@ const ProfileScreen = ({ navigation }: Props) => {
             <Menu.Item
               leadingIcon="email-edit"
               onPress={() => {
-                console.log('Edit');
+                navigation.push('EditUserScreen', {
+                  title: 'Email',
+                });
                 closeMenu();
               }}
               title="Change Email"
