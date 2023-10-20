@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/native-stack';
 import HomeScreen from './HomeScreen';
 import { Appbar, Badge, Menu } from 'react-native-paper';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import ProfileScreen from './ProfileScreen';
 import NotificationScreen from './NotificationScreen';
 import NewActivityNavigator from './NewActivityScreen';
@@ -70,6 +70,16 @@ export const DefaultAppBar = (props: NativeStackHeaderProps) => {
         />
       ) : (
         <>
+          <Image
+            style={{
+              width: 40,
+              height: 40,
+              marginLeft: 20,
+              objectFit: 'scale-down',
+            }}
+            source={require('../../assets/logo/logo.png')}
+          />
+          <Appbar.Content />
           <View>
             <Appbar.Action
               style={defaultAppbarStyle.action}

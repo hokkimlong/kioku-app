@@ -5,7 +5,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackList } from './HomeNavigator';
 import { useActivities } from '~/services/activity';
 import ActivityThumbnail from '~/components/thumbnail/ActivityThumbnail';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
@@ -29,6 +29,7 @@ const HomeScreen = ({ navigation }: Props) => {
             No activities
           </Text>
         )}
+        ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
         refreshing={isFetching}
         data={activities}
         renderItem={({ item }) => (

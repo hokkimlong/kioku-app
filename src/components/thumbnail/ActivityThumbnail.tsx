@@ -1,13 +1,15 @@
 import React, { PropsWithChildren, useState } from 'react';
 import { Activity, leaveActivity } from '~/services/activity';
 import { Menu, Text } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import {
   View,
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Alert,
+  Image,
+  Dimensions,
 } from 'react-native';
 import {
   differenceInDays,
@@ -20,12 +22,17 @@ import { deleteActivity } from '~/services/activity';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { activityQueryKey } from '~/services/activity';
 import { useSpinner } from '../ui/Spinner';
+import { Colors } from '~/utils/color';
+import { pluralize } from '~/utils/pluralize';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type ActivityProps = PropsWithChildren<{
   item: Activity;
   onPress: () => void;
   onEdit: (id: number) => void;
 }>;
+
+const win = Dimensions.get('window');
 
 const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
   const { openSpinner, closeSpinner } = useSpinner();
@@ -104,91 +111,181 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
       : `${differenceMinutes} minutes remaining`;
 
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.wrapper}>
-        <ImageBackground
-          source={{ uri: item.image ? getS3Image(item.image) : '' }}>
-          <View style={styles.innerContainer}>
-            <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
-              <Menu
-                visible={visible}
-                onDismiss={closeMenu}
-                anchor={
-                  <Icon solid size={20} name="ellipsis-v" color="#fff" />
-                }>
-                {item.isAdmin ? (
-                  <>
-                    <Menu.Item
-                      leadingIcon="pen"
-                      onPress={() => {
-                        onEdit(item.id);
-                        closeMenu();
-                      }}
-                      title="Edit"
-                    />
-                    <Menu.Item
-                      leadingIcon="delete"
-                      title="Delete"
-                      onPress={() => {
-                        handleDeleteAlert(item.id);
-                      }}
-                    />
-                  </>
-                ) : (
-                  <Menu.Item
-                    leadingIcon="delete"
-                    title="Leave Activity"
-                    onPress={() => {
-                      handleLeaveActivity(item.id);
-                    }}
-                  />
-                )}
-              </Menu>
-            </TouchableOpacity>
+    <TouchableWithoutFeedback>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}>
+        {differentDays > 0 && (
+          <View>
+            <Text variant="bodyLarge">
+              {format(new Date(item.startDate), 'MMM')}
+            </Text>
+            <Text variant="headlineLarge">
+              {format(new Date(item.startDate), 'dd')}
+            </Text>
+          </View>
+        )}
+        <View>
+          <View>
+            <TouchableWithoutFeedback onPress={onPress}>
+              <View>
+                <Image
+                  source={{ uri: item.image ? getS3Image(item.image) : '' }}
+                  style={{
+                    width: win.width * (differentDays > 0 ? 0.7 : 0.85),
+                    height: 150,
+                    objectFit: 'cover',
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    borderColor: Colors.line,
+                  }}
+                />
+              </View>
+            </TouchableWithoutFeedback>
             <View>
-              <Text
-                variant="headlineSmall"
-                style={{
-                  color: 'white',
-                  textTransform: 'uppercase',
-                  fontWeight: 'bold',
-                }}>
-                {item.name}
-              </Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableWithoutFeedback onPress={onPress}>
                 <Text
                   variant="bodyLarge"
-                  style={{
-                    color: 'white',
-                    fontSize: 15,
-                  }}>
-                  {format(new Date(item.startDate), 'dd MMM yyyy')}
+                  style={{ marginVertical: 2, width: win.width * 0.7 }}>
+                  {item.name}
                 </Text>
-                <Text
-                  variant="bodyMedium"
-                  style={{ marginLeft: 10, color: 'white' }}>
-                  {differenceMinutes > 0 && remaining}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.mediaContainer}>
-              <View style={styles.actionContainer}>
-                <Icon name="user" size={18} color="white" solid />
-                <Text style={styles.mediaText}>{item._count.users}</Text>
-              </View>
-              <View style={styles.actionContainer}>
-                <Icon name="film" size={18} color="white" solid />
-                <Text style={styles.mediaText}>{item._count.posts}</Text>
-              </View>
-              <View style={styles.actionContainer}>
-                <Icon name="newspaper" size={18} color="white" solid />
-                <Text style={styles.mediaText}>{item._count.informations}</Text>
+              </TouchableWithoutFeedback>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text
+                    style={{
+                      marginRight: 4,
+                      color: Colors.textColorCaptionLight,
+                    }}>
+                    {item._count.users} {pluralize('member', item._count.users)}{' '}
+                    •
+                  </Text>
+                  <Text
+                    style={{
+                      marginRight: 4,
+                      color: Colors.textColorCaptionLight,
+                    }}>
+                    {item._count.posts} {pluralize('post', item._count.posts)} •
+                  </Text>
+                  <Text
+                    style={{
+                      marginRight: 4,
+                      color: Colors.textColorCaptionLight,
+                    }}>
+                    {item._count.informations}{' '}
+                    {pluralize('information', item._count.informations)}
+                  </Text>
+                </View>
+                <View>
+                  <TouchableOpacity
+                  // style={styles.settingIcon}
+                  // onPress={() => setPopup(true)}
+                  >
+                    <Icon
+                      size={26}
+                      name="dots-horizontal"
+                      color={Colors.textColorPrimary}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
-        </ImageBackground>
+        </View>
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
+
+    // <TouchableOpacity onPress={onPress}>
+    //   <View style={styles.wrapper}>
+    //     <ImageBackground
+    //       source={{ uri: item.image ? getS3Image(item.image) : '' }}>
+    //       <View style={styles.innerContainer}>
+    //         <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
+    //           <Menu
+    //             visible={visible}
+    //             onDismiss={closeMenu}
+    //             anchor={
+    //               <Icon solid size={20} name="ellipsis-v" color="#fff" />
+    //             }>
+    //             {item.isAdmin ? (
+    //               <>
+    //                 <Menu.Item
+    //                   leadingIcon="pen"
+    //                   onPress={() => {
+    //                     onEdit(item.id);
+    //                     closeMenu();
+    //                   }}
+    //                   title="Edit"
+    //                 />
+    //                 <Menu.Item
+    //                   leadingIcon="delete"
+    //                   title="Delete"
+    //                   onPress={() => {
+    //                     handleDeleteAlert(item.id);
+    //                   }}
+    //                 />
+    //               </>
+    //             ) : (
+    //               <Menu.Item
+    //                 leadingIcon="delete"
+    //                 title="Leave Activity"
+    //                 onPress={() => {
+    //                   handleLeaveActivity(item.id);
+    //                 }}
+    //               />
+    //             )}
+    //           </Menu>
+    //         </TouchableOpacity>
+    //         <View>
+    //           <Text
+    //             variant="headlineSmall"
+    //             style={{
+    //               color: 'white',
+    //               textTransform: 'uppercase',
+    //               fontWeight: 'bold',
+    //             }}>
+    //             {item.name}
+    //           </Text>
+    //           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    //             <Text
+    //               variant="bodyLarge"
+    //               style={{
+    //                 color: 'white',
+    //                 fontSize: 15,
+    //               }}>
+    //               {format(new Date(item.startDate), 'dd MMM yyyy')}
+    //             </Text>
+    //             <Text
+    //               variant="bodyMedium"
+    //               style={{ marginLeft: 10, color: 'white' }}>
+    //               {differenceMinutes > 0 && remaining}
+    //             </Text>
+    //           </View>
+    //         </View>
+    //         <View style={styles.mediaContainer}>
+    //           <View style={styles.actionContainer}>
+    //             <Icon name="user" size={18} color="white" solid />
+    //             <Text style={styles.mediaText}>{item._count.users}</Text>
+    //           </View>
+    //           <View style={styles.actionContainer}>
+    //             <Icon name="film" size={18} color="white" solid />
+    //             <Text style={styles.mediaText}>{item._count.posts}</Text>
+    //           </View>
+    //           <View style={styles.actionContainer}>
+    //             <Icon name="newspaper" size={18} color="white" solid />
+    //             <Text style={styles.mediaText}>{item._count.informations}</Text>
+    //           </View>
+    //         </View>
+    //       </View>
+    //     </ImageBackground>
+    //   </View>
+    // </TouchableOpacity>
   );
 };
 

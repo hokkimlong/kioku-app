@@ -1,17 +1,21 @@
-import React, { PropsWithChildren, useState } from 'react';
+import React, {
+  PropsWithChildren,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   View,
-  ImageBackground,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   Alert,
   Dimensions,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { Text, Menu } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { Text, Menu, Modal, Portal, IconButton } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Image, likePost } from '~/services/post';
 import { getS3Image } from '~/utils/s3';
 import { Post } from '~/services/post';
@@ -19,6 +23,8 @@ import { useUser } from '~/services/authentication';
 import { Colors } from '~/utils/color';
 import { Image as NativeImage } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { formatDuration } from '~/utils/date';
+import { Button } from '../ui/Button';
 
 type PostProps = PropsWithChildren<{
   publisher: string;
@@ -52,13 +58,13 @@ const PostThumbnail = ({
   const { user } = useUser();
   const [visible, setVisible] = useState(false);
 
-  const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-  const handleDeleteActivity = (id: number) => {
-    onDelete(id);
-    closeMenu();
-  };
+  const [deletePostConfirm, setDeletePostConfirm] = useState(false);
+
+  const [modal, setModal] = useState(false);
+  const [popup, setPopup] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   return (
     <View style={styles.wrapper}>
@@ -69,51 +75,43 @@ const PostThumbnail = ({
           </Text>
           {publisher}
         </Text>
-        {user?.id === post?.userId && (
-          <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
-            <Menu
-              visible={visible}
-              onDismiss={closeMenu}
-              anchor={<Icon solid size={20} name="ellipsis-h" color="#000" />}>
-              <Menu.Item
-                leadingIcon="pen"
-                title="Edit"
-                onPress={() => {
-                  onEdit(post.id);
-                  closeMenu();
-                }}
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginRight: 10,
+          }}>
+          <Text
+            variant="bodyMedium"
+            style={{ color: Colors.textColorCaptionLight, marginRight: 10 }}>
+            {formatDuration(post?.createdAt)}
+          </Text>
+          {user?.id === post?.userId && (
+            <TouchableOpacity
+              style={styles.settingIcon}
+              onPress={() => setPopup(true)}>
+              <Icon
+                size={26}
+                name="dots-horizontal"
+                color={Colors.textColorPrimary}
               />
-              <Menu.Item
-                leadingIcon="delete"
-                title="Delete"
-                onPress={() => {
-                  Alert.alert(
-                    'Delete',
-                    'Are you sure you want to "permanently" delete activity ?',
-                    [
-                      {
-                        text: 'Cancel',
-                        style: 'cancel',
-                      },
-                      {
-                        text: 'OK',
-                        onPress: () => handleDeleteActivity(post.id),
-                      },
-                    ],
-                  );
-                }}
-              />
-            </Menu>
-          </TouchableOpacity>
-        )}
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
       <View style={{ marginBottom: 8 }}>
         <Text variant="bodyMedium">{caption}</Text>
       </View>
-      <ScrollView horizontal={true} style={{ flex: 1 }}>
+      <ScrollView
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        pagingEnabled={true}
+        decelerationRate={0.85}
+        snapToInterval={win.width * 0.8 + 5}>
         {imageUrl?.map((item, index) => {
           return (
             <View
+              key={index}
               style={{
                 flex: 1,
                 flexDirection: 'row',
@@ -122,7 +120,13 @@ const PostThumbnail = ({
                 width: imageUrl.length > 1 ? win.width * 0.8 : win.width * 0.95,
                 marginRight: 5,
               }}>
-              <TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  setActiveIndex(index);
+                  setTimeout(() => {
+                    setModal(true);
+                  }, 1);
+                }}>
                 <NativeImage
                   source={{ uri: getS3Image(item.uri) }}
                   resizeMode="contain"
@@ -163,9 +167,6 @@ const PostThumbnail = ({
                 size={26}
                 color={isLike ? '#ff0000' : Colors.textColorPrimary}
               />
-              {/* <Text style={{ marginLeft: 2 }} variant="bodyLarge">
-              {reactionAmount ?? 0}
-            </Text> */}
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={onPress}>
@@ -175,14 +176,201 @@ const PostThumbnail = ({
                 size={24}
                 color={Colors.textColorPrimary}
               />
-              {/* <Text style={{ marginLeft: 2 }} variant="bodyLarge">
-              {commentAmount ?? 0}
-            </Text> */}
             </View>
           </TouchableOpacity>
         </View>
       </View>
+      <ImageSlider
+        images={imageUrl}
+        open={modal}
+        activeIndex={activeIndex}
+        onClose={() => setModal(false)}
+      />
+      <PopupActions open={popup} onClose={() => setPopup(false)}>
+        <Button
+          onPress={() => {
+            setPopup(false);
+            onEdit(post.id);
+          }}>
+          Edit
+        </Button>
+        <Button
+          outlined
+          onPress={() => {
+            setPopup(false);
+            setDeletePostConfirm(true);
+          }}>
+          Delete
+        </Button>
+      </PopupActions>
+      <PopupMessage
+        onCancel={() => setDeletePostConfirm(false)}
+        onConfirm={() => {
+          setDeletePostConfirm(false);
+          onDelete(post.id);
+        }}
+        open={deletePostConfirm}
+        onClose={() => setDeletePostConfirm(false)}
+        title={'Delete Post'}
+        message={'Are you sure you want to delete this post?'}
+      />
     </View>
+  );
+};
+
+const PopupMessage = ({
+  open,
+  onClose,
+  title,
+  message,
+  onConfirm,
+  onCancel,
+}: any) => {
+  return (
+    <Portal>
+      <Modal
+        style={{ position: 'relative' }}
+        visible={open}
+        onDismiss={onClose}>
+        <View
+          style={{
+            position: 'absolute',
+            width: win.width,
+            bottom: 0,
+            left: 0,
+            padding: 20,
+            backgroundColor: Colors.background,
+          }}>
+          <Text
+            variant="titleLarge"
+            style={{ marginBottom: 10, color: Colors.textColorPrimary }}>
+            {title}
+          </Text>
+          <Text variant="bodyLarge">{message}</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              marginTop: 20,
+            }}>
+            <Button onPress={onCancel} outlined style={{ marginRight: 10 }}>
+              Cancel
+            </Button>
+            <Button onPress={onConfirm}>Confirm</Button>
+          </View>
+        </View>
+      </Modal>
+    </Portal>
+  );
+};
+
+const PopupActions = ({ open, onClose, children }: any) => {
+  return (
+    <Portal>
+      <Modal
+        style={{ position: 'relative' }}
+        visible={open}
+        onDismiss={onClose}>
+        <View
+          style={{
+            position: 'absolute',
+            width: win.width,
+            bottom: 0,
+            left: 0,
+            padding: 20,
+            backgroundColor: Colors.background,
+          }}>
+          {children}
+        </View>
+      </Modal>
+    </Portal>
+  );
+};
+
+export const ImageSlider = ({
+  images,
+  open,
+  activeIndex,
+  onClose,
+}: {
+  activeIndex: number;
+  images: any[];
+  open: boolean;
+  onClose: () => void;
+}) => {
+  const scrollRef = useRef(null);
+
+  return (
+    <Portal>
+      <Modal
+        visible={open}
+        contentContainerStyle={{
+          flex: 1,
+          backgroundColor: Colors.background,
+        }}
+        onDismiss={onClose}>
+        <IconButton
+          onPress={onClose}
+          icon={'close'}
+          iconColor={Colors.textColorPrimary}
+          style={{
+            backgroundColor: Colors.backgroundLight,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            margin: 10,
+            zIndex: 999,
+          }}
+        />
+        <ScrollView
+          key={activeIndex}
+          ref={ref => {
+            scrollRef.current = ref;
+            ref?.scrollTo({
+              x: activeIndex * win.width,
+              y: 0,
+              animated: false,
+            });
+          }}
+          onLayout={() => {
+            scrollRef.current?.scrollTo({
+              x: activeIndex * win.width,
+              y: 0,
+              animated: false,
+            });
+          }}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled={true}
+          decelerationRate={0.85}
+          scrollEnabled
+          snapToInterval={win.width}
+          style={{ flex: 1 }}>
+          {images?.map((item, index) => {
+            return (
+              <TouchableWithoutFeedback key={index}>
+                <NativeImage
+                  source={{
+                    uri:
+                      item.uri.includes('file://') || item.uri.includes('http')
+                        ? item.uri
+                        : getS3Image(item.uri),
+                  }}
+                  resizeMode="contain"
+                  style={{
+                    resizeMode: 'contain',
+                    flex: 1,
+                    alignItems: 'center',
+                    width: win.width,
+                    height: win.height,
+                  }}
+                />
+              </TouchableWithoutFeedback>
+            );
+          })}
+        </ScrollView>
+      </Modal>
+    </Portal>
   );
 };
 
@@ -231,6 +419,7 @@ const styles = StyleSheet.create({
   publisherContainer: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
 });

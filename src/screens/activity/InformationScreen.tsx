@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TitleContainer } from '~/components/ui/TitleContainer';
 import CustomAppbar from '~/components/ui/Appbar';
 import {
@@ -31,6 +31,12 @@ const InformationScreen = ({ navigation }: Props) => {
     activity?.id,
   );
   const { openSpinner, closeSpinner } = useSpinner();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: activity?.name,
+    });
+  }, []);
 
   const deleteMutation = useMutation(deleteInformation, {
     onMutate: () => {
@@ -205,7 +211,8 @@ InformationScreen.navigationOptions = () => {
     header: (props: BottomTabHeaderProps) => {
       return (
         <CustomAppbar
-          onBack={props.navigation.goBack}
+          onBack={() => props.navigation.getParent()?.navigate('Home')}
+          title={props.options.headerTitle}
           onAdd={() => props.navigation.navigate('NewInformation')}
         />
       );

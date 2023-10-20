@@ -2,12 +2,10 @@ import React from 'react';
 import PostScreen from './PostScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Octicons from 'react-native-vector-icons/Octicons';
+import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import InformationScreen from './InformationScreen';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import ChatScreen from './ChatScreen';
 import { Colors } from '~/utils/color';
 
@@ -46,7 +44,7 @@ const ActivityTabs = () => {
         options={{
           ...PostScreen.navigationOptions(),
           tabBarIcon: ({ color, size }) => (
-            <Octicons name="home" size={size} color={color} />
+            <Feather name="activity" size={size} color={color} />
           ),
         }}
       />
@@ -56,7 +54,7 @@ const ActivityTabs = () => {
         options={{
           // headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubbles-outline" size={size} color={color} />
+            <AntDesign name="message1" size={size} color={color} />
           ),
         }}
       />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TitleContainer } from '~/components/ui/TitleContainer';
 import { postQueryKey, useActivityPosts } from '~/services/activity';
 import { useActivityContext } from './DetailStackNavigator';
@@ -23,6 +23,12 @@ const PostScreen = ({ navigation }: Props) => {
   const { posts, refetch, isFetching } = useActivityPosts(activity?.id);
   const queryClient = useQueryClient();
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: activity?.name,
+    });
+  }, []);
+
   const likeMutation = useMutation(likePost);
   const { openSpinner, closeSpinner } = useSpinner();
 
@@ -44,6 +50,7 @@ const PostScreen = ({ navigation }: Props) => {
         refreshing={isFetching}
         data={posts}
         onRefresh={refetch}
+        showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => (
           <View style={{ marginVertical: 5 }}>{/* <Divider /> */}</View>
         )}
@@ -98,6 +105,7 @@ PostScreen.navigationOptions = () => {
       return (
         <CustomAppbar
           onBack={props.navigation.goBack}
+          title={props.options.headerTitle}
           onAdd={() => props.navigation.navigate('NewPost')}
         />
       );

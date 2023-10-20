@@ -1,15 +1,16 @@
 import React from 'react';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { Appbar as ReactPaperAppbar } from 'react-native-paper';
+import { Appbar as ReactPaperAppbar, Text } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import { AddIcon } from './AddIconButton';
 import { Colors } from '~/utils/color';
 type Props = {
   onBack?: () => void;
   onAdd?: () => void;
+  title?: string;
 };
 
-const CustomAppbar = ({ onBack, onAdd }: Props) => {
+const CustomAppbar = ({ onBack, onAdd, title }: Props) => {
   return (
     <ReactPaperAppbar.Header style={appbarStyle.header}>
       {onBack && (
@@ -19,6 +20,9 @@ const CustomAppbar = ({ onBack, onAdd }: Props) => {
           size={28}
           onPress={onBack}
         />
+      )}
+      {title && (
+        <ReactPaperAppbar.Content title={title} titleStyle={{ fontSize: 16 }} />
       )}
       {onAdd && (
         <ReactPaperAppbar.Action

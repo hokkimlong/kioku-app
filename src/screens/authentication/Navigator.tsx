@@ -7,7 +7,7 @@ import ForgotPasswordScreen from './ForgotPasswordScreen';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import VerificationScreen from './VerificationScreen';
 import NewPasswordScreen from './NewPasswordScreen';
-import { StyleSheet } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import ResetPasswordSuccess from './ResetPasswordSuccess';
 import { Colors, backgroundColor } from '~/utils/color';
 
@@ -51,12 +51,34 @@ const DefaultAppBar = (props: any) => {
           onPress={props.navigation.goBack}
           size={28}
         />
-      ) : null}
+      ) : (
+        <Image
+          style={{
+            width: 80,
+            height: 50,
+            marginLeft: 10,
+            objectFit: 'contain',
+          }}
+          source={require('../../assets/logo/logo.png')}
+        />
+      )}
+
       <Appbar.Content
         title={props.options?.headerTitle}
         color={props.options.headerTintColor}
         titleStyle={style.titleStyle}
       />
+      {props.back && (
+        <Image
+          style={{
+            width: 80,
+            height: 50,
+            marginRight: 10,
+            objectFit: 'contain',
+          }}
+          source={require('../../assets/logo/logo.png')}
+        />
+      )}
     </Appbar.Header>
   );
 };

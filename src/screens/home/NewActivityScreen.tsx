@@ -330,6 +330,7 @@ const deviceWidth = Dimensions.get('window').width;
 import { Image as ImageCompressor } from 'react-native-compressor';
 import { Colors } from '~/utils/color';
 import { TouchableWithoutFeedback } from 'react-native';
+import { ImageSlider } from '~/components/thumbnail/postThumbnail';
 
 export const ImagePicker = ({
   name,
@@ -373,6 +374,10 @@ export const ImagePicker = ({
     handleClose();
   };
 
+  const [modal, setModal] = useState(false);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
   return (
     <View>
       <Portal>
@@ -412,6 +417,7 @@ export const ImagePicker = ({
       <Label label={label} />
       <ScrollView
         horizontal
+        showsHorizontalScrollIndicator={false}
         contentContainerStyle={{
           paddingRight: 28,
           justifyContent: 'center',
@@ -441,6 +447,8 @@ export const ImagePicker = ({
               width: 160,
               marginRight: 12,
               height: 130,
+              borderWidth: 1,
+              borderColor: Colors.line,
               flex: 1,
               overflow: 'hidden',
               position: 'relative',
@@ -466,7 +474,11 @@ export const ImagePicker = ({
                 />
               )}
             />
-            <TouchableWithoutFeedback onPress={() => {}}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setActiveIndex(index);
+                setModal(true);
+              }}>
               <NativeImage
                 style={{ width: 160, height: 130, objectFit: 'cover' }}
                 source={{
@@ -477,6 +489,14 @@ export const ImagePicker = ({
           </View>
         ))}
       </ScrollView>
+      <ImageSlider
+        open={modal}
+        activeIndex={activeIndex}
+        images={fields}
+        onClose={() => {
+          setModal(false);
+        }}
+      />
     </View>
   );
 };

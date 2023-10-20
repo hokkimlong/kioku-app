@@ -7,4 +7,5 @@ export const Colors = {
   textColorLight: '#D5D5D5',
   textColorPrimary: 'white',
   textColorCaption: '#D5D5D5',
+  textColorCaptionLight: 'gray',
 };
