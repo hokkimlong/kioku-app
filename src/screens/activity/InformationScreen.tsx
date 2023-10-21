@@ -12,16 +12,27 @@ import {
   StyleSheet,
   Alert,
   FlatList,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { Menu, Text } from 'react-native-paper';
 import { useActivityInformations } from '~/services/activity';
 
-import Icon from 'react-native-vector-icons/FontAwesome5';
+// import Icon from 'react-native-vector-icons/FontAwesome5';
+
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ActivityHomeTabList } from './Navigator';
 import { useMutation } from '@tanstack/react-query';
 import { useSpinner } from '~/components/ui/Spinner';
 import { deleteInformation } from '~/services/information';
 import { useUser } from '~/services/authentication';
+import { Colors } from '~/utils/color';
+import { pluralize } from '~/utils/pluralize';
+import { formatDuration } from '~/utils/date';
+import {
+  PopupActions,
+  PopupMessage,
+} from '~/components/thumbnail/postThumbnail';
+import { Button } from '~/components/ui/Button';
 
 type Props = BottomTabScreenProps<ActivityHomeTabList, 'Information'>;
 
@@ -51,10 +62,16 @@ const InformationScreen = ({ navigation }: Props) => {
   });
 
   return (
-    <TitleContainer
-      title={'Informations'}
-      description="Let's your friends know more">
+    <View style={{ flex: 1 }}>
+      <View>
+        <TitleContainer
+          title={'Informations'}
+          description="Let's your friends know more"
+        />
+      </View>
       <FlatList
+        showsVerticalScrollIndicator={false}
+        style={{ paddingHorizontal: 20, marginTop: 10 }}
         refreshing={isFetching}
         ListEmptyComponent={() => (
           <Text
@@ -73,7 +90,8 @@ const InformationScreen = ({ navigation }: Props) => {
                 .getParent()
                 ?.navigate('InformationDetail', { id: item.id })
             }
-            authorId={item.userId}
+            description={item.description}
+            user={item.user}
             title={item.title}
             createdAt={item.createdAt}
             imageCount={item._count.images}
@@ -88,7 +106,7 @@ const InformationScreen = ({ navigation }: Props) => {
           />
         )}
       />
-    </TitleContainer>
+    </View>
   );
 };
 
@@ -100,6 +118,8 @@ const InformationCard = ({
   onPress,
   onDelete,
   onEdit,
+  user,
+  description,
 }: {
   authorId: number;
   title: string;
@@ -107,102 +127,99 @@ const InformationCard = ({
   imageCount: number;
   onPress: () => void;
   onDelete: () => void;
+  description: string;
   onEdit: () => void;
+  user: any;
 }) => {
-  const { user } = useUser();
-  const [visible, setVisible] = useState(false);
+  const { user: localUser } = useUser();
+  const [popup, setPopup] = useState(false);
 
-  const openMenu = () => {
-    setVisible(true);
-  };
-
-  const closeMenu = () => {
-    setVisible(false);
-  };
-
-  const handleDeleteAlert = () => {
-    Alert.alert(
-      'Delete',
-      'Are you sure you want to "permanently" delete information?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: onDelete,
-        },
-      ],
-    );
-  };
-
+  const [deletePostConfirm, setDeletePostConfirm] = useState(false);
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View
-        style={{
-          borderRadius: 16,
-          overflow: 'hidden',
-        }}>
+    <View style={styles.wrapper}>
+      <View style={styles.publisherContainer}>
+        <Text variant="bodyMedium" style={styles.publisher}>
+          <Text variant="bodyLarge" style={{ color: Colors.primary }}>
+            @
+          </Text>
+          {user?.username}
+        </Text>
         <View
           style={{
-            backgroundColor: getColorFromDate(new Date(createdAt)),
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginRight: 10,
           }}>
-          {Number(user?.id) === Number(authorId) && (
-            <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
-              <Menu
-                visible={visible}
-                onDismiss={closeMenu}
-                anchor={
-                  <Icon solid size={20} name="ellipsis-v" color="#fff" />
-                }>
-                <Menu.Item
-                  leadingIcon="pen"
-                  onPress={() => {
-                    onEdit();
-                    closeMenu();
-                  }}
-                  title="Edit"
-                />
-                <Menu.Item
-                  leadingIcon="delete"
-                  title="Delete"
-                  onPress={() => {
-                    handleDeleteAlert();
-                    closeMenu();
-                  }}
-                />
-              </Menu>
+          <Text
+            variant="bodyMedium"
+            style={{ color: Colors.textColorCaptionLight, marginRight: 10 }}>
+            {formatDuration(new Date(createdAt))}
+          </Text>
+          {Number(user?.id) === Number(localUser?.id) && (
+            <TouchableOpacity
+              style={styles.settingIcon}
+              onPress={() => setPopup(true)}>
+              <Icon
+                size={26}
+                name="dots-horizontal"
+                color={Colors.textColorPrimary}
+              />
             </TouchableOpacity>
           )}
-          <View
-            style={{
-              height: 120,
-              backgroundColor: 'rgba(0,0,0, 0.5)',
-              justifyContent: 'center',
-              padding: 30,
-            }}>
-            <Text
-              variant="headlineSmall"
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={{ color: 'white', fontWeight: 'bold' }}>
-              {title}
-            </Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Icon name="image" size={18} color="white" solid />
-                <Text
-                  variant="bodyLarge"
-                  style={{ color: 'white', fontWeight: 'bold', marginLeft: 5 }}>
-                  {imageCount}
-                </Text>
-              </View>
-            </View>
-          </View>
         </View>
       </View>
-    </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={onPress}>
+        <View style={{ marginBottom: 8 }}>
+          <Text variant="headlineSmall">{title}</Text>
+        </View>
+      </TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={onPress}>
+        <View style={{ flexDirection: 'row', marginTop: 4 }}>
+          {imageCount > 0 && (
+            <Text
+              style={{ marginRight: 5, color: Colors.textColorCaption }}
+              variant="bodyMedium">
+              {`${imageCount} ${pluralize('image', imageCount)}`}
+            </Text>
+          )}
+          {description && (
+            <Text
+              style={{ marginRight: 5, color: Colors.textColorCaption }}
+              variant="bodyMedium">
+              with description
+            </Text>
+          )}
+        </View>
+      </TouchableWithoutFeedback>
+      <PopupActions open={popup} onClose={() => setPopup(false)}>
+        <Button
+          onPress={() => {
+            setPopup(false);
+            onEdit();
+          }}>
+          Edit
+        </Button>
+        <Button
+          outlined
+          onPress={() => {
+            setPopup(false);
+            setDeletePostConfirm(true);
+          }}>
+          Delete
+        </Button>
+      </PopupActions>
+      <PopupMessage
+        onCancel={() => setDeletePostConfirm(false)}
+        onConfirm={() => {
+          setDeletePostConfirm(false);
+          onDelete();
+        }}
+        open={deletePostConfirm}
+        onClose={() => setDeletePostConfirm(false)}
+        title={'Delete Information'}
+        message={'Are you sure you want to delete this information?'}
+      />
+    </View>
   );
 };
 
@@ -220,34 +237,53 @@ InformationScreen.navigationOptions = () => {
   };
 };
 
-function getColorFromDate(date: Date) {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hour = date.getHours();
-  const minute = date.getMinutes();
-  const second = date.getSeconds();
-
-  // Calculate RGB values based on date components
-  const red = (year * 13 + month) % 256;
-  const green = (day * 7 + hour) % 256;
-  const blue = (minute * 11 + second) % 256;
-
-  // Convert the values to hexadecimal and format the color string
-  const color = `#${red.toString(16)}${green.toString(16)}${blue.toString(16)}`;
-
-  return color;
-}
-
 const styles = StyleSheet.create({
-  settingIcon: {
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    padding: 15,
+  wrapper: {
+    borderRadius: 10,
+    marginBottom: '5%',
+  },
+  ImageContainer: {
+    width: 330,
+    height: 400,
+    marginRight: 5,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.line,
+    overflow: 'hidden',
+  },
+  SingularImageContainer: {
+    width: 350,
+    height: 400,
+    marginRight: 5,
+    borderWidth: 1,
+    borderColor: Colors.line,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  backgroundImage: {
+    width: '100%',
+    height: '100%',
+  },
+  publisher: {
+    marginBottom: 2,
+  },
+  actionContainer: {
     display: 'flex',
-    justifyContent: 'center',
-    zIndex: 999,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+    marginRight: 10,
+  },
+  actionText: {
+    marginLeft: 2,
+    fontWeight: 'bold',
+  },
+  settingIcon: {},
+  publisherContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
 

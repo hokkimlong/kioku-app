@@ -15,7 +15,13 @@ import {
   differenceInDays,
   differenceInHours,
   differenceInMinutes,
+  endOfDay,
   format,
+  formatDistance,
+  isFuture,
+  isPast,
+  isToday,
+  startOfDay,
 } from 'date-fns';
 import { getS3Image } from '~/utils/s3';
 import { deleteActivity } from '~/services/activity';
@@ -25,6 +31,8 @@ import { useSpinner } from '../ui/Spinner';
 import { Colors } from '~/utils/color';
 import { pluralize } from '~/utils/pluralize';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { PopupActions, PopupMessage } from './postThumbnail';
+import { Button } from '../ui/Button';
 
 type ActivityProps = PropsWithChildren<{
   item: Activity;
@@ -39,13 +47,6 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
   const queryClient = useQueryClient();
 
   const [visible, setVisible] = useState(false);
-  const openMenu = () => {
-    setVisible(true);
-  };
-
-  const closeMenu = () => {
-    setVisible(false);
-  };
 
   const deleteMutation = useMutation(deleteActivity, {
     onMutate: () => {
@@ -73,43 +74,43 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
 
   const handleLeaveActivity = (id: number) => {
     leaveMutation.mutate(id);
-    closeMenu();
   };
 
   const handleDeleteActivity = (id: number) => {
     deleteMutation.mutate(id);
-    closeMenu();
   };
 
-  const handleDeleteAlert = (id: number) => {
-    Alert.alert(
-      'Delete',
-      'Are you sure you want to "permanently" delete activity ?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () => handleDeleteActivity(id),
-        },
-      ],
-    );
-  };
+  let startIn;
+  {
+    const startDate = startOfDay(new Date(item.startDate));
+    const endDate = new Date();
+    const differenceMinutes = differenceInMinutes(startDate, endDate);
+    if (differenceMinutes > 0) {
+      startIn = `start in ${formatDistance(startDate, endDate)}`;
+    }
+  }
 
-  const startDate = new Date(item.startDate);
-  const endDate = new Date();
-  const differentDays = differenceInDays(startDate, endDate);
-  const differenceHours = differenceInHours(startDate, endDate);
-  const differenceMinutes = differenceInMinutes(startDate, endDate);
-  const remaining =
-    differentDays > 1
-      ? `${differentDays} days remaining`
-      : differenceHours > 1
-      ? `${differenceHours} hours remaining`
-      : `${differenceMinutes} minutes remaining`;
+  let remainingDays;
+  if (startIn === undefined) {
+    const startDate = endOfDay(new Date(item.endDate));
+    const endDate = new Date();
+    const differenceMinutes = differenceInMinutes(startDate, endDate);
+    // let differentDays = differenceInDays(startDate, endDate);
+    // const today = startOfDay(new Date());
+    if (differenceMinutes > 0) {
+      remainingDays = `${formatDistance(startDate, endDate)} remaining`;
+    }
+  }
 
+  let pastDays;
+  if (remainingDays === undefined && startIn === undefined) {
+    pastDays = `${formatDistance(
+      new Date(),
+      endOfDay(new Date(item.endDate)),
+    )} ago`;
+  }
+
+  const [deletePostConfirm, setDeletePostConfirm] = useState(false);
   return (
     <TouchableWithoutFeedback>
       <View
@@ -117,16 +118,21 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
           flexDirection: 'row',
           justifyContent: 'space-between',
         }}>
-        {differentDays > 0 && (
+        <TouchableWithoutFeedback onPress={onPress}>
           <View>
-            <Text variant="bodyLarge">
-              {format(new Date(item.startDate), 'MMM')}
-            </Text>
             <Text variant="headlineLarge">
               {format(new Date(item.startDate), 'dd')}
             </Text>
+            <Text variant="bodyLarge">
+              {format(new Date(item.startDate), 'MMM')}
+            </Text>
+            <Text
+              variant="bodySmall"
+              style={{ color: Colors.textColorCaptionLight }}>
+              {format(new Date(item.startDate), 'yy')}
+            </Text>
           </View>
-        )}
+        </TouchableWithoutFeedback>
         <View>
           <View>
             <TouchableWithoutFeedback onPress={onPress}>
@@ -134,7 +140,7 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
                 <Image
                   source={{ uri: item.image ? getS3Image(item.image) : '' }}
                   style={{
-                    width: win.width * (differentDays > 0 ? 0.7 : 0.85),
+                    width: win.width * 0.75,
                     height: 150,
                     objectFit: 'cover',
                     borderWidth: 1,
@@ -152,41 +158,94 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
                   {item.name}
                 </Text>
               </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={onPress}>
+                <>
+                  {startIn && (
+                    <Text
+                      style={{
+                        marginRight: 4,
+                        color: Colors.primary,
+                      }}>
+                      {startIn}
+                    </Text>
+                  )}
+
+                  {remainingDays && (
+                    <Text
+                      style={{
+                        marginRight: 4,
+                        color: Colors.primary,
+                      }}>
+                      {remainingDays}
+                    </Text>
+                  )}
+
+                  {pastDays && (
+                    <Text
+                      style={{
+                        marginRight: 4,
+                        color: Colors.primary,
+                      }}>
+                      {pastDays}
+                    </Text>
+                  )}
+                </>
+              </TouchableWithoutFeedback>
+
+              <TouchableWithoutFeedback onPress={onPress}>
+                <Text
+                  style={{
+                    marginRight: 4,
+                    color: Colors.textColorCaptionLight,
+                  }}>
+                  <>
+                    {
+                      <Text style={{ color: Colors.textColorCaptionLight }}>
+                        end on{' '}
+                      </Text>
+                    }
+                    {format(new Date(item.endDate), 'dd MMM, yy')}
+                  </>
+                </Text>
+              </TouchableWithoutFeedback>
               <View
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Text
-                    style={{
-                      marginRight: 4,
-                      color: Colors.textColorCaptionLight,
-                    }}>
-                    {item._count.users} {pluralize('member', item._count.users)}{' '}
-                    •
-                  </Text>
-                  <Text
-                    style={{
-                      marginRight: 4,
-                      color: Colors.textColorCaptionLight,
-                    }}>
-                    {item._count.posts} {pluralize('post', item._count.posts)} •
-                  </Text>
-                  <Text
-                    style={{
-                      marginRight: 4,
-                      color: Colors.textColorCaptionLight,
-                    }}>
-                    {item._count.informations}{' '}
-                    {pluralize('information', item._count.informations)}
-                  </Text>
-                </View>
+                <TouchableWithoutFeedback onPress={onPress}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text
+                      style={{
+                        marginRight: 4,
+                        color: Colors.textColorCaptionLight,
+                      }}>
+                      {item._count.users}{' '}
+                      {pluralize('member', item._count.users)} •
+                    </Text>
+                    <Text
+                      style={{
+                        marginRight: 4,
+                        color: Colors.textColorCaptionLight,
+                      }}>
+                      {item._count.posts} {pluralize('post', item._count.posts)}{' '}
+                      •
+                    </Text>
+                    <Text
+                      style={{
+                        marginRight: 4,
+                        color: Colors.textColorCaptionLight,
+                      }}>
+                      {item._count.informations}{' '}
+                      {pluralize('information', item._count.informations)}
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
                 <View>
                   <TouchableOpacity
-                  // style={styles.settingIcon}
-                  // onPress={() => setPopup(true)}
-                  >
+                    onPress={() => {
+                      setVisible(true);
+                    }}>
                     <Icon
                       size={26}
                       name="dots-horizontal"
@@ -198,94 +257,50 @@ const ActivityThumbnail = ({ item, onPress, onEdit }: ActivityProps) => {
             </View>
           </View>
         </View>
+        <PopupActions open={visible} onClose={() => setVisible(false)}>
+          {item.isAdmin ? (
+            <>
+              <Button
+                onPress={() => {
+                  setVisible(false);
+                  onEdit(item.id);
+                }}>
+                Edit
+              </Button>
+              <Button
+                outlined
+                onPress={() => {
+                  setVisible(false);
+                  setDeletePostConfirm(true);
+                }}>
+                Delete
+              </Button>
+            </>
+          ) : (
+            <Button
+              onPress={() => {
+                setVisible(false);
+                handleLeaveActivity(item.id);
+              }}>
+              Leave
+            </Button>
+          )}
+        </PopupActions>
+        <PopupMessage
+          onCancel={() => {
+            setDeletePostConfirm(false);
+          }}
+          onConfirm={() => {
+            setDeletePostConfirm(false);
+            handleDeleteActivity(item.id);
+          }}
+          open={deletePostConfirm}
+          onClose={() => setDeletePostConfirm(false)}
+          title={'Delete Activity'}
+          message={'Are you sure you want to delete this activity?'}
+        />
       </View>
     </TouchableWithoutFeedback>
-
-    // <TouchableOpacity onPress={onPress}>
-    //   <View style={styles.wrapper}>
-    //     <ImageBackground
-    //       source={{ uri: item.image ? getS3Image(item.image) : '' }}>
-    //       <View style={styles.innerContainer}>
-    //         <TouchableOpacity style={styles.settingIcon} onPress={openMenu}>
-    //           <Menu
-    //             visible={visible}
-    //             onDismiss={closeMenu}
-    //             anchor={
-    //               <Icon solid size={20} name="ellipsis-v" color="#fff" />
-    //             }>
-    //             {item.isAdmin ? (
-    //               <>
-    //                 <Menu.Item
-    //                   leadingIcon="pen"
-    //                   onPress={() => {
-    //                     onEdit(item.id);
-    //                     closeMenu();
-    //                   }}
-    //                   title="Edit"
-    //                 />
-    //                 <Menu.Item
-    //                   leadingIcon="delete"
-    //                   title="Delete"
-    //                   onPress={() => {
-    //                     handleDeleteAlert(item.id);
-    //                   }}
-    //                 />
-    //               </>
-    //             ) : (
-    //               <Menu.Item
-    //                 leadingIcon="delete"
-    //                 title="Leave Activity"
-    //                 onPress={() => {
-    //                   handleLeaveActivity(item.id);
-    //                 }}
-    //               />
-    //             )}
-    //           </Menu>
-    //         </TouchableOpacity>
-    //         <View>
-    //           <Text
-    //             variant="headlineSmall"
-    //             style={{
-    //               color: 'white',
-    //               textTransform: 'uppercase',
-    //               fontWeight: 'bold',
-    //             }}>
-    //             {item.name}
-    //           </Text>
-    //           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-    //             <Text
-    //               variant="bodyLarge"
-    //               style={{
-    //                 color: 'white',
-    //                 fontSize: 15,
-    //               }}>
-    //               {format(new Date(item.startDate), 'dd MMM yyyy')}
-    //             </Text>
-    //             <Text
-    //               variant="bodyMedium"
-    //               style={{ marginLeft: 10, color: 'white' }}>
-    //               {differenceMinutes > 0 && remaining}
-    //             </Text>
-    //           </View>
-    //         </View>
-    //         <View style={styles.mediaContainer}>
-    //           <View style={styles.actionContainer}>
-    //             <Icon name="user" size={18} color="white" solid />
-    //             <Text style={styles.mediaText}>{item._count.users}</Text>
-    //           </View>
-    //           <View style={styles.actionContainer}>
-    //             <Icon name="film" size={18} color="white" solid />
-    //             <Text style={styles.mediaText}>{item._count.posts}</Text>
-    //           </View>
-    //           <View style={styles.actionContainer}>
-    //             <Icon name="newspaper" size={18} color="white" solid />
-    //             <Text style={styles.mediaText}>{item._count.informations}</Text>
-    //           </View>
-    //         </View>
-    //       </View>
-    //     </ImageBackground>
-    //   </View>
-    // </TouchableOpacity>
   );
 };
 

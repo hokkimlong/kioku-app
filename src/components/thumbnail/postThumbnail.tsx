@@ -99,9 +99,11 @@ const PostThumbnail = ({
           )}
         </View>
       </View>
-      <View style={{ marginBottom: 8 }}>
-        <Text variant="bodyMedium">{caption}</Text>
-      </View>
+      {caption && (
+        <View style={{ marginBottom: 8 }}>
+          <Text variant="bodyMedium">{caption}</Text>
+        </View>
+      )}
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -218,7 +220,7 @@ const PostThumbnail = ({
   );
 };
 
-const PopupMessage = ({
+export const PopupMessage = ({
   open,
   onClose,
   title,
@@ -264,7 +266,7 @@ const PopupMessage = ({
   );
 };
 
-const PopupActions = ({ open, onClose, children }: any) => {
+export const PopupActions = ({ open, onClose, children }: any) => {
   return (
     <Portal>
       <Modal

@@ -15,6 +15,7 @@ import { FlatList, View } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
 import { ActivityHomeTabList } from './Navigator';
 import { useSpinner } from '~/components/ui/Spinner';
+import { Colors } from '~/utils/color';
 
 type Props = BottomTabScreenProps<ActivityHomeTabList, 'Home'>;
 
@@ -57,7 +58,12 @@ const PostScreen = ({ navigation }: Props) => {
         keyExtractor={item => item.id.toString()}
         ListEmptyComponent={() => {
           return (
-            <Text variant="bodyLarge" style={{ textAlign: 'center' }}>
+            <Text
+              variant="bodyLarge"
+              style={{
+                textAlign: 'center',
+                color: Colors.textColorCaptionLight,
+              }}>
               No posts
             </Text>
           );

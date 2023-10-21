@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './LoginScreen';
 import { Appbar } from 'react-native-paper';
 import RegisterScreen from './RegisterScreen';
+import RegisterSuccess from './RegisterSuccess';
 import ForgotPasswordScreen from './ForgotPasswordScreen';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import VerificationScreen from './VerificationScreen';
@@ -18,6 +19,7 @@ export type AuthenticationStackList = {
   Verification: { identifier: string };
   NewPasswordScreen: { identifier: string; validToken: string };
   ResetPasswordSuccess: undefined;
+  RegisterSuccess: undefined;
 };
 
 const Stack = createNativeStackNavigator<AuthenticationStackList>();
@@ -37,6 +39,7 @@ const AuthenticationNavigator = () => {
         name="ResetPasswordSuccess"
         component={ResetPasswordSuccess}
       />
+      <Stack.Screen name="RegisterSuccess" component={RegisterSuccess} />
     </Stack.Navigator>
   );
 };

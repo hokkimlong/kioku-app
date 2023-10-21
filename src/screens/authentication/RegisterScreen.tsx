@@ -45,13 +45,8 @@ const RegisterScreen = ({ navigation }: Props) => {
     openSpinner();
     registerUser(formData)
       .then(() => {
-        alert.success(
-          'Register Success',
-          'You have register successfully!',
-          () => {
-            navigation.pop();
-          },
-        );
+        navigation.popToTop();
+        navigation.navigate('RegisterSuccess');
       })
       .catch(error => {
         alert.errorResponse('Register Failed', error);

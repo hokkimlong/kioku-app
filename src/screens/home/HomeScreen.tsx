@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { TitleContainer } from '~/components/ui/TitleContainer';
 import { AddIconButton } from '../../components/ui/AddIconButton';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -7,26 +7,53 @@ import { useActivities } from '~/services/activity';
 import ActivityThumbnail from '~/components/thumbnail/ActivityThumbnail';
 import { FlatList, View } from 'react-native';
 import { Text } from 'react-native-paper';
+import { ScrollView } from 'react-native';
+import { Button } from '~/components/ui/Button';
+import { Colors } from '~/utils/color';
 
 type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
 
 const HomeScreen = ({ navigation }: Props) => {
-  const { activities, refetch, isFetching } = useActivities();
+  const [filter, setFilter] = React.useState({ status: 'ongoing' } as any);
+  const flatListRef = useRef<FlatList>(null);
+  const { activities, refetch, isFetching } = useActivities(filter);
+
+  const handleScrollTop = () => {
+    flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
+  };
 
   return (
-    <TitleContainer
-      scroll={false}
-      title="Activities"
-      right={
-        <AddIconButton onPress={() => navigation.push('NewActivity', {})} />
-      }>
+    <View style={{ flex: 1 }}>
+      <View>
+        <TitleContainer
+          scroll={false}
+          title="Activities"
+          right={
+            <AddIconButton onPress={() => navigation.push('NewActivity', {})} />
+          }
+        />
+      </View>
+      <View style={{ marginHorizontal: 10 }}>
+        <FilterButton
+          onChange={value => {
+            setFilter({ status: value });
+            handleScrollTop();
+          }}
+        />
+      </View>
       <FlatList
+        ref={flatListRef}
+        style={{ paddingHorizontal: 10 }}
+        showsVerticalScrollIndicator={false}
         onRefresh={refetch}
         ListEmptyComponent={() => (
           <Text
             variant="bodyLarge"
-            style={{ textAlign: 'center', color: 'gray' }}>
-            No activities
+            style={{
+              textAlign: 'center',
+              color: Colors.textColorCaptionLight,
+            }}>
+            No {filter.status} activities
           </Text>
         )}
         ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
@@ -44,7 +71,45 @@ const HomeScreen = ({ navigation }: Props) => {
         )}
         keyExtractor={item => item.id.toString()}
       />
-    </TitleContainer>
+    </View>
+  );
+};
+
+const buttons = [
+  {
+    label: 'Ongoing',
+    value: 'ongoing',
+  },
+  {
+    label: 'Upcoming',
+    value: 'upcoming',
+  },
+  {
+    label: 'Past',
+    value: 'past',
+  },
+];
+
+const FilterButton = ({ onChange }: any) => {
+  const [active, setActive] = React.useState(0);
+
+  return (
+    <ScrollView horizontal style={{ height: 50 }}>
+      {buttons.map((button, index) => (
+        <>
+          <Button
+            onPress={() => {
+              setActive(index);
+              onChange(button.value);
+            }}
+            size="small"
+            outlined={active !== index}>
+            {button.label}
+          </Button>
+          <View style={{ width: 10 }} />
+        </>
+      ))}
+    </ScrollView>
   );
 };
 

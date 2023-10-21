@@ -3,6 +3,7 @@ import { post, get, remove, update } from './fetcher';
 import { Post } from './post';
 import { InformationBoard } from './information';
 import { Message } from './chat';
+import { endOfDay, formatISO, startOfDay } from 'date-fns';
 
 export type createActivityDto = {
   name: string;
@@ -22,6 +23,8 @@ export type editActivityDto = {
 };
 
 export const createActivity = (activity: createActivityDto) => {
+  activity.startDate = startOfDay(activity.startDate);
+  activity.endDate = endOfDay(activity.endDate);
   return post('/activity', activity);
 };
 
@@ -30,6 +33,8 @@ export const deleteActivity = (id: number) => {
 };
 
 export const editActivity = (activity: editActivityDto) => {
+  activity.startDate = startOfDay(activity.startDate);
+  activity.endDate = endOfDay(activity.endDate);
   return update('/activity/' + activity.id, activity);
 };
 
@@ -54,9 +59,11 @@ export type Activity = {
 
 export const activityQueryKey = 'activity';
 
-export const useActivities = () => {
-  const { data, ...other } = useQuery<Activity[]>([activityQueryKey], () =>
-    get<Activity[]>('/activity'),
+export const useActivities = (params: any, options?: any) => {
+  const { data, ...other } = useQuery<Activity[]>(
+    [activityQueryKey, params],
+    () => get<Activity[]>('/activity', params),
+    options,
   );
   return { activities: data, ...other };
 };

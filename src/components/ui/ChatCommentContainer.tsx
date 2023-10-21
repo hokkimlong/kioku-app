@@ -2,11 +2,13 @@ import React from 'react';
 import { KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { Text } from 'react-native-paper';
+import { Portal, Text, TextInput } from 'react-native-paper';
 import TextBox from '~/components/textBox/text-box';
 import TextInputButton from '~/components/textBox/text-input';
 import { Message } from '~/services/chat';
 import { User } from '~/services/member';
+import { KeyboardAvoidingScrollView } from '@tareq0065/rn-keyboard-avoiding-scroll-view';
+import { Button } from './Button';
 
 type ChatScreenProps = {
   title: string | undefined;
@@ -24,7 +26,9 @@ const ChatCommentContainer = ({
   keyboardOffset = -140,
 }: ChatScreenProps) => {
   return (
-    <View style={styles.wrapper}>
+    <>
+      {/* // <KeyboardAvoidingView style={{ flex: 1 }}> */}
+      {/* <View style={{ flex: 1 }}> */}
       {/* {title !== undefined && (
         <ScrollView
           style={{
@@ -57,52 +61,78 @@ const ChatCommentContainer = ({
         </ScrollView>
       )} */}
       {/* chat section */}
-      <ScrollView
-        style={{ flex: 0.9, paddingHorizontal: '5%' }}
+      {/* <ScrollView
         ref={ref => (this.scrollView = ref)}
         onContentSizeChange={() => {
           this.scrollView.scrollToEnd({ animated: true });
         }}>
-        <View>
-          {messages?.length === 0 ? (
-            <Text
-              variant="bodyLarge"
-              style={{ textAlign: 'center', color: 'gray' }}>
-              No Content Yet !!!
-            </Text>
-          ) : (
-            messages?.map((item, index) => (
-              <TextBox
-                key={index}
-                user={item.user}
-                isUser={item.user.username === currentUser?.username}
-                message={item.message}
-                createdAt={item?.createdAt || new Date()}
-                isComment={true}
-                isOnGoing={
-                  index > 0 &&
-                  item.user.username === messages[index - 1].user.username
-                }
-                isNotification={false}
-              />
-            ))
-          )}
-        </View>
-      </ScrollView>
+
+        {messages?.map((item, index) => (
+          <TextBox
+            key={index}
+            user={item.user}
+            isUser={item.user.username === currentUser?.username}
+            message={item.message}
+            createdAt={item?.createdAt || new Date()}
+            isComment={true}
+            isOnGoing={
+              index > 0 &&
+              item.user.username === messages[index - 1].user.username
+            }
+            isNotification={false}
+          />
+        ))}
+      </ScrollView> */}
+
+      {/* <Portal> */}
+      {/* <View style={{ position: 'absolute', bottom: 0, left: 0, width: 100 }}> */}
+      {/* <ScrollView> */}
+
+      <KeyboardAvoidingScrollView
+        // style={{ flex: 1 }}
+        // automaticallyAdjustKeyboardInsets={true}>
+        stickyFooter={
+          <Button
+            onPress={() => {
+              console.log('onPress');
+            }}>
+            Send
+          </Button>
+        }>
+        <TextInput />
+        {/* {messages?.map((item, index) => (
+          <TextBox
+            key={index}
+            user={item.user}
+            isUser={item.user.username === currentUser?.username}
+            message={item.message}
+            createdAt={item?.createdAt || new Date()}
+            isComment={true}
+            isOnGoing={
+              index > 0 &&
+              item.user.username === messages[index - 1].user.username
+            }
+            isNotification={false}
+          />
+        ))} */}
+        {/* <View /> */}
+        {/* <View style={{ height: 10 }} /> */}
+      </KeyboardAvoidingScrollView>
+
+      {/* </View> */}
+      {/* </Portal> */}
       {/* input section */}
-      <TextInputButton
-        onSend={value => {
-          onSend(value);
-        }}
-      />
       {/* <Input /> */}
-    </View>
+
+      {/* // </KeyboardAvoidingView> */}
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+    position: 'relative',
   },
 });
 

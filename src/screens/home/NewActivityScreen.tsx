@@ -93,13 +93,26 @@ const Stack = createNativeStackNavigator<NewActivityStackList>();
 
 const NewActivityNavigator = (props: any) => {
   const activityEditId = props.route.params.id;
-  const { activity: editActivityData } = useActivityById(activityEditId, {
+
+  const { openSpinner, closeSpinner } = useSpinner();
+  const {
+    activity: editActivityData,
+    isFetched,
+    isLoading,
+  } = useActivityById(activityEditId, {
     enabled: !!activityEditId,
   });
+
+  useEffect(() => {
+    if (activityEditId) {
+      openSpinner();
+    }
+  }, [activityEditId]);
+
   const methods = useForm<FormSchema>({ resolver: zodResolver(schema) });
 
   useEffect(() => {
-    if (editActivityData) {
+    if (!isLoading && editActivityData && isFetched) {
       methods.setValue('name', editActivityData.name);
       methods.setValue('date.startDate', new Date(editActivityData.startDate));
       methods.setValue('date.endDate', new Date(editActivityData.endDate));
@@ -110,8 +123,9 @@ const NewActivityNavigator = (props: any) => {
           key: editActivityData.image,
         },
       ]);
+      closeSpinner();
     }
-  }, [editActivityData, methods]);
+  }, [editActivityData, methods, isFetched, isLoading]);
 
   return (
     <FormProvider {...methods}>
@@ -306,7 +320,12 @@ const MemberListItem = ({
     <List.Item
       style={{ marginLeft: -14, marginRight: -18 }}
       onPress={onPress}
-      title={`@${value.toLowerCase()}`}
+      title={
+        <>
+          <Text style={{ color: Colors.primary }}>@</Text>
+          {value.toLowerCase()}
+        </>
+      }
       titleStyle={{ color: Colors.textColorPrimary }}
       right={() => (
         <View

@@ -27,7 +27,7 @@ export const TitleContainer = ({
         </View>
       )}
       {description && <Description>{description}</Description>}
-      <View style={formStyle.content}>{children}</View>
+      {children && <View style={formStyle.content}>{children}</View>}
     </Container>
   );
 };
@@ -39,7 +39,6 @@ const formStyle = StyleSheet.create({
   },
   title: {
     // minHeight: 62,
-    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

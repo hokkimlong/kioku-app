@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TitleContainer } from '~/components/ui/TitleContainer';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Button } from '~/components/ui/Button';
@@ -86,8 +86,18 @@ const NewInformationScreen = ({ navigation, route }: Props) => {
           uri: getS3Image(image.uri),
         })),
       });
+      closeSpinner();
+    },
+    onError: () => {
+      closeSpinner();
     },
   });
+
+  useEffect(() => {
+    if (id) {
+      openSpinner();
+    }
+  }, [id]);
 
   const activity = useActivityContext();
 
