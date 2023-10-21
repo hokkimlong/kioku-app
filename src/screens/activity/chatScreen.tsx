@@ -70,7 +70,15 @@ const ChatScreen = ({ route, navigation }: Props) => {
     socket.on('message:groupchat', data => {
       queryClient.setQueryData<Message[]>(
         [groupChatQueryKey, activity?.id],
-        prev => [...prev, { message: data.message, user: data.sender }],
+        prev => [
+          ...prev,
+          {
+            message: data.message,
+            user: data.sender,
+            id: Date.now().toString(),
+            createdAt: new Date(),
+          },
+        ],
       );
     });
 

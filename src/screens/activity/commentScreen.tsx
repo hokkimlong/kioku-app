@@ -61,7 +61,15 @@ const CommentScreen = ({ route, navigation }: Props) => {
     socket.on('message:postcomment', data => {
       queryClient.setQueryData<Message[]>(
         [postQueryKey, postId, 'comments'],
-        prev => [...prev, { message: data.message, user: data.sender }],
+        prev => [
+          ...prev,
+          {
+            message: data.message,
+            user: data.sender,
+            id: Date.now().toString(),
+            createdAt: new Date(),
+          },
+        ],
       );
     });
 
