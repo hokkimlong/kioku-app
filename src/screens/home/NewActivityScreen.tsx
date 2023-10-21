@@ -198,7 +198,7 @@ const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
   const { openSpinner, closeSpinner } = useSpinner();
 
   const [search, setSearch] = useState('');
-  const { users } = useUsers(search);
+  const { users, isLoading } = useUsers(search);
   const queryClient = useQueryClient();
 
   const createActivityMutation = useMutation(createActivity, {
@@ -238,23 +238,34 @@ const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
   });
 
   return (
-    <TitleContainer
-      scroll={false}
-      title={route.params?.id ? 'Members' : 'Add Members'}
-      description="Let's add your member">
-      <BaseInput
-        autoCapitalize="none"
-        onChangeText={(value: string) => {
-          setSearch(value);
-        }}
-        placeholder="Search your member"
-      />
+    <View style={{ flex: 1, marginHorizontal: 20 }}>
+      {/* <View>
+        <TitleContainer
+          // scroll={false}
+          title={route.params?.id ? 'Members' : 'Add Members'}
+          description="Let's add your member"
+        />
+      </View> */}
+      <View>
+        <BaseInput
+          autoCapitalize="none"
+          onChangeText={(value: string) => {
+            setSearch(value);
+          }}
+          placeholder="Search your member"
+        />
+      </View>
       <View style={{ paddingVertical: 10 }}>
         <Text style={{ color: Colors.textColorCaption }}>
           Selected {fields.length} {pluralize('member', fields.length)}
         </Text>
       </View>
       <ScrollView>
+        {isLoading && (
+          <Text style={{ color: Colors.textColorCaptionLight }}>
+            Loading...
+          </Text>
+        )}
         {users?.map(user => {
           const isActive = fields.some(field => field.id === user.id);
           return (
@@ -303,7 +314,7 @@ const MemberSelector = ({ navigation, route }: MemberSelectProps) => {
           Create
         </Button>
       )}
-    </TitleContainer>
+    </View>
   );
 };
 

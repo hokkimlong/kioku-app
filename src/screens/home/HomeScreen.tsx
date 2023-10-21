@@ -10,13 +10,21 @@ import { Text } from 'react-native-paper';
 import { ScrollView } from 'react-native';
 import { Button } from '~/components/ui/Button';
 import { Colors } from '~/utils/color';
+import { useFocusEffect } from '@react-navigation/native';
+import { useQueryClient } from '@tanstack/react-query';
+import { notificationQueryKey } from '~/services/notification';
 
 type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
 
 const HomeScreen = ({ navigation }: Props) => {
   const [filter, setFilter] = React.useState({ status: 'ongoing' } as any);
   const flatListRef = useRef<FlatList>(null);
-  const { activities, refetch, isFetching } = useActivities(filter);
+  const queryClient = useQueryClient();
+  const { activities, refetch, isFetching } = useActivities(filter, {
+    onSuccess: () => {
+      queryClient.invalidateQueries([notificationQueryKey]);
+    },
+  });
 
   const handleScrollTop = () => {
     flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });

@@ -10,6 +10,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteUser, usersQueryKey } from '~/services/member';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackList } from './HomeNavigator';
+import { Colors } from '~/utils/color';
+import { format } from 'date-fns';
 
 type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
 
@@ -80,21 +82,103 @@ const ProfileScreen = ({ navigation }: Props) => {
           </Menu>
         </TouchableOpacity>
       }>
-      <View style={styles.infoContainer}>
-        <Icon solid name="at" size={25} color="#000" style={styles.icon} />
-        <View>
-          <Text style={styles.label}>Username</Text>
-          <Text style={styles.infoText}>@{user?.username}</Text>
+      <View style={{ marginBottom: 10 }}>
+        <Text
+          variant="labelMedium"
+          style={{ color: Colors.textColorCaptionLight }}>
+          Username
+        </Text>
+        <Text variant="bodyLarge" style={{ color: Colors.textColorPrimary }}>
+          <Text variant="bodyLarge" style={{ color: Colors.primary }}>
+            @
+          </Text>
+          {user?.username}
+        </Text>
+      </View>
+      <View style={{ marginBottom: 10 }}>
+        <Text
+          variant="labelMedium"
+          style={{ color: Colors.textColorCaptionLight }}>
+          Email
+        </Text>
+        <Text variant="bodyLarge" style={{ color: Colors.textColorPrimary }}>
+          {user?.email}
+        </Text>
+      </View>
+      <View style={{ marginBottom: 10 }}>
+        <Text
+          variant="labelMedium"
+          style={{ color: Colors.textColorCaptionLight }}>
+          Created date
+        </Text>
+        <Text variant="bodyLarge" style={{ color: Colors.textColorPrimary }}>
+          {format(new Date(user?.createdAt), 'dd/MM/yyyy')}
+        </Text>
+      </View>
+      <View
+        style={{
+          marginVertical: 20,
+          borderBottomColor: Colors.line,
+          borderWidth: 1,
+        }}
+      />
+      <View>
+        <View
+          style={{
+            flexDirection: 'row',
+            marginBottom: 10,
+            alignItems: 'center',
+          }}>
+          <Text
+            variant="headlineLarge"
+            style={{ color: Colors.textColorPrimary, marginRight: 6 }}>
+            {user?._count?.activities}
+          </Text>
+          <Text
+            variant="labelLarge"
+            style={{ color: Colors.textColorCaptionLight }}>
+            activities
+          </Text>
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            marginBottom: 10,
+            alignItems: 'center',
+            marginRight: 41,
+          }}>
+          <Text
+            variant="headlineLarge"
+            style={{ color: Colors.textColorPrimary, marginRight: 6 }}>
+            {user?._count?.posts}
+          </Text>
+          <Text
+            variant="labelLarge"
+            style={{ color: Colors.textColorCaptionLight }}>
+            post
+          </Text>
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            marginBottom: 10,
+            alignItems: 'center',
+          }}>
+          <Text
+            variant="headlineLarge"
+            style={{ color: Colors.textColorPrimary, marginRight: 6 }}>
+            {user?._count?.informations}
+          </Text>
+          <Text
+            variant="labelLarge"
+            style={{ color: Colors.textColorCaptionLight }}>
+            information
+          </Text>
         </View>
       </View>
-      <View style={styles.infoContainer}>
-        <Icon solid name="user" size={25} color="#000" style={styles.icon} />
-        <View>
-          <Text style={styles.label}>Email</Text>
-          <Text style={styles.infoText}>{user?.email}</Text>
-        </View>
-      </View>
-      <View style={styles.infoContainer}>
+      {/* <View style={styles.infoContainer}>
         <Icon solid name="running" size={25} color="#000" style={styles.icon} />
         <View>
           <Text style={styles.label}>Total Activities</Text>
@@ -107,8 +191,9 @@ const ProfileScreen = ({ navigation }: Props) => {
           <Text style={styles.label}>Total Posts</Text>
           <Text style={styles.infoText}>{user?.posts.length}</Text>
         </View>
-      </View>
-      <Button onPress={logout} outlined>
+      </View> */}
+      <View style={{ flex: 1 }} />
+      <Button onPress={() => logout()} outlined>
         Logout
       </Button>
     </TitleContainer>

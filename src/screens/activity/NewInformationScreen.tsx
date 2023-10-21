@@ -105,7 +105,7 @@ const NewInformationScreen = ({ navigation, route }: Props) => {
     <FormProvider {...methods}>
       <TitleContainer
         title={id ? 'Information' : 'New Information'}
-        description="Let’s start a new adventure">
+        description="Tell your friend more">
         <Input name="title" label="Title" />
         <ImagePicker label="Images" name="images" />
         <Input

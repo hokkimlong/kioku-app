@@ -13,6 +13,8 @@ import { useLogin } from '~/services/authentication';
 import { alert } from '~/utils/alert';
 import { useSpinner } from '~/components/ui/Spinner';
 import LinkButton from '~/components/ui/LinkButton';
+import { OneSignal } from 'react-native-onesignal';
+import { PopupMessage } from '~/components/thumbnail/postThumbnail';
 
 const schema = z.object({
   identifier: z.string().nonempty().min(1),
@@ -31,11 +33,22 @@ const LoginScreen = ({ navigation }: Props) => {
     resolver: zodResolver(schema),
   });
 
+  const [visible, setVisible] = React.useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+  const [title, setTitle] = React.useState('');
+  const [message, setMessage] = React.useState('');
+
   const onSubmit = (formData: FormSchema) => {
     openSpinner();
     loginUser(formData)
+      .then(data => {
+        OneSignal.login(`kioku_${data.id}`);
+      })
       .catch(error => {
-        alert.error('fail', error.response.data.message);
+        setTitle('Login failed');
+        setMessage(error?.response?.data?.message);
+        openMenu();
       })
       .finally(() => {
         closeSpinner();
@@ -70,6 +83,12 @@ const LoginScreen = ({ navigation }: Props) => {
           Create new account
         </Button>
       </TitleContainer>
+      <PopupMessage
+        title={title}
+        message={message}
+        open={visible}
+        onConfirm={closeMenu}
+      />
     </FormProvider>
   );
 };

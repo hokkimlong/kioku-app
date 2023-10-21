@@ -156,7 +156,7 @@ const ChatScreen = ({ route, navigation }: Props) => {
         );
         mutation.mutate({ message: value[0].text, activityId: activity?.id });
         socket.emit('message:groupchat', {
-          message: value,
+          message: value[0].text,
           activityId: activity?.id,
           sender: user,
         });

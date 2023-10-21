@@ -12,6 +12,7 @@ import { useSpinner } from '~/components/ui/Spinner';
 import { forgotPassword } from '~/services/authentication';
 import { stringRequired } from '~/components/form/utils';
 import { alert } from '~/utils/alert';
+import { PopupMessage } from '~/components/thumbnail/postThumbnail';
 
 const schema = z.object({
   identifier: stringRequired,
@@ -25,6 +26,11 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
     resolver: zodResolver(schema),
   });
 
+  const [visible, setVisible] = React.useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+  const [title, setTitle] = React.useState('');
+  const [message, setMessage] = React.useState('');
   const { openSpinner, closeSpinner } = useSpinner();
 
   const mutation = useMutation(forgotPassword, {
@@ -37,7 +43,9 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
       methods.reset({ identifier: '' });
     },
     onError(error: any) {
-      alert.error('Error', error.response.data.message);
+      setTitle('Forgot password failed');
+      setMessage(error?.response?.data?.message);
+      openMenu();
     },
     onSettled() {
       closeSpinner();
@@ -64,6 +72,12 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
         />
         <Button onPress={methods.handleSubmit(onSubmit)}>Reset Password</Button>
       </TitleContainer>
+      <PopupMessage
+        title={title}
+        message={message}
+        open={visible}
+        onConfirm={closeMenu}
+      />
     </FormProvider>
   );
 };

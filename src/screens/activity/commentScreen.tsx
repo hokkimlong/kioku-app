@@ -101,7 +101,7 @@ const CommentScreen = ({ route, navigation }: Props) => {
         );
         mutation.mutate({ message: value[0].text, postId });
         socket.emit('message:postcomment', {
-          message: value,
+          message: value[0].text,
           postId,
           sender: user,
         });

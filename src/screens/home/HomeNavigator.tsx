@@ -55,7 +55,7 @@ const HomeNavigator = () => {
 };
 
 export const DefaultAppBar = (props: NativeStackHeaderProps) => {
-  const { notifications } = useNotifications({
+  const { notifications, isFetching } = useNotifications({
     enabled: !props.back,
   });
 

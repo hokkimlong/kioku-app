@@ -255,9 +255,11 @@ export const PopupMessage = ({
               justifyContent: 'flex-end',
               marginTop: 20,
             }}>
-            <Button onPress={onCancel} outlined style={{ marginRight: 10 }}>
-              Cancel
-            </Button>
+            {onCancel && (
+              <Button onPress={onCancel} outlined style={{ marginRight: 10 }}>
+                Cancel
+              </Button>
+            )}
             <Button onPress={onConfirm}>Confirm</Button>
           </View>
         </View>

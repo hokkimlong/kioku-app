@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import { PaperProvider, MD3LightTheme } from 'react-native-paper';
+import { PaperProvider, MD3LightTheme, Text } from 'react-native-paper';
 import React from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import AuthenticationNavigator from './src/screens/authentication/Navigator';
@@ -9,6 +9,7 @@ import { useUser } from './src/services/authentication';
 import './src/utils/s3';
 import SpinnerProvider from '~/components/ui/Spinner';
 import { Colors } from '~/utils/color';
+import appConfig from './src/config/app-config.json';
 
 const queryClient = new QueryClient();
 
@@ -45,13 +46,43 @@ const theme = {
 };
 
 function App() {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
 
   return (
     <NavigationContainer theme={theme}>
-      {user ? <HomeNavigator /> : <AuthenticationNavigator />}
+      {!isLoading ? (
+        user ? (
+          <HomeNavigator />
+        ) : (
+          <AuthenticationNavigator />
+        )
+      ) : null}
     </NavigationContainer>
   );
 }
+
+import { LogLevel, OneSignal } from 'react-native-onesignal';
+import { notificationQueryKey } from '~/services/notification';
+import { StyleSheet, View } from 'react-native';
+
+// Remove this method to stop OneSignal Debugging
+OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+
+// OneSignal Initialization
+OneSignal.initialize(appConfig.oneSignalAppId);
+
+// requestPermission will show the native iOS or Android notification permission prompt.
+// We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+OneSignal.Notifications.requestPermission(true);
+// OneSignal.login()
+
+// Method for listening for notification clicks
+OneSignal.Notifications.addEventListener('click', event => {
+  queryClient.invalidateQueries([notificationQueryKey]);
+});
+
+OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
+  queryClient.invalidateQueries([notificationQueryKey]);
+});
 
 export default Main;

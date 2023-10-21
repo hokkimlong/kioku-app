@@ -13,6 +13,7 @@ import { alert } from '~/utils/alert';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthenticationStackList } from './Navigator';
 import { useSpinner } from '~/components/ui/Spinner';
+import { PopupMessage } from '~/components/thumbnail/postThumbnail';
 // import { alert } from '~/utils/alert';
 
 const schema = z
@@ -35,11 +36,17 @@ export type RegisterFormSchema = PartialBy<
 type Props = NativeStackScreenProps<AuthenticationStackList, 'Register'>;
 const RegisterScreen = ({ navigation }: Props) => {
   const { registerUser } = useRegister();
-  const { openSpinner, closeSpinner } = useSpinner();
 
   const methods = useForm<RegisterFormSchema>({
     resolver: zodResolver(schema),
   });
+
+  const [visible, setVisible] = React.useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+  const [title, setTitle] = React.useState('');
+  const [message, setMessage] = React.useState('');
+  const { openSpinner, closeSpinner } = useSpinner();
 
   const onSubmit = (formData: RegisterFormSchema) => {
     openSpinner();
@@ -49,7 +56,9 @@ const RegisterScreen = ({ navigation }: Props) => {
         navigation.navigate('RegisterSuccess');
       })
       .catch(error => {
-        alert.errorResponse('Register Failed', error);
+        setTitle('Register Failed');
+        setMessage(error?.response?.data?.message);
+        openMenu();
       })
       .finally(() => {
         closeSpinner();
@@ -94,6 +103,12 @@ const RegisterScreen = ({ navigation }: Props) => {
         />
         <Button onPress={methods.handleSubmit(onSubmit)}>Register</Button>
       </TitleContainer>
+      <PopupMessage
+        title={title}
+        message={message}
+        open={visible}
+        onConfirm={closeMenu}
+      />
     </FormProvider>
   );
 };

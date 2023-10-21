@@ -9,9 +9,12 @@ import {
 } from '~/services/notification';
 import { useFocusEffect } from '@react-navigation/native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Text } from 'react-native-paper';
+import { Colors } from '~/utils/color';
+import { format } from 'date-fns';
 
 const NotificationScreen = () => {
-  const { notifications } = useNotifications();
+  const { notifications, isFetching, refetch } = useNotifications();
   const queryClient = useQueryClient();
 
   const mutation = useMutation(markAsSeen, {
@@ -31,28 +34,51 @@ const NotificationScreen = () => {
   });
 
   return (
-    <TitleContainer
-      title="Notification"
-      description="Let's start a new adventure">
+    <View style={{ flex: 1 }}>
+      <View>
+        <TitleContainer
+          title={'Notifications'}
+          description="Get updated with your friends"
+        />
+      </View>
       <FlatList
-        data={notifications?.data}
-        renderItem={({ item }) => (
-          <View style={{ marginVertical: 2 }} key={item.id}>
-            <TextBox
-              createdAt={item?.createdAt}
-              notificationTitle={item.activity.name}
-              message={item.message}
-              isNotification={true}
-            />
-          </View>
+        showsVerticalScrollIndicator={false}
+        style={{ paddingHorizontal: 20, marginTop: 10 }}
+        refreshing={isFetching}
+        ListEmptyComponent={() => (
+          <Text
+            variant="bodyLarge"
+            style={{ textAlign: 'center', color: 'gray' }}>
+            No notification yet
+          </Text>
         )}
+        onRefresh={refetch}
+        data={notifications?.data ?? []}
+        ItemSeparatorComponent={() => <View style={{ height: 18 }} />}
+        renderItem={({ item }) => <NotificationCard item={item} />}
       />
-      {/* {list?.map(item => (
-        <View style={{ marginVertical: 2 }} key={item.id}>
-          <TextBox isNotification={true} />
-        </View>
-      ))} */}
-    </TitleContainer>
+    </View>
+  );
+};
+
+const NotificationCard = ({ item }: any) => {
+  return (
+    <View style={{ flex: 1 }}>
+      <Text variant="bodyLarge" style={{ color: Colors.primary }}>
+        {item.activity.name}
+      </Text>
+      <Text style={{ color: Colors.textColorPrimary }}>
+        <Text variant="bodyLarge" style={{ color: Colors.primary }}>
+          @
+        </Text>
+        {item.message.replace('@', '')}
+      </Text>
+      <Text
+        variant="bodySmall"
+        style={{ color: Colors.textColorCaptionLight, textAlign: 'right' }}>
+        {format(new Date(item.createdAt), 'dd MMM yy - h:mm a')}
+      </Text>
+    </View>
   );
 };
 

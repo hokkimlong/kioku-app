@@ -7,6 +7,7 @@ import { alert } from '~/utils/alert';
 import { User } from './member';
 import { useSpinner } from '~/components/ui/Spinner';
 import { ForgotPasswordSchema } from '~/screens/authentication/ForgotPasswordScreen';
+import { OneSignal } from 'react-native-onesignal';
 
 export const useUser = () => {
   const { data, ...other } = useQuery<User>(['user'], () =>
@@ -45,6 +46,7 @@ export const useLogout = () => {
   const logout = () => {
     accessToken.remove().then(() => {
       queryClient.setQueryData(['user'], null);
+      OneSignal.logout();
     });
   };
   return { logout };

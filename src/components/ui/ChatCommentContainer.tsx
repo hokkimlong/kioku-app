@@ -2,13 +2,12 @@ import React from 'react';
 import { KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { Portal, Text, TextInput } from 'react-native-paper';
+import { Portal, Text } from 'react-native-paper';
 import TextBox from '~/components/textBox/text-box';
 import TextInputButton from '~/components/textBox/text-input';
 import { Message } from '~/services/chat';
 import { User } from '~/services/member';
 import { KeyboardAvoidingScrollView } from '@tareq0065/rn-keyboard-avoiding-scroll-view';
-import { Button } from './Button';
 
 type ChatScreenProps = {
   title: string | undefined;
@@ -89,18 +88,19 @@ const ChatCommentContainer = ({
       {/* <ScrollView> */}
 
       <KeyboardAvoidingScrollView
-        // style={{ flex: 1 }}
+        style={{ flex: 1 }}
         // automaticallyAdjustKeyboardInsets={true}>
         stickyFooter={
-          <Button
-            onPress={() => {
-              console.log('onPress');
-            }}>
-            Send
-          </Button>
+          <View>
+            <TextInputButton
+              onSend={value => {
+                onSend(value);
+              }}
+              // keyboardOffset={keyboardOffset}
+            />
+          </View>
         }>
-        <TextInput />
-        {/* {messages?.map((item, index) => (
+        {messages?.map((item, index) => (
           <TextBox
             key={index}
             user={item.user}
@@ -114,8 +114,8 @@ const ChatCommentContainer = ({
             }
             isNotification={false}
           />
-        ))} */}
-        {/* <View /> */}
+        ))}
+        <View />
         {/* <View style={{ height: 10 }} /> */}
       </KeyboardAvoidingScrollView>
 
