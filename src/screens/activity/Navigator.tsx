@@ -52,6 +52,7 @@ const ActivityTabs = () => {
         name="Chat"
         component={ChatScreen}
         options={{
+          ...ChatScreen.navigationOptions(),
           // headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="message1" size={size} color={color} />

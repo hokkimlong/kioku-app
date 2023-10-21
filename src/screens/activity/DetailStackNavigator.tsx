@@ -39,7 +39,13 @@ const DetailActivityNavigator = (props: any) => {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="NewPost" component={NewPostScreen} />
-        <Stack.Screen name="CommentScreen" component={CommentScreen} />
+        <Stack.Screen
+          options={{
+            ...CommentScreen.navigationOptions(),
+          }}
+          name="CommentScreen"
+          component={CommentScreen}
+        />
         <Stack.Screen name="NewInformation" component={NewInformationScreen} />
         <Stack.Screen
           name="InformationDetail"

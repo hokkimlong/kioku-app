@@ -64,7 +64,7 @@ const PostScreen = ({ navigation }: Props) => {
                 textAlign: 'center',
                 color: Colors.textColorCaptionLight,
               }}>
-              No posts
+              No post yet
             </Text>
           );
         }}

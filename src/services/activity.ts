@@ -59,7 +59,7 @@ export type Activity = {
 
 export const activityQueryKey = 'activity';
 
-export const useActivities = (params: any, options?: any) => {
+export const useActivities = (params: any, options: any) => {
   const { data, ...other } = useQuery<Activity[]>(
     [activityQueryKey, params],
     () => get<Activity[]>('/activity', params),
