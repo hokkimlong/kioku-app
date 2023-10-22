@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { editUsername, useLogout, useUser } from '~/services/authentication';
 import { TitleContainer } from '~/components/ui/TitleContainer';
-import { Text, Menu } from 'react-native-paper';
+import { Text, Menu, IconButton } from 'react-native-paper';
 import { Button } from '~/components/ui/Button';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -12,6 +12,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackList } from './HomeNavigator';
 import { Colors } from '~/utils/color';
 import { format } from 'date-fns';
+import {
+  PopupActions,
+  PopupMessage,
+} from '~/components/thumbnail/postThumbnail';
 
 type Props = NativeStackScreenProps<HomeStackList, 'Home'>;
 
@@ -46,41 +50,20 @@ const ProfileScreen = ({ navigation }: Props) => {
     deleteUserMutation.mutate();
   };
 
+  const [open, setOpen] = useState(false);
+  const [deleteAccount, setDeleteAccount] = useState(false);
+
   return (
     <TitleContainer
       title="Profile"
       right={
-        <TouchableOpacity onPress={openMenu}>
-          <Menu
-            visible={visible}
-            onDismiss={closeMenu}
-            anchor={<Icon solid size={20} name="edit" color="#000" />}>
-            <Menu.Item
-              leadingIcon="account-edit"
-              onPress={() => {
-                navigation.push('ChangeUsername');
-                closeMenu();
-              }}
-              title="Change Username"
-            />
-            <Menu.Item
-              leadingIcon="email-edit"
-              onPress={() => {
-                console.log('Edit');
-                closeMenu();
-              }}
-              title="Change Email"
-            />
-            <Menu.Item
-              leadingIcon="account-remove"
-              onPress={() => {
-                handleRemoveAccount();
-                closeMenu();
-              }}
-              title="Delete Account"
-            />
-          </Menu>
-        </TouchableOpacity>
+        <IconButton
+          style={{ borderRadius: 20 }}
+          iconColor={Colors.textColorPrimary}
+          size={26}
+          onPress={() => setOpen(true)}
+          icon={'dots-vertical'}
+        />
       }>
       <View style={{ marginBottom: 10 }}>
         <Text
@@ -192,6 +175,37 @@ const ProfileScreen = ({ navigation }: Props) => {
           <Text style={styles.infoText}>{user?.posts.length}</Text>
         </View>
       </View> */}
+      <PopupMessage
+        title="Delete account"
+        message="Are you sure you want to delete your account?"
+        open={deleteAccount}
+        onClose={() => setDeleteAccount(false)}
+        onCancel={() => setDeleteAccount(false)}
+        onConfirm={() => {
+          handleRemoveAccount();
+          setDeleteAccount(false);
+        }}
+      />
+
+      <PopupActions open={open} onClose={() => setOpen(false)}>
+        <Button
+          onPress={() => {
+            setOpen(false);
+            navigation.push('ChangeUsername');
+          }}
+          outlined>
+          Edit Profile
+        </Button>
+        <Button
+          color="red"
+          onPress={() => {
+            setOpen(false);
+            setDeleteAccount(true);
+          }}
+          outlined>
+          Delete Account
+        </Button>
+      </PopupActions>
       <View style={{ flex: 1 }} />
       <Button onPress={() => logout()} outlined>
         Logout

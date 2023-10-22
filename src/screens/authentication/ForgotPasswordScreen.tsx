@@ -76,6 +76,7 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
         title={title}
         message={message}
         open={visible}
+        onCLose={closeMenu}
         onConfirm={closeMenu}
       />
     </FormProvider>

@@ -104,6 +104,7 @@ const RegisterScreen = ({ navigation }: Props) => {
         <Button onPress={methods.handleSubmit(onSubmit)}>Register</Button>
       </TitleContainer>
       <PopupMessage
+        onClose={closeMenu}
         title={title}
         message={message}
         open={visible}

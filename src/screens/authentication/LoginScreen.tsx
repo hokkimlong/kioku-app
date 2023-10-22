@@ -87,6 +87,7 @@ const LoginScreen = ({ navigation }: Props) => {
         title={title}
         message={message}
         open={visible}
+        onClose={closeMenu}
         onConfirm={closeMenu}
       />
     </FormProvider>

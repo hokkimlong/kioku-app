@@ -18,9 +18,10 @@ export const Button = ({
   children,
   outlined,
   size = 'normal',
+  color,
   ...props
 }: ButtonProps) => {
-  const linearColors = ['#FC466B', '#3F5EFB'];
+  const linearColors = color ? [color, color] : ['#FC466B', '#3F5EFB'];
   const start = { x: 0, y: 0 };
   const end = { x: 1, y: 0 };
   const isSizeSmall = size === 'small';
@@ -48,6 +49,7 @@ export const Button = ({
                 outlined && buttonStyle.outlinedText,
                 !isSizeSmall && buttonStyle.outlinedNormal,
                 isSizeSmall && buttonStyle.outlinedSmall,
+                color && { color },
               ]}>
               {children}
             </Text>
